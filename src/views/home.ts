@@ -67,11 +67,11 @@ function botsSection(projects: readonly Project[]): SafeHtml {
       <div class="container">
         ${sectionHead(
           'Живі боти, які можна спробувати вже зараз',
-          'Оберіть напрям, який вам ближчий. Кожен бот уже працює в Telegram, а ви отримуєте такого ж під своєю назвою разом із планом.',
+          'Оберіть напрям, який вам ближчий, і нижче з’являться його боти. Кожен уже працює в Telegram, а ви отримуєте такого ж під своєю назвою разом із планом.',
           'bots-title',
         )}
         <div class="dirs" role="group" aria-label="Напрями" data-dirs>
-          <button type="button" class="dir dir--all" data-filter="all" aria-pressed="true">
+          <button type="button" class="dir dir--all" data-filter="all" aria-pressed="false">
             <span class="dir__name">Усі напрями</span>
             <span class="dir__meta">${projects.length} ${pluralBots(projects.length)}</span>
           </button>
@@ -82,9 +82,13 @@ function botsSection(projects: readonly Project[]): SafeHtml {
           <span>Готуємо: ${soon.map((c) => c.name).join(', ')}.</span>
           <a href="${TELEGRAM_URL}" target="_blank" rel="noopener">Повідомити мене про запуск</a>
         </p>`}
+        <p class="dirs__hint" data-dirs-hint hidden>Натисніть на напрям, і тут з’являться його боти з цінами та кнопкою «Спробувати бота».</p>
         <p class="sr-only" aria-live="polite" data-dirs-status></p>
       </div>
       <div class="bands" data-bands>${projects.map(productBand)}</div>
+      <div class="container bands__back" data-dirs-back hidden>
+        <a class="btn btn--line" href="#/" data-scroll="bots">Обрати інший напрям</a>
+      </div>
     </section>
   `;
 }
@@ -171,13 +175,24 @@ const proofSection = (): SafeHtml =>
       </section>`
     : html``;
 
-/** Фільтр «напрям → боти». Без JS видно всі панелі. */
+/**
+ * «Спочатку напрям, потім боти»: до вибору видно лише плитки напрямів і підказку.
+ * Без JS видно всі панелі, тож нічого не ховається назавжди.
+ */
 function mountDirections(root: HTMLElement): void {
   const group = root.querySelector<HTMLElement>('[data-dirs]');
   if (!group) return;
   const buttons = qsa<HTMLButtonElement>('[data-filter]', group);
   const bands = qsa<HTMLElement>('[data-bands] > .band', root);
   const status = qs('[data-dirs-status]', root);
+  const hint = root.querySelector<HTMLElement>('[data-dirs-hint]');
+  const section = root.querySelector<HTMLElement>('#bots');
+  const back = root.querySelector<HTMLElement>('[data-dirs-back]');
+
+  // Стартовий стан: жоден напрям не обрано, панелі сховані.
+  bands.forEach((b) => (b.hidden = true));
+  if (hint) hint.hidden = false;
+  section?.classList.add('is-picking');
 
   const apply = (filter: string, scroll: boolean): void => {
     buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset['filter'] === filter)));
@@ -189,6 +204,9 @@ function mountDirections(root: HTMLElement): void {
       band.classList.toggle('band--flip', visible && shown % 2 === 1);
       if (visible) shown += 1;
     }
+    if (hint) hint.hidden = true;
+    if (back) back.hidden = false;
+    section?.classList.remove('is-picking');
     status.textContent = `Показано ${shown} ${pluralBots(shown)}`;
     if (scroll) {
       const first = bands.find((b) => !b.hidden);
@@ -198,7 +216,7 @@ function mountDirections(root: HTMLElement): void {
 
   group.addEventListener('click', (e) => {
     const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
-    if (btn?.dataset['filter']) apply(btn.dataset['filter'], btn.dataset['filter'] !== 'all');
+    if (btn?.dataset['filter']) apply(btn.dataset['filter'], true);
   });
 }
 

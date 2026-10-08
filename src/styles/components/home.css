@@ -106,6 +106,33 @@
   .hero__cta .btn { flex: 1 1 200px; }
 }
 
+.dirs__hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 18px 20px;
+  border: 2px dashed var(--c-sky-2);
+  border-radius: var(--r-lg);
+  color: var(--c-muted);
+  font-weight: 600;
+}
+.dirs__hint::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-left: 3px solid var(--c-tg-deep);
+  border-top: 3px solid var(--c-tg-deep);
+  rotate: 45deg;
+  translate: 0 4px;
+}
+.dirs__hint[hidden] { display: none; }
+.bots.is-picking { padding-bottom: var(--section-y); }
+.bots.is-picking .bands { margin-top: 0; }
+.bands__back { display: flex; justify-content: center; padding-block: 32px; }
+.bands__back[hidden] { display: none; }
+
 /* --- Панелі продуктів ------------------------------------------------- */
 .bands { margin-top: clamp(40px, 6vw, 72px); }
 .band { background: var(--w-bg); color: var(--w-ink); overflow: hidden; scroll-margin-top: var(--nav-h); }
