@@ -51,7 +51,7 @@
 }
 
 /* --- Факти ---------------------------------------------------------------- */
-.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .fact {
   display: grid;
   gap: 6px;
@@ -64,7 +64,7 @@
 .fact__label { font-size: var(--fs-sm); color: var(--c-muted); }
 .fact__value { font: 700 1.15rem/1.25 var(--f-display); letter-spacing: -0.03em; }
 .fact--profit .fact__value { color: var(--c-ok); }
-@media (max-width: 760px) { .facts { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) { .facts { grid-template-columns: 1fr 1fr; } }
 
 /* --- Блоки ---------------------------------------------------------------- */
 .block { scroll-margin-top: calc(var(--nav-h) + 16px); }

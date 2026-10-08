@@ -50,6 +50,8 @@ strong, b { font-weight: 700; }
   border-radius: 6px;
 }
 main:focus, h1:focus { outline: none; }
+/* Футер не «підстрибує», поки сторінка рендериться. */
+#app { display: block; min-height: 100dvh; }
 
 /* --- Сітка --------------------------------------------------------------- */
 .container {
@@ -76,6 +78,7 @@ main:focus, h1:focus { outline: none; }
 
 /* --- Дрібні атоми -------------------------------------------------------- */
 .icon { flex-shrink: 0; }
+.nowrap { white-space: nowrap; }
 
 .live {
   display: inline-flex;
@@ -127,6 +130,7 @@ main:focus, h1:focus { outline: none; }
 .tile--lg { width: 64px; height: 64px; border-radius: 18px; }
 
 /* Логотип */
+.logo__mark { flex: none; }
 .logo {
   display: inline-flex;
   align-items: center;

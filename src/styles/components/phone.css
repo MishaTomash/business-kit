@@ -1,6 +1,6 @@
 /* ==========================================================================
    Телефон з екраном бота (демо кодом або справжній скріншот).
-   Розміри: .ph--sm (мініатюри), .ph--md (панелі), .ph--lg (hero).
+   Розміри: .ph--md (панелі; мініатюри зменшуються через scale), .ph--lg (hero).
    Внутрішній текст телефона дрібніший за 16 px навмисно: це зменшена копія екрана,
    прихована від читачів екрана (aria-hidden), а поруч є той самий текст.
    ========================================================================== */
@@ -17,7 +17,6 @@
   box-shadow: var(--sh-phone);
   flex: none;
 }
-.ph--sm { --ph-w: 132px; --ph-r: 24px; padding: 6px; font-size: 0.5em; }
 .ph--lg { --ph-w: 286px; }
 @media (max-width: 600px) {
   .ph--md { --ph-w: 236px; }
@@ -55,8 +54,7 @@
 }
 
 .scr { height: 100%; font: 13px/1.38 var(--f-text); }
-.ph--sm .scr { font-size: 7px; }
-.ph--sm .ph__screen::before { height: 10px; top: 4px; }
+
 .scr--img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* Chat */
@@ -186,22 +184,6 @@
 
 /* Порожній екран (немає ні демо, ні скріншота) */
 .scr--empty { display: grid; place-items: center; background: var(--w-bg); color: var(--w-ink); font: 800 3em/1 var(--f-display); }
-
-/* Мініатюра: менші відступи всередині */
-.ph--sm .scr__bar { padding: 18px 6px 5px; gap: 4px; }
-.ph--sm .scr__ava { width: 16px; height: 16px; font-size: 8px; }
-.ph--sm .scr__title { font-size: 7px; }
-.ph--sm .scr__title small { font-size: 6px; }
-.ph--sm .scr__chat { gap: 3px; padding: 5px; }
-.ph--sm .msg { padding: 3px 5px; border-radius: 7px; }
-.ph--sm .msg__btn { margin: 3px -2px -1px; padding: 2px 4px; border-radius: 4px; }
-.ph--sm .scr__input { margin: 0 4px 5px; padding: 4px 7px; }
-.ph--sm .scr--game { padding: 18px 6px 6px; gap: 5px; }
-.ph--sm .cw__top b { font-size: 8px; }
-.ph--sm .cw__top small, .ph--sm .cw__hint { font-size: 6px; }
-.ph--sm .cw__c { font-size: 6px; border-radius: 3px; border-width: 1px; }
-.ph--sm .cw__clue { font-size: 6px; padding: 3px 5px; border-radius: 5px; }
-.ph--sm .cw__keys span { font-size: 5px; padding: 2px 0; border-radius: 2px; }
 
 /* Друкування чату в активному телефоні */
 @media (prefers-reduced-motion: no-preference) {

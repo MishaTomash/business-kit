@@ -29,3 +29,16 @@
   .nav__links { display: none; }
   .nav .btn { margin-left: auto; }
 }
+
+/* Вузькі телефони: у кнопці лишається іконка, текст доступний читачам екрана. */
+@media (max-width: 400px) {
+  .nav .btn { padding: 0 12px; }
+  .nav .btn span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

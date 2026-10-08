@@ -66,7 +66,7 @@ export function projectCard(p: Project): SafeHtml {
   const soon = p.status === 'soon';
   const forecastLine = !soon ? forecastText(p) : null;
   const body = html`
-    <div class="pcard__thumb">${phone(p, 'sm')}</div>
+    <div class="pcard__thumb" aria-hidden="true">${phone(p, 'md')}</div>
     <div class="pcard__body">
       <h2 class="pcard__title">${displayName(p)} ${soon && html`<span class="tag">Скоро</span>`}</h2>
       <p class="pcard__text">${p.tagline}</p>

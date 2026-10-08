@@ -111,4 +111,21 @@ document.documentElement.classList.add('js');
 qsa('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
 hydrateIcons(document);
 mountNavbar();
-startRouter(onRoute);
+
+/**
+ * Перший рендер чекає на шрифти (кириличні файли попередньо завантажуються з HTML),
+ * але не довше 700 мс: так заголовки не перебудовуються після появи шрифту.
+ */
+const fontsReady: Promise<unknown> =
+  'fonts' in document
+    ? Promise.race([
+        Promise.all([
+          document.fonts.load('800 1em Unbounded', 'Бот Telegram'),
+          document.fonts.load('400 1em Onest', 'Обираєте Telegram'),
+          document.fonts.load('600 1em Onest', 'Обрати'),
+        ]),
+        new Promise((resolve) => setTimeout(resolve, 700)),
+      ]).catch(() => undefined)
+    : Promise.resolve();
+
+void fontsReady.then(() => startRouter(onRoute));

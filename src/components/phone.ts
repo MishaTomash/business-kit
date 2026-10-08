@@ -59,12 +59,12 @@ function screen(p: Project): SafeHtml {
 }
 
 /**
- * @param size  'lg' для hero, 'md' для панелей, 'sm' для мініатюр у списках.
+ * @param size  'lg' для hero, 'md' для панелей і мініатюр (мініатюру зменшує CSS через scale).
  */
-export function phone(p: Project, size: 'sm' | 'md' | 'lg' = 'md'): SafeHtml {
+export function phone(p: Project, size: 'md' | 'lg' = 'md'): SafeHtml {
   // Справжній скріншот лишається доступним для читачів екрана, демо — ні.
   return html`<div class="ph ph--${size}" style="${themeStyle(p)}" ${p.image ? '' : html`aria-hidden="true"`}>
     <div class="ph__screen">${screen(p)}</div>
-    ${!p.image && size !== 'sm' && html`<span class="ph__demo">Демо</span>`}
+    ${!p.image && html`<span class="ph__demo">Демо</span>`}
   </div>`;
 }

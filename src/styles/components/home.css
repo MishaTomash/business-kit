@@ -56,12 +56,11 @@
 
 @media (max-width: 960px) {
   .hero__inner { grid-template-columns: 1fr; }
-  .scene__stack { height: 520px; }
   .scene__item[data-pos='1'] { transform: translateX(34%) rotate(8deg) scale(0.86); }
   .scene__item[data-pos='2'] { transform: translateX(-34%) rotate(-8deg) scale(0.86); }
 }
 @media (max-width: 600px) {
-  .scene__stack { width: 250px; height: 500px; }
+  .scene__stack { width: 250px; height: 510px; }
   .key { padding: 0 12px; }
 }
 

@@ -21,7 +21,7 @@ import { mountRotator } from '@/lib/rotator';
 import { shortLabel, themeStyle } from '@/lib/theme';
 import { directionTile, productBand } from '@/components/cards';
 import { faqMarkup } from '@/components/faq';
-import { phone } from '@/components/phone';
+import { hasScreen, phone } from '@/components/phone';
 import { sectionHead } from '@/components/ui';
 import type { View } from './view';
 
@@ -42,7 +42,9 @@ function trustFacts(liveCount: number, workingCount: number): readonly string[] 
   ];
 }
 
-function heroScene(projects: readonly Project[]): SafeHtml {
+function heroScene(all: readonly Project[]): SafeHtml {
+  // У сцені лише боти, яким є що показати в телефоні (демо, гра або скріншот).
+  const projects = all.filter(hasScreen);
   if (!projects.length) return html``;
   return html`
     <div class="scene" data-rot>
@@ -224,7 +226,7 @@ export function homeView(): View {
             <h1 id="hero-title" class="hero__title" tabindex="-1">Свій бот у&nbsp;Telegram з&nbsp;планом заробітку</h1>
             <p class="hero__lead">
               Обираєте одного з живих ботів. Ми запускаємо його під вашою назвою, а ви працюєте за готовим планом
-              ${DAILY_TIME || 'трохи часу'} на день.
+              <span class="nowrap">${DAILY_TIME || 'трохи часу'}</span> на день.
             </p>
             <div class="hero__cta">
               <a class="btn btn--main btn--lg" href="#/" data-scroll="bots">Обрати бота</a>
