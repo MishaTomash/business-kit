@@ -1,66 +1,92 @@
 /* ==========================================================================
-   Design tokens. Every color, radius, duration and easing lives here.
-   Theme = pitch black + white type + one emotional color: profit green.
+   Дизайн-токени «Денний чат». Усі кольори, шрифти, відступи, радіуси, тіні й рух.
+   Тема: світле небо Telegram, синій Telegram і золото Telegram Stars.
+   Кольори продуктів живуть у даних (project.theme), а не тут.
    ========================================================================== */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* --- Color: surfaces --------------------------------------------------- */
-  --c-bg: #000000;
-  --c-surface: #0a0a0a;          /* cards: a breath above black */
-  --c-surface-2: #121212;        /* inputs, nested tiles */
-  --c-border: rgb(255 255 255 / 0.08);
-  --c-border-strong: rgb(255 255 255 / 0.16);
+  /* --- Кольори: поверхні ------------------------------------------------- */
+  --c-sky: #e8f1fa;            /* основне тло сторінки */
+  --c-sky-2: #d6e6f5;          /* підкладки, другий план */
+  --c-paper: #ffffff;          /* картки, світлі секції */
+  --c-ink: #0d1b2a;            /* текст і темні блоки */
+  --c-ink-2: #1c2e44;          /* темні поверхні на темному */
+  --c-line: rgb(13 27 42 / 0.12);
 
-  /* --- Color: text ------------------------------------------------------- */
-  --c-text: #ffffff;
-  --c-text-soft: #d4d4d4;
-  --c-muted: #8f8f8f;
-  --c-subtle: #5c5c5c;
+  /* --- Кольори: текст ---------------------------------------------------- */
+  --c-text: var(--c-ink);
+  --c-muted: #44566b;          /* 6.4 : 1 на --c-sky, 7.4 : 1 на білому */
+  --c-on-dark: #ffffff;
+  --c-on-dark-muted: #c6d3e2;  /* 10 : 1 на --c-ink */
 
-  /* --- Color: meaning ---------------------------------------------------- */
-  --c-profit: #3dff8f;           /* the money color: used ONLY for profit */
-  --c-profit-dim: rgb(61 255 143 / 0.12);
-  --c-profit-glow: rgb(61 255 143 / 0.35);
-  --c-loss: #ff6b6b;
-  --c-star: #ffcf4a;
+  /* --- Кольори: бренд ---------------------------------------------------- */
+  --c-tg: #2aabee;             /* синій Telegram: лише декор і великі плашки з темним текстом */
+  --c-tg-deep: #1769aa;        /* кнопки й посилання: 5.6 : 1 з білим */
+  --c-tg-deeper: #125a93;
+  --c-star: #ffc233;           /* золото Stars: плашки з темним текстом */
+  --c-star-soft: #fff4d6;
+  --c-star-ink: #6b4d00;
 
-  /* Per-component accent (overridden inline per product) */
-  --accent: #ffffff;
+  /* --- Кольори: значення ------------------------------------------------- */
+  --c-ok: #157f43;             /* «працює», «безкоштовно» */
+  --c-ok-dot: #2fd36b;
+  --c-loss: #b42318;
 
-  /* --- Typography -------------------------------------------------------- */
-  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --fs-xs: 0.8125rem;   /* 13 */
-  --fs-sm: 0.9375rem;   /* 15 */
-  --fs-md: 1rem;        /* 16 */
-  --fs-lg: 1.125rem;    /* 18 */
-  --fs-xl: clamp(1.25rem, 1rem + 0.8vw, 1.5rem);
-  --fs-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
-  --fs-h2: clamp(1.875rem, 1.4rem + 1.8vw, 2.75rem);
-  --fs-h1: clamp(2.5rem, 1.6rem + 3.8vw, 4.5rem);
-  --fs-profit: clamp(2.75rem, 2rem + 3vw, 4rem);
+  /* Колір продукту за замовчуванням (перевизначається інлайном) */
+  --accent: var(--c-tg-deep);
+  --w-bg: var(--c-paper);
+  --w-ink: var(--c-ink);
+  --w-accent: var(--c-ink);
+  --w-on: #ffffff;
 
-  --tracking-tight: -0.045em;
-  --tracking-snug: -0.025em;
+  /* --- Типографіка ------------------------------------------------------- */
+  --f-display: 'Unbounded', 'Arial Black', system-ui, sans-serif;
+  --f-text: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* --- Space & shape ----------------------------------------------------- */
+  --fs-sm: 1rem;                                    /* 16: найменший текст на сайті */
+  --fs-md: 1.0625rem;                               /* 17: основний текст */
+  --fs-lg: clamp(1.0625rem, 1rem + 0.4vw, 1.3rem);  /* лід, підзаголовки */
+  --fs-h3: clamp(1.2rem, 1.05rem + 0.5vw, 1.5rem);
+  --fs-h2: clamp(1.85rem, 1.1rem + 2.8vw, 3.2rem);
+  --fs-h1: clamp(2.35rem, 1.2rem + 4.6vw, 4.6rem);
+  --fs-display: clamp(2.5rem, 1.2rem + 5vw, 5.4rem);  /* назви продуктів */
+
+  --lh-tight: 1.02;
+  --lh-text: 1.55;
+  --track-display: -0.045em;
+
+  /* --- Відступи й сітка -------------------------------------------------- */
   --container: 1200px;
-  --gutter: clamp(1.25rem, 0.8rem + 2vw, 2rem);
-  --section-y: clamp(4.5rem, 3rem + 5vw, 7.5rem);
+  --gutter: clamp(16px, 4vw, 40px);
+  --section-y: clamp(64px, 9vw, 120px);
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
 
-  --r-xl: 28px;   /* major panels */
-  --r-lg: 22px;   /* cards */
-  --r-md: 14px;   /* tiles, inputs */
-  --r-sm: 10px;
+  /* --- Радіуси ----------------------------------------------------------- */
+  --r-sm: 10px;    /* вкладки, теги */
+  --r-md: 16px;    /* кнопки, поля */
+  --r-lg: 24px;    /* картки */
+  --r-xl: 32px;    /* великі панелі */
   --r-pill: 999px;
 
-  /* --- Motion ------------------------------------------------------------ */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);      /* expo-out: silky */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
-  --dur-fast: 180ms;
+  /* --- Тіні -------------------------------------------------------------- */
+  --sh-card: 0 30px 60px -30px rgb(13 27 42 / 0.35);
+  --sh-phone: 0 40px 70px -30px rgb(13 27 42 / 0.55);
+  --sh-btn: 0 10px 24px -10px rgb(23 105 170 / 0.8);
+  --sh-key: 0 1px 0 rgb(13 27 42 / 0.12);
+
+  /* --- Рух --------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-pop: cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  --dur-fast: 160ms;
   --dur-base: 320ms;
-  --dur-slow: 900ms;
+  --dur-slow: 700ms;
   --stagger-step: 90ms;
 
-  --nav-h: 64px;
+  --nav-h: 68px;
 }

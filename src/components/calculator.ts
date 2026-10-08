@@ -110,9 +110,10 @@ export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
     const now = performance.now();
     if (prefersReducedMotion() || now - lastPulse < 300) return;
     lastPulse = now;
-    out('net').animate([{ textShadow: '0 0 48px rgb(61 255 143 / 0.7)' }, { textShadow: '0 0 0 transparent' }], {
-      duration: 900,
-      easing: 'cubic-bezier(.16,1,.3,1)',
+    // Лише transform: легкий «підскок» числа, коли прибуток зростає.
+    out('net').animate([{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }], {
+      duration: 500,
+      easing: 'cubic-bezier(.2,.9,.3,1.2)',
     });
   };
 

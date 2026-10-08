@@ -1,50 +1,34 @@
-/* FAQ accordion on native <details>; smooth height where supported. */
-.faq { border-top: 1px solid var(--c-border); }
-
-.faq__item { border-bottom: 1px solid var(--c-border); }
-
-.faq__item::details-content {
-  block-size: 0;
-  overflow: hidden;
-  transition:
-    block-size 450ms var(--ease-out),
-    content-visibility 450ms allow-discrete;
-}
-
-.faq__item[open]::details-content { block-size: auto; }
-
+/* FAQ: акордеон на нативних <details>. Відповідь проявляється (лише opacity/transform). */
+.faq { display: grid; gap: 10px; }
+.faq__item { border-radius: var(--r-lg); background: var(--c-paper); }
 .faq__q {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1.35rem 0;
-  font-size: var(--fs-lg);
-  font-weight: 500;
-  color: var(--c-text);
+  gap: 20px;
+  min-height: 64px;
+  padding: 16px 20px;
+  font: 700 1.1rem/1.3 var(--f-display);
+  letter-spacing: -0.02em;
   cursor: pointer;
   list-style: none;
+  border-radius: var(--r-lg);
 }
-
 .faq__q::-webkit-details-marker { display: none; }
-
 .faq__toggle {
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  flex: none;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--c-border);
-  color: var(--c-muted);
+  background: var(--c-sky);
   rotate: 45deg;
-  transition: rotate 400ms var(--ease-spring), color var(--dur-fast);
+  transition: rotate var(--dur-base) var(--ease-pop), background-color var(--dur-fast) ease;
 }
-
-.faq__item[open] .faq__toggle { rotate: 0deg; color: var(--c-text); }
-
-.faq__a p {
-  padding-bottom: 1.5rem;
-  max-width: 64ch;
-  color: var(--c-muted);
+.faq__item[open] .faq__toggle { rotate: 0deg; background: var(--c-ink); color: #fff; }
+.faq__a p { padding: 0 20px 20px; max-width: 64ch; color: var(--c-muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .faq__item[open] .faq__a { animation: faq-in 320ms var(--ease-out); }
 }
+@keyframes faq-in { from { opacity: 0; transform: translateY(-6px); } }

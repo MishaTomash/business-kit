@@ -1,4 +1,4 @@
-// Лише для етапу 2: збірка лаб-сторінок окремо від сайту (npx vite build -c lab/vite.config.ts).
+// Лише для етапів 2–3: збірка лаб-сторінок окремо від сайту (npx vite build -c lab/vite.config.ts).
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 
@@ -12,7 +12,7 @@ export default defineConfig({
     emptyOutDir: true,
     assetsInlineLimit: 0,
     rollupOptions: {
-      input: { d1: r('./direction-1.html'), d2: r('./direction-2.html'), d3: r('./direction-3.html') },
+      input: { system: r('./system.html') },
     },
   },
 });

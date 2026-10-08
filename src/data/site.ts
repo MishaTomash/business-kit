@@ -3,7 +3,9 @@
  * Business facts live here so they can be edited without touching UI code.
  */
 
-import type { FaqItem, MarketRates, Offering, WorkflowStep } from '@/types';
+import type { FaqItem, JourneyStep, MarketRates, Offering, ProofStat, Requirement, WorkflowStep } from '@/types';
+import { formatDaysRange, formatMinutesRange } from '@/lib/format';
+import { PROJECTS } from './projects';
 
 /** Sales contact. Configured via `.env` → VITE_TELEGRAM_URL. */
 export const TELEGRAM_URL: string = import.meta.env.VITE_TELEGRAM_URL || 'https://t.me/your_username';
@@ -98,3 +100,61 @@ export const FAQ: readonly FaqItem[] = [
       'Ні, і будьте обережні з тими, хто гарантує. Ми гарантуємо робочого бота й зрозумілий план. Результат залежить від того, наскільки регулярно ви за ним працюєте.',
   },
 ];
+
+/* -------------------------------------------------------------------------- */
+/*  Головна: «Шлях за 30 днів», «Що потрібно від вас», статистика               */
+/* -------------------------------------------------------------------------- */
+
+const live = PROJECTS.filter((p) => p.status === 'available');
+const span = (pick: (p: (typeof live)[number]) => readonly [number, number]): readonly [number, number] => [
+  Math.min(...live.map((p) => pick(p)[0])),
+  Math.max(...live.map((p) => pick(p)[1])),
+];
+/** Діапазони по всіх доступних ботах (оновлюються самі, коли додаєте бота). */
+const FIRST_CLIENT = live.length ? formatDaysRange(span((p) => p.firstClientDays)) : '';
+export const DAILY_TIME = live.length ? formatMinutesRange(span((p) => p.dailyMinutes)) : '';
+
+/** Часова шкала на головній. Терміни беруться з плану й правил Telegram. */
+export const JOURNEY: readonly JourneyStep[] = [
+  { when: 'День 0', title: 'Обираєте бота', text: 'Пишете нам у Telegram, домовляємося про назву, аватар і оплату.' },
+  {
+    when: DEPLOY_TIME,
+    title: 'Бот запущено',
+    text: 'Бот працює на вашому акаунті під вашою назвою. Ви отримуєте план і доступ до адмін-команд.',
+  },
+  {
+    when: 'Тиждень 1',
+    title: 'Перші користувачі',
+    text: 'Оформлюєте профіль, знімаєте перші 5 відео за готовими сценаріями й розповідаєте про бота в чатах.',
+  },
+  ...(FIRST_CLIENT
+    ? [{ when: `≈ ${FIRST_CLIENT}`, title: 'Перший клієнт', text: 'Орієнтир за планом. Оплата в Stars надходить на баланс вашого бота.' }]
+    : []),
+  {
+    when: 'Тижні 2–4',
+    title: 'Щоденна звичка',
+    text: 'Одне відео на день за календарем. Дивитеся в статистиці, що приводить покупців, і повторюєте те, що спрацювало.',
+  },
+  {
+    when: 'Від 21 дня',
+    title: 'Перший вивід Stars',
+    text: 'За правилами Telegram зароблені Stars можна вивести через 21 день, від 1 000 ⭐. Покрокова інструкція є в плані.',
+  },
+];
+
+/** Чесний блок «Що потрібно від вас». */
+export const REQUIREMENTS: readonly Requirement[] = [
+  {
+    value: DAILY_TIME ? `${DAILY_TIME} на день` : 'Трохи часу щодня',
+    text: 'На відео й відповіді людям. Точний орієнтир для кожного бота є на його сторінці.',
+  },
+  { value: 'Телефон', text: 'Знімати, викладати й дивитися статистику бота можна з телефона. Комп\u2019ютер не потрібен.' },
+  { value: 'Регулярність', text: 'План працює, коли робите потроху щодня. Тиждень пропусків, і результат відкладається.' },
+];
+
+/**
+ * Реальна статистика ботів для блоку довіри на головній.
+ * Поки масив порожній, блок не показується. Пишіть лише справжні цифри
+ * з адмін-панелі, з періодом: { value: '1 240', label: 'людей скористалися ботом у вересні' }.
+ */
+export const PROOF: readonly ProofStat[] = [];

@@ -29,6 +29,7 @@ export const PROJECTS: readonly Project[] = [
     icon: 'sparkles',
     art: 'voice',
     accent: '#22d3ee',
+    theme: { bg: '#0E3B3F', ink: '#E9FBF8', accent: '#3FE0C5', onAccent: '#06292B' },
     tagline: 'Голосові, кружечки й аудіофайли → текст за кілька секунд. Українська та інші мови.',
     howItEarns:
       'Людина надсилає голосове чи кружечок і отримує текст. Кілька хвилин щодня безкоштовні, а коли потрібно більше, вона купує пакет хвилин за Telegram Stars. Розпізнавання працює на безкоштовних сервісах, тож майже вся виручка залишається вам.',
@@ -113,8 +114,10 @@ export const PROJECTS: readonly Project[] = [
     categoryId: 'media',
     status: 'available',
     name: 'TikTok & Instagram Downloader',
+    shortName: 'Downloader',
     icon: 'download',
     accent: '#3b82f6',
+    theme: { bg: '#1747C9', ink: '#FFFFFF', accent: '#FFFFFF', onAccent: '#1747C9' },
     tagline: 'Вставив посилання з TikTok чи Instagram Reels → отримав відео без вотермарки.',
     howItEarns:
       'Людина вставляє посилання на відео з TikTok чи Instagram Reels і отримує його прямо в Telegram за кілька секунд. Перші завантаження безкоштовні, далі 1 ⭐ за завантаження або пакети з бонусом. Під кожним відео є підпис з вашим ботом, тож люди самі поширюють його, пересилаючи відео друзям.',
@@ -201,9 +204,11 @@ export const PROJECTS: readonly Project[] = [
     categoryId: 'games',
     status: 'available',
     name: 'Слововир: кросворд у Telegram',
+    shortName: 'Слововир',
     icon: 'star',
     accent: '#f59e0b',
     art: 'crossword',
+    theme: { bg: '#FFF6E9', ink: '#17191D', accent: '#17191D', onAccent: '#FFF6E9' },
     screen: 'crossword',
     tagline: 'Кросворди українською з рівнями, кросвордом дня й підказками за зірки.',
     howItEarns:

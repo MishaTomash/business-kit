@@ -1,18 +1,16 @@
 /* ==========================================================================
-   Style entry. Order = cascade order (tokens → base → layout → components).
-   Vite inlines these @imports into a single minified stylesheet.
+   Вхід стилів. Порядок = каскад: шрифти → токени → база → рух → компоненти.
+   Vite збирає все в один мінімізований файл.
    ========================================================================== */
+@import './fonts.css';
 @import './tokens.css';
 @import './base.css';
-@import './background.css';
 @import './motion.css';
 
 @import './components/buttons.css';
 @import './components/nav.css';
-@import './components/spotlight.css';
+@import './components/phone.css';
 @import './components/home.css';
-@import './components/visuals.css';
-@import './components/cards.css';
 @import './components/page.css';
 @import './components/project.css';
 @import './components/calculator.css';

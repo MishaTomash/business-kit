@@ -1,55 +1,47 @@
 /* ==========================================================================
-   Motion system.
-   Reveal = a short fade-up (opacity + translate), GPU-friendly, expo-out.
-   Hidden states only apply under `.js` so no-JS users still see content.
+   Рух. Появи при скролі лише під .js (без JS контент видно одразу),
+   лише transform/opacity. prefers-reduced-motion вимикає все.
    ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal],
+  .js [data-stagger] > * {
+    opacity: 0;
+    translate: 0 22px;
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      translate var(--dur-slow) var(--ease-out);
+    transition-delay: calc(var(--i, 0) * var(--stagger-step));
+  }
 
-.js [data-reveal],
-.js [data-stagger] > * {
-  opacity: 0;
-  translate: 0 14px;
-  transition:
-    opacity 700ms var(--ease-out),
-    translate 700ms var(--ease-out);
-  transition-delay: calc(var(--i, 0) * var(--stagger-step));
+  .js [data-reveal].is-visible,
+  .js [data-stagger].is-visible > * {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
 
-.js [data-reveal].is-visible,
-.js [data-stagger].is-visible > * {
-  opacity: 1;
-  translate: 0 0;
-}
-
-/* Page-to-page cross-fade (View Transitions API) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 280ms;
+  animation-duration: 240ms;
   animation-timing-function: var(--ease-out);
 }
 
-/* Shared keyframes */
-@keyframes pulse-dot {
-  0%   { box-shadow: 0 0 0 0 var(--c-profit-glow); }
-  70%  { box-shadow: 0 0 0 8px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
 }
 
-@keyframes rise-in {
-  from { opacity: 0; translate: 0 8px; scale: 0.98; }
-  to   { opacity: 1; translate: 0 0; scale: 1; }
+@keyframes live-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  80%, 100% { transform: scale(2.6); opacity: 0; }
 }
 
-@keyframes typing {
-  0%, 60%, 100% { opacity: 0.25; translate: 0 0; }
-  30%           { opacity: 1; translate: 0 -3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .live__dot::after { animation: live-pulse 2.4s ease-out infinite; }
 }
 
-/* Respect the OS setting: no movement, no blur, instant state changes */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
+  html { scroll-behavior: auto; }
   *,
   *::before,
   *::after {
@@ -57,10 +49,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     transition-delay: 0ms !important;
-  }
-
-  .js [data-reveal],
-  .js [data-stagger] > * {
-    translate: none;
   }
 }

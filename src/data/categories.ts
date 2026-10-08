@@ -45,6 +45,6 @@ export const CATEGORIES: readonly Category[] = [
     name: 'Ігри та розваги',
     description: 'Міні-ігри й розважальні боти з платними бонусами.',
     icon: 'star',
-    accent: '#f472b6',
+    accent: '#f59e0b',
   },
 ];

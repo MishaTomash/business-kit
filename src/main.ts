@@ -2,12 +2,11 @@
  * Application entry: a tiny SPA.
  *
  *   route change → resolve view → swap markup (View Transition when supported)
- *               → mount behaviour → reveal/magnetic → focus page heading
+ *               → mount behaviour → reveal → focus page heading
  *
  * Every view returns a cleanup, so nothing leaks between pages.
  */
 
-import '@fontsource-variable/inter';
 import './styles/index.css';
 
 import type { Route } from '@/types';
@@ -16,7 +15,6 @@ import { parseRoute, startRouter } from '@/router';
 import { qs, qsa, render } from '@/lib/dom';
 import { icon, type IconName } from '@/lib/icons';
 import { initReveal } from '@/lib/reveal';
-import { initMagnetic } from '@/lib/magnetic';
 import { prefersReducedMotion } from '@/lib/motion';
 import { mountNavbar } from '@/components/navbar';
 import { homeView } from '@/views/home';
@@ -69,7 +67,6 @@ function swap(view: View): void {
   const cleanup = view.mount?.(app);
   if (cleanup) cleanups.push(cleanup);
   cleanups.push(initReveal(app));
-  initMagnetic(app);
 
   if (pendingSection) {
     scrollToSection(pendingSection, false);
@@ -114,5 +111,4 @@ document.documentElement.classList.add('js');
 qsa('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
 hydrateIcons(document);
 mountNavbar();
-initMagnetic(document.querySelector('[data-nav]') ?? document);
 startRouter(onRoute);

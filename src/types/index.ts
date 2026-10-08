@@ -9,7 +9,12 @@
  */
 
 import type { IconName } from '@/lib/icons';
-import type { ArtName } from '@/lib/art';
+
+/**
+ * Назва старої ілюстрації. Поле `art` залишено для сумісності даних:
+ * новий дизайн показує замість ілюстрацій екрани ботів і іконки напрямів.
+ */
+export type ArtName = 'media' | 'ai' | 'voice' | 'crossword' | 'education' | 'shop' | 'games';
 
 /** Hex color literal, e.g. `#3b82f6`. */
 export type HexColor = `#${string}`;
@@ -26,7 +31,7 @@ export interface Category {
   readonly description: string;
   readonly icon: IconName;
   readonly accent: HexColor;
-  /** Built-in illustration shown on the card (see lib/art.ts). */
+  /** Стара ілюстрація (не показується в новому дизайні, залишено для сумісності). */
   readonly art: ArtName;
   /** Optional real image (path in /public, e.g. '/images/media.webp'). Overrides `art`. */
   readonly image?: string;
@@ -119,6 +124,22 @@ export interface GrowthDirection {
 
 export type ProjectStatus = 'available' | 'soon';
 
+/**
+ * «Колірний світ» продукту: панель на головній і hero сторінки проєкту.
+ * Усі поля необов'язкові: чого немає, те сайт виведе з `accent`
+ * (див. src/lib/theme.ts). Перевіряйте контраст тексту `ink` на `bg` (≥ 4.5 : 1).
+ */
+export interface ProjectTheme {
+  /** Тло панелі, напр. '#0E3B3F'. */
+  readonly bg?: HexColor;
+  /** Колір тексту на тлі. */
+  readonly ink?: HexColor;
+  /** Колір головної кнопки на тлі. */
+  readonly accent?: HexColor;
+  /** Колір тексту на головній кнопці. */
+  readonly onAccent?: HexColor;
+}
+
 export interface Project {
   /** URL slug: `#/p/<id>`. */
   readonly id: string;
@@ -128,8 +149,12 @@ export interface Project {
   readonly status: ProjectStatus;
 
   readonly name: string;
+  /** Коротка назва для великих заголовків і кнопок, напр. 'Слововир'. За замовчуванням: частина `name` до двокрапки. */
+  readonly shortName?: string;
   readonly icon: IconName;
   readonly accent: HexColor;
+  /** Колірний світ продукту. Без нього кольори виводяться з `accent`. */
+  readonly theme?: ProjectTheme;
   /** One line under the name in lists. */
   readonly tagline: string;
   /** Who pays and for what, in plain words. */
@@ -158,7 +183,7 @@ export interface Project {
   readonly demo?: readonly ChatMessage[];
   /** Built-in Mini App screen mockup instead of a chat (for games). */
   readonly screen?: 'crossword';
-  /** Illustration for list thumbnails; defaults to the category's art. */
+  /** Стара ілюстрація (не показується в новому дизайні, залишено для сумісності). */
   readonly art?: ArtName;
   /** Optional real screenshot (path in /public). Overrides the phone mockup and the list thumbnail. */
   readonly image?: string;
@@ -189,6 +214,29 @@ export interface Offering {
 export interface FaqItem {
   readonly question: string;
   readonly answer: string;
+}
+
+/** Один крок на шкалі «Шлях за 30 днів» на головній. */
+export interface JourneyStep {
+  /** Коли: «День 0», «Тиждень 1»… */
+  readonly when: string;
+  readonly title: string;
+  readonly text: string;
+}
+
+/** Що потрібно від покупця (чесний блок на головній). */
+export interface Requirement {
+  /** Коротко й великим шрифтом: «30–60 хв», «Телефон». */
+  readonly value: string;
+  readonly text: string;
+}
+
+/** Реальна статистика ботів. Блок на головній прихований, поки масив порожній. */
+export interface ProofStat {
+  /** Число або коротке значення, напр. '1 240'. Лише справжні дані. */
+  readonly value: string;
+  /** Що це, напр. 'людей скористалися «Голос → Текст» за вересень'. */
+  readonly label: string;
 }
 
 export interface MarketRates {
