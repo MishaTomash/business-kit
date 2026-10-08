@@ -1,18 +1,12 @@
-/* ==========================================================================
-   Вхід стилів. Порядок = каскад: шрифти → токени → база → рух → компоненти.
-   Vite збирає все в один мінімізований файл.
-   ========================================================================== */
+/* Порядок: шрифти → токени → база → плитки → каркас → сторінки → рух. */
 @import './fonts.css';
 @import './tokens.css';
 @import './base.css';
+@import './tiles.css';
+@import './layout.css';
+@import './home.css';
+@import './games.css';
+@import './game.css';
+@import './legal.css';
+@import './calculator.css';
 @import './motion.css';
-
-@import './components/buttons.css';
-@import './components/nav.css';
-@import './components/phone.css';
-@import './components/home.css';
-@import './components/page.css';
-@import './components/project.css';
-@import './components/calculator.css';
-@import './components/faq.css';
-@import './components/footer.css';

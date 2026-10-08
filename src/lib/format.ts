@@ -42,20 +42,13 @@ export function formatMinutesRange([min, max]: readonly [number, number]): strin
   return min === max ? `${min} хв` : `${min}–${max} хв`;
 }
 
-/** Ukrainian plural for "проєкт". */
-export function pluralProjects(n: number): string {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return 'проєкт';
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'проєкти';
-  return 'проєктів';
-}
 
-/** Ukrainian plural for "бот": 1 бот, 2 боти, 5 ботів. */
-export function pluralBots(n: number): string {
+
+/** Ukrainian plural for "гра": 1 гра, 2 гри, 5 ігор. */
+export function pluralGames(n: number): string {
   const mod10 = n % 10;
   const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return 'бот';
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'боти';
-  return 'ботів';
+  if (mod10 === 1 && mod100 !== 11) return 'гра';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'гри';
+  return 'ігор';
 }

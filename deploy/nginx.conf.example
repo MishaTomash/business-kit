@@ -1,9 +1,9 @@
 # /etc/nginx/sites-available/business-kit
-# Статичний сайт (Vite). HTTPS додасть certbot: sudo certbot --nginx -d business-kit.smartekua.store
+# Статичний сайт (Vite). HTTPS додасть certbot: sudo certbot --nginx -d klitynka.online
 server {
     listen 80;
     listen [::]:80;
-    server_name business-kit.smartekua.store;
+    server_name klitynka.online;
 
     root /var/www/business-kit;
     index index.html;

@@ -1,0 +1,178 @@
+/* ==========================================================================
+   Каталог /games і 404.
+   ========================================================================== */
+.catalog {
+  min-height: 100vh;
+  padding-top: 120px;
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--forest);
+  box-shadow: inset 0 0 0 2px var(--forest);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--forest);
+  color: var(--white);
+}
+
+.cards {
+  margin-top: 56px;
+  display: grid;
+  gap: 48px 28px;
+}
+
+.cards__item[hidden] {
+  display: none;
+}
+
+.card {
+  display: grid;
+  gap: 20px;
+  text-decoration: none;
+}
+
+.cover {
+  --tile-face: var(--g-tile);
+  --tile-ink: var(--g-tile-ink);
+  --tile-line: transparent;
+  --tile-edge: rgb(0 0 0 / 0.3);
+  --tile-edge-gold: rgb(0 0 0 / 0.3);
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: 22px;
+  background: var(--g-bg);
+  box-shadow: inset 0 0 0 2px var(--forest);
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Слово займає ~76% ширини поля: n плиток шириною 0.8·ts з проміжками 0.08·ts. --n задає cover(). */
+.tiles--cover {
+  --ts: min(calc(76cqw / (0.88 * var(--n, 5) - 0.08)), 150px);
+}
+
+.card .tile {
+  transition: transform 0.35s var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .tile {
+    transform: translate3d(0, -6px, 0);
+  }
+  .card:hover .tile:nth-child(2) { transition-delay: 0.03s; }
+  .card:hover .tile:nth-child(3) { transition-delay: 0.06s; }
+  .card:hover .tile:nth-child(4) { transition-delay: 0.09s; }
+  .card:hover .tile:nth-child(5) { transition-delay: 0.12s; }
+  .card:hover .tile:nth-child(6) { transition-delay: 0.15s; }
+}
+
+.card:active .cover {
+  transform: translate3d(0, 2px, 0);
+}
+
+.card__name {
+  font: 800 var(--fs-h3) / 1.1 var(--f-display);
+  letter-spacing: -0.03em;
+}
+
+.card__genre {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.card__line {
+  margin-top: 10px;
+  max-width: 42ch;
+}
+
+.card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: var(--fs-sm);
+  font-weight: 650;
+}
+
+.card__status::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px var(--forest);
+}
+
+.card__status.is-live::before {
+  background: var(--green);
+  box-shadow: none;
+}
+
+@media (min-width: 700px) {
+  .cards[data-count='2'],
+  .cards[data-count='3'],
+  .cards[data-count='many'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1040px) {
+  .cards[data-count='3'],
+  .cards[data-count='many'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  /* Одна гра: широка картка, а не самотня клітинка в сітці */
+  .cards[data-count='1'] .card {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 56px;
+  }
+  .cards[data-count='1'] .card__name {
+    font-size: var(--fs-h2);
+  }
+}
+
+/* ---------------------------------------------------------------- 404 */
+.nf {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 120px;
+}
+
+.nf__in {
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+}
+
+.tiles--nf {
+  --ts: clamp(88px, 22vw, 168px);
+}
+
+.tiles--nf .tile:nth-child(2) {
+  background: var(--gold);
+}

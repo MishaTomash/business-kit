@@ -1,24 +1,33 @@
-/** Невідомий напрям чи проєкт (наприклад, застаріле посилання). */
+/** 404 у стилі сайту. */
 
-import { href } from '@/router';
-import { html } from '@/lib/dom';
 import type { View } from './view';
+import { BRAND } from '@/data/site';
+import { html } from '@/lib/dom';
+import { tiles } from '@/lib/tiles';
+import { href } from '@/router';
+import { key, tlink } from '@/components/ui';
+import { mountCommon } from './common';
 
-export function notFoundView(): View {
+export function notFoundView(path = '/404'): View {
   return {
-    title: 'Сторінку не знайдено | Business Kit',
+    key: 'notFound',
+    meta: {
+      title: `Сторінку не знайдено — ${BRAND}`,
+      description: 'Такої сторінки немає. Усі ігри зібрані в каталозі.',
+      ogImage: '/og/default.png',
+      path,
+      noindex: true,
+    },
     markup: html`
-      <section class="page container">
-        <div class="empty empty--404">
-          <span class="empty__code" aria-hidden="true">404</span>
-          <h1 class="empty__title" tabindex="-1">Такої сторінки немає</h1>
-          <p>Можливо, проєкт перейменували або посилання застаріло. Усі боти, які працюють зараз, є на головній.</p>
-          <div class="empty__actions">
-            <a class="btn btn--main btn--lg" href="${href.home()}" data-scroll="bots">Подивитися ботів</a>
-            <a class="btn btn--line btn--lg" href="${href.home()}">На головну</a>
-          </div>
+      <section class="sec sec--mint nf" aria-labelledby="nf-t">
+        <div class="wrap nf__in">
+          <div data-drop>${tiles('404', { className: 'tiles--xl tiles--nf', decorative: true })}</div>
+          <h1 class="h1 kinetic" id="nf-t" data-kinetic="now">Такої сторінки немає</h1>
+          <p class="lead">Можливо, адреса змінилась або гру прибрали з каталогу. Усі ігри зібрані в одному місці.</p>
+          <div class="actions">${key(href.games(), 'До ігор')}${tlink(href.home(), 'На головну')}</div>
         </div>
       </section>
     `,
+    mount: (root, ctx) => mountCommon(root, ctx),
   };
 }

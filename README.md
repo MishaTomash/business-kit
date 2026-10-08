@@ -1,21 +1,46 @@
-# Business Kit (Vite + Vanilla TypeScript)
+# Клітинка: ігри в Telegram під ключ (Vite + Vanilla TypeScript)
 
-Сайт готових Telegram-ботів з планом заробітку.
-Структура: **напрями → проєкти → сторінка проєкту**. Дизайн «Денний чат»: світла тема в мові Telegram,
-кожен бот у власному кольоровому світі.
+Сайт продає ігри в Telegram (Mini App) під ключ для власників каналів, освітніх проєктів і спільнот.
+Головна розповідає про бізнес, ігри живуть в окремій вкладці.
+
+- `/` — головна: як заробляє власник гри, як заробляємо ми, чому це вигідно, що ми надаємо.
+- `/games` — каталог ігор.
+- `/games/<id>` — сторінка гри.
+- `/offer` — публічна оферта, `/privacy` — політика конфіденційності (тексти в `content/legal/*.md`).
+
+Дизайн «Плитка»: м'ята, хвоя, золото зірки, шрифти Geologica й Golos Text.
 
 ## Запуск
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm run build      # перевірка типів + збірка в dist/
+npm run build      # перевірка типів + збірка + prerender у dist/
 npm run preview    # перегляд готової збірки
 ```
 
 Потрібен Node.js 20.19+. На хостинг завантажується вміст папки `dist/`.
-Маршрути хешеві (`#/c/media`, `#/p/media-downloader`), тож сайт працює на будь-якому
-статичному хостингу без додаткових налаштувань.
+
+## Адреси й prerender
+
+Адреси звичайні, без `#`. Під час `npm run build` для кожної сторінки пишеться готовий HTML
+(`dist/index.html`, `dist/games/index.html`, `dist/games/<id>/index.html`, `dist/offer/index.html`,
+`dist/privacy/index.html`, `dist/404.html`) з власними
+`<title>`, описом і og-мета. Тому:
+
+- посилання на гру в Telegram показує прев'ю саме цієї гри;
+- сайт читається повністю без JavaScript;
+- пошуковики бачать вміст одразу (`sitemap.xml` і `robots.txt` теж генеруються).
+
+Домен сайту: **https://klitynka.online**. Адреса береться зі змінної `VITE_SITE_URL` у `.env`
+(запасне значення в коді: `DEFAULT_SITE_URL` у `src/data/brand.ts`) і використовується для `canonical`,
+`og:url`, абсолютних адрес `og:image`, `sitemap.xml` і `robots.txt`. Після зміни адреси потрібна нова збірка.
+
+nginx віддає ці файли через `try_files $uri $uri/ /index.html` (див. `deploy/nginx.conf.example`),
+змінювати його не потрібно. Невідома адреса отримує `/index.html`, і сайт показує 404.
+
+Старі адреси перенаправляються самі: `#/` → `/`, `#/games…` → `/games…`, `#/p/<id>` → `/games/<id>`
+(неіснуюча гра покаже 404), `#/c/<будь-що>` → `/games`.
 
 ## Деплой на сервер (статичний сайт, nginx)
 
@@ -31,7 +56,7 @@ sudo mkdir -p /var/www/business-kit && sudo chown deploy:deploy /var/www/busines
 # 2. Код
 git clone git@github-business-kit:MishaTomash/business-kit.git ~/apps/business-kit
 cd ~/apps/business-kit
-cp .env.example .env && nano .env        # VITE_TELEGRAM_URL=https://t.me/<ваш_нік>
+cp .env.example .env && nano .env        # VITE_TELEGRAM_URL і VITE_SITE_URL
 nvm install                               # Node з .nvmrc, якщо ще немає
 ./deploy/update.sh
 
@@ -42,114 +67,93 @@ sudo ln -s /etc/nginx/sites-available/business-kit /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 
 # 4. HTTPS
-sudo certbot --nginx -d business-kit.smartekua.store
+sudo certbot --nginx -d klitynka.online
 ```
 
 Оновлення: зміни локально → `git push` → на сервері `~/apps/business-kit/deploy/update.sh`.
 Скрипт сам видаляє `node_modules` і кеш після збірки, тож на сервері лишаються лише код і готовий сайт.
 
-## Проєкти
+## Як додати гру
 
-Справжні проєкти (уже працюють у Telegram): **Голос → Текст** (`voice-to-text`),
-**TikTok & Instagram Downloader** (`social-downloader`) і гра **Слововир** (`slovovyr`).
-AI Photo Studio, Edu Platform і Mini App Store є заглушками зі статусом `'soon'`.
+Покроково, разом зі сторінкою гри й картинкою прев'ю: **[docs/ADD-GAME.md](docs/ADD-GAME.md)**.
 
-Як додати нового бота, покроково: **[docs/ADD-BOT.md](docs/ADD-BOT.md)**.
-Новий об'єкт у `src/data/projects.ts` сам з'являється всюди без правок верстки:
-
-- на головній: у плитці свого напряму, окремою кольоровою панеллю й у сцені телефонів hero
-  (якщо в нього є `demo`, `screen` або `image`);
-- на сторінці напряму: великою карткою з мініатюрою й прогнозом;
-- на власній сторінці `#/p/<id>` з калькулятором, планом і карткою покупки.
-
-Напрям без доступних проєктів на головній згортається в рядок «Готуємо: …» з кнопкою «Повідомити мене».
-
-### Коли бот запрацює: фото й посилання
-
-1. Покладіть скріншоти в `public/images/projects/<id>/` (вертикальні, приблизно 590×1280, `.webp` або `.png`).
-2. У `src/data/projects.ts` розкоментуйте й заповніть:
-   ```ts
-   botUrl: 'https://t.me/your_voice_bot',
-   image: '/images/projects/voice-to-text/main.webp',
-   screenshots: [{ src: '/images/projects/voice-to-text/1.webp', alt: 'Розпізнаний текст голосового' }],
-   ```
-3. `npm run build`.
-
-Що з'явиться: `botUrl` дає позначку «Працює в Telegram зараз» і кнопки «Спробувати бота»;
-`image` замінює демо-екран справжнім скріншотом у всіх телефонах (без підпису «Демо»);
-`screenshots` додає галерею «Як виглядає бот», яку на телефоні гортають пальцем.
-Справжні скріншоти найкраще знімають страх «мене обдурять», тож додайте їх, щойно зможете.
-
-## Блок реальної статистики (необов'язково)
-
-У `src/data/site.ts` є масив `PROOF`. Поки він порожній, блок «Цифри наших ботів» на головній
-не показується. Заповнюйте лише справжніми даними з адмін-панелі ботів, з періодом:
-
-```ts
-export const PROOF: readonly ProofStat[] = [
-  { value: '1 240', label: 'людей скористалися «Голос → Текст» у вересні' },
-  { value: '3 180 ⭐', label: 'заробили наші боти за вересень' },
-];
-```
-
-## Дизайн: кольори, шрифти, кольорові світи
+## Дані: що де лежить
 
 | Що | Де |
-|---|---|
-| Кольори сайту, розміри шрифтів, відступи, радіуси, тіні, рух | `src/styles/tokens.css` |
-| Шрифти (файли й підмножини) | `src/styles/fonts.css` |
-| Кольоровий світ бота | `theme` у проєкті (`src/data/projects.ts`), див. docs/ADD-BOT.md |
-| Колір напряму (плитка й іконка) | `accent` у `src/data/categories.ts` |
-| Знак логотипа | `public/favicon.svg`, `src/components/ui.ts` (`logoMark`) і шапка/футер в `index.html` |
-| Огляд усієї системи | `npm run dev` → http://localhost:5173/lab/system.html |
+| --- | --- |
+| Назва бренду | `src/data/brand.ts` (єдине місце) |
+| Посилання на Telegram і адреса сайту | `.env` → `VITE_TELEGRAM_URL`, `VITE_SITE_URL` (запасна адреса: `DEFAULT_SITE_URL` у `brand.ts`) |
+| Оферта й політика конфіденційності | `content/legal/offer.md`, `content/legal/privacy.md` |
+| Ціни запуску й підтримки, відсоток зі зірок | `src/data/site.ts` → `PRICING`, `STARS_COMMISSION` |
+| Строк запуску | `src/data/site.ts` → `DEPLOY_TIME` |
+| Курс виплати зірок і гривні, правила виведення | `src/data/site.ts` → `RATES`, `STARS_RULES` |
+| Ігри | `src/data/games.ts` |
+| Вміст головної: «Шлях зірки», причини, що надаємо, для кого, запуск, FAQ, біжучий рядок | `src/data/business.ts` |
+| Картинки прев'ю посилань | `public/og/` (генератор: `/lab/og.html`) |
 
-**Змінити колір.** Усі кольори є змінними в `tokens.css`: наприклад, `--c-tg-deep` (кнопки й посилання)
-або `--c-star` (золото Stars). Перевіряйте контраст тексту: щонайменше 4,5 : 1.
+Підтверджено власником: запуск 1 500 ₴ разово, підтримка 99 ₴ на місяць, відсоток зі зірок не беремо
+(усі зірки йдуть на баланс бота клієнта, доступу до них у нас немає).
 
-**Змінити шрифт.** Шрифти лише локальні (CSP забороняє зовнішні): встановіть пакет
-`@fontsource-variable/<назва>`, замініть шляхи до файлів у `fonts.css` (лише `latin` і `cyrillic`)
-і назви в `--f-display` / `--f-text` у `tokens.css`. Перевірте літери ґ, є, і, ї та апостроф.
-Кириличні файли шрифтів сайт попередньо завантажує сам (плагін у `vite.config.ts`).
+### ПІДТВЕРДИТИ
 
-Папка `lab/` (сторінка дизайн-системи) у збірку сайту не потрапляє.
+Ці факти позначені в коді коментарем `// ПІДТВЕРДИТИ`. Поки вони не підтверджені, сайт або показує
+поточне значення з даних, або ховає питання.
 
-## Як додати напрям
+| Що | Де | Що зараз на сайті |
+| --- | --- | --- |
+| Строк від оплати до запущеної гри | `site.ts` → `DEPLOY_TIME` | «до 5 днів» (стояло в даних раніше) |
+| Скільки часу відповідає підтримка | `business.ts` → FAQ | питання приховане (`answer: null`) |
+| Чи робимо ігри на замовлення | `business.ts` → FAQ | питання приховане (`answer: null`) |
+| Ціни, механіки й економіка чотирьох заглушок | `games.ts`, коментарі `// MOCK: замінити` | заглушки показані як «У розробці», ціни не показуються |
 
-`src/data/categories.ts`: додайте об'єкт:
+Щоб показати приховане питання FAQ, впишіть відповідь замість `null`.
 
-```ts
-{ id: 'finance', name: 'Фінанси', description: '…', icon: 'coins', accent: '#22d3ee', art: 'shop' }
-```
+### Юридичні тексти
 
-`id` пишеться латиницею й потрапляє в адресу (`#/c/finance`).
+`content/legal/*.md` — звичайний Markdown. Під час збірки його перетворює на HTML невеликий конвертер
+(`src/lib/markdown.ts`): заголовки `#`–`###`, абзаци (рядок усередині абзацу стає переносом), списки `-` і `1.`,
+таблиці, `**жирний**`, `[посилання](url)`, голі адреси й email. Будь-яка інша конструкція (цитата, код,
+зображення, вкладений список) зупиняє збірку з номером рядка, щоб текст не зник мовчки.
 
-## Інші налаштування
+Мітки в тексті: `{{BRAND}}` (Клітинка), `{{BRAND_OF}}` (Клітинки), `{{SITE_URL}}` (адреса з `VITE_SITE_URL`).
+Дата редакції — рядок `**Редакція від 8 жовтня 2026 року**` під заголовком. Змінюєте текст — змініть дату.
+
+Слово `ПІДТВЕРДИТИ` у цих файлах означає «ще не підтверджено». Збірка не падає, а виводить помітне
+попередження зі списком місць. **Такі місця потрапляють на сайт як є**, тож перед запуском замініть їх.
+Зараз їх три: ім'я бота-магазину (оферта і політика) і регіон кластера MongoDB Atlas (політика).
+
+## Дизайн
 
 | Що | Де |
-|---|---|
-| Посилання на Telegram | `.env` → `VITE_TELEGRAM_URL` |
-| Термін запуску (показується як обіцянка) | `src/data/site.ts` → `DEPLOY_TIME` |
-| Курс виплати Stars і курс гривні | `src/data/site.ts` → `RATES` |
-| Кількість людей для прогнозів у списках | `src/data/site.ts` → `PREVIEW_TRAFFIC` |
-| «Що в коробці», FAQ | `src/data/site.ts` → `OFFERINGS`, `FAQ` |
-| «Шлях за 30 днів», «Що потрібно від вас» | `src/data/site.ts` → `JOURNEY`, `REQUIREMENTS` |
-| Доступні іконки | `src/lib/icons.ts` |
+| --- | --- |
+| Кольори, шрифти, шкала тексту, відступи, рух | `src/styles/tokens.css` |
+| Шрифти (лише latin і cyrillic; cyrillic-ext у Geologica лише заради ₴) | `src/styles/fonts.css` |
+| Колірний світ гри | `theme` у грі (`src/data/games.ts`) |
+| Огляд дизайн-системи | `npm run dev` → `/lab/system.html` |
 
-Діапазони «перший клієнт» і «хвилин на день» на головній рахуються самі з доступних ботів.
+Рух: кінетичні заголовки, сцена «Шлях зірки» (закріплення й перевертання плиток), «завіса» між
+секціями, одометри, магнітні кнопки, біжучий рядок, переходи між сторінками (View Transitions),
+плавний скрол Lenis для миші. З `prefers-reduced-motion` усе статичне. На слабких телефонах
+плитки не падають, а одразу стоять на місці.
+
+Папка `lab/` (дизайн-система, генератор прев'ю, етапи арт-дирекшну) у збірку не потрапляє.
 
 ## Структура коду
 
 ```
 src/
-├── main.ts            маршрутизація → рендер сторінки → анімації
-├── router.ts          хеш-маршрути та href-хелпери
-├── types/index.ts     типи: Category, Project, ProjectTheme, JourneyStep…
-├── data/              увесь контент (categories, projects, site) + index.ts з пошуком
-├── views/             сторінки: home, category, project, notFound
-├── components/        cards, phone, calculator, faq, navbar, ui
-├── store/store.ts     маленький типізований стор (свій у кожного калькулятора)
-├── lib/               dom (безпечні шаблони), economics, theme, rotator, анімації, іконки, формати
-└── styles/            fonts → tokens → base → motion → components/*
-docs/ADD-BOT.md        як додати бота
-lab/system.html        огляд дизайн-системи (не входить у збірку)
+├── main.ts            браузер: перший показ готового HTML, переходи без перезавантаження
+├── router.ts          адреси, href-хелпери, перенаправлення старих hash-адрес
+├── pages.ts           маршрут → сторінка (спільне для браузера й prerender)
+├── prerender.ts       список сторінок для статичного HTML
+├── types/index.ts     типи: Game, StarStep, Reason, FaqItem…
+├── data/              brand, site, games, business + index.ts з пошуком
+├── views/             home, games, game, legal, notFound, common (спільна поведінка)
+├── components/        starPath, customizer, offerings, marquee, faq, calculator, demoGame, ui
+├── lib/               плитки, рух (split, curtain, star-path, strip, odometer, magnetic, scroll),
+│                      economics (калькулятор), format, theme, markdown (оферта й політика), dom (безпечні шаблони)
+└── styles/            fonts → tokens → base → tiles → layout → home/games/game/calculator → motion
+docs/ADD-GAME.md       як додати гру
+content/legal/         оферта й політика конфіденційності (Markdown)
+lab/                   system.html, og.html, tg-preview.mjs (макет прев'ю в Telegram), direction.html (не входить у збірку)
 ```

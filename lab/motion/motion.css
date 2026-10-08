@@ -1,0 +1,1107 @@
+/* ==========================================================================
+   Прототип руху «Плитка» (етап 2). Анімуються лише transform і opacity.
+   ========================================================================== */
+@import './fonts.css';
+
+:root {
+  --mint: #d5eedc;
+  --forest: #0d2a1c;
+  --white: #ffffff;
+  --muted: #38543f;
+  --on-dark: #e6f5ea;
+  --on-dark-muted: #bcd9c4;
+  --gold: #ffb81c;
+  --gold-edge: #c98a00;
+  --green: #1f7a47;
+  --green-edge: #11502c;
+  --tile-edge-def: #93c3a3;
+  --focus: #1f7a47;
+
+  --f-display: 'Geologica', 'Golos Text', system-ui, sans-serif;
+  --f-text: 'Golos Text', 'Geologica', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Шкала: 6 розмірів тексту */
+  --fs-sm: 1rem;
+  --fs-md: 1.0625rem;
+  --fs-lead: 1.1875rem;
+  --fs-h3: 1.375rem;
+  --fs-h2: clamp(2rem, 1.2rem + 3vw, 3.5rem);
+  --fs-h1: clamp(2.5rem, 1.15rem + 5.4vw, 5rem);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.35, 0.5, 1);
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page-bg, var(--mint));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--forest);
+  font: 400 var(--fs-md) / 1.55 var(--f-text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1, h2, h3, p, ol, ul, dl, dd {
+  margin: 0;
+}
+
+ol, ul {
+  padding: 0;
+  list-style: none;
+}
+
+svg {
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+@media (min-width: 760px) {
+  .wrap {
+    padding-inline: 40px;
+  }
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 50;
+  padding: 10px 14px;
+  background: var(--forest);
+  color: var(--white);
+  border-radius: 8px;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* ------------------------------------------------------------ перетікання тла */
+.bg-stage {
+  display: none;
+}
+
+.flow-on .bg-stage {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.bg-stage i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.bg-stage [data-c='mint'] { background: var(--mint); opacity: 1; }
+.bg-stage [data-c='forest'] { background: var(--forest); }
+.bg-stage [data-c='white'] { background: var(--white); }
+
+.sec {
+  --tone-ink: var(--forest);
+  --tone-muted: var(--muted);
+  color: var(--tone-ink);
+}
+
+.sec[data-bg='mint'] { background: var(--mint); }
+.sec[data-bg='white'] { background: var(--white); }
+.sec[data-bg='forest'] {
+  background: var(--forest);
+  --tone-ink: var(--on-dark);
+  --tone-muted: var(--on-dark-muted);
+  --focus: var(--gold);
+}
+
+/* Під час перетікання колір тексту всіх секцій іде за переважним кольором тла. */
+.flow-on .view[data-view='home'] .sec {
+  background: transparent;
+  --tone-ink: var(--forest);
+  --tone-muted: var(--muted);
+  --focus: var(--green);
+}
+
+.flow-on[data-flow-tone='dark'] .view[data-view='home'] .sec {
+  --tone-ink: var(--on-dark);
+  --tone-muted: var(--on-dark-muted);
+  --focus: var(--gold);
+}
+
+/* ------------------------------------------------------------ шапка */
+.nav {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 10;
+}
+
+.nav[data-tone='dark'] {
+  color: var(--on-dark);
+  --focus: var(--gold);
+  --logo-face: #e6f5ea;
+  --logo-edge: #93c3a3;
+}
+
+.nav__in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 14px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 800 1.25rem/1 var(--f-display);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.nav__links {
+  display: none;
+  gap: 28px;
+  font-size: var(--fs-sm);
+}
+
+.nav__links a {
+  text-decoration: none;
+  padding-block: 6px;
+}
+
+.nav__links a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+@media (min-width: 900px) {
+  .nav__in {
+    padding-block: 22px;
+  }
+  .nav__links {
+    display: flex;
+  }
+}
+
+/* ------------------------------------------------------------ кнопка з «дном» */
+.key {
+  --key-face: var(--forest);
+  --key-ink: var(--white);
+  --key-bottom: #04140b;
+  position: relative;
+  display: inline-flex;
+  margin-top: 5px;
+  border-radius: 14px;
+  background: var(--key-bottom);
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.key.is-pulled {
+  transition-duration: 0.12s;
+  transition-timing-function: linear;
+}
+
+/* магнітне поле трохи ширше за кнопку */
+.key[data-magnetic]::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+}
+
+.key__face {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 26px;
+  border-radius: 14px;
+  background: var(--key-face);
+  color: var(--key-ink);
+  font: 650 var(--fs-md) / 1.2 var(--f-text);
+  transform: translate3d(0, -5px, 0);
+  transition: transform 0.14s var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .key:hover .key__face {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+.key:active .key__face {
+  transform: translate3d(0, -1px, 0);
+  transition-duration: 0.04s;
+}
+
+.key--sm .key__face {
+  padding: 10px 16px;
+  font-size: var(--fs-sm);
+}
+
+.nav[data-tone='dark'] .key,
+.sec[data-bg='forest'] .key,
+.game--dark .key {
+  --key-face: var(--gold);
+  --key-ink: var(--forest);
+  --key-bottom: var(--gold-edge);
+}
+
+.tlink {
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  padding-block: 8px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+  margin-top: 28px;
+}
+
+/* ------------------------------------------------------------ типографіка */
+.h1,
+.h2 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.h1 {
+  font-size: var(--fs-h1);
+  line-height: 0.98;
+}
+
+.h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.02;
+  max-width: 18ch;
+}
+
+.lead {
+  margin-top: 20px;
+  max-width: 44ch;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.sec .lead {
+  color: var(--tone-muted);
+}
+
+/* Кінетичні заголовки: слова виїжджають з-під маски. Без JS текст просто видно. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .kinetic:not(.is-split):not(.is-static) {
+    opacity: 0;
+    animation: failsafe 0s linear 1s forwards;
+  }
+}
+
+@keyframes failsafe {
+  to { opacity: 1; }
+}
+
+.kinetic.is-split .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.12em 0 0.16em;
+  margin: -0.12em 0 -0.16em;
+}
+
+.kinetic.is-split .wi {
+  display: inline-block;
+  transform: translate3d(0, 112%, 0);
+  transition: transform 0.7s var(--ease-out);
+  transition-delay: calc(var(--i) * 40ms);
+}
+
+.kinetic.is-in .wi {
+  transform: none;
+}
+
+/* ------------------------------------------------------------ плитки */
+.tiles {
+  --ts: 64px;
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--ts) * 0.08);
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--ts) * 0.8);
+  height: var(--ts);
+  border-radius: calc(var(--ts) * 0.18);
+  background: var(--tile-face, var(--white));
+  color: var(--tile-ink, var(--forest));
+  box-shadow: 0 calc(var(--ts) * 0.07) 0 var(--tile-edge, var(--tile-edge-def));
+  font: 800 calc(var(--ts) * 0.58) / 1 var(--f-display);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.tile--star {
+  background: var(--gold);
+  box-shadow: 0 calc(var(--ts) * 0.07) 0 var(--gold-edge);
+}
+
+.tile--star svg {
+  width: 56%;
+  height: 56%;
+  color: var(--forest);
+}
+
+.tile--cur {
+  background: var(--green);
+  color: var(--white);
+  box-shadow: 0 calc(var(--ts) * 0.07) 0 var(--green-edge);
+}
+
+.tiles__gap {
+  width: calc(var(--ts) * 0.2);
+  flex: none;
+}
+
+.tiles__pre {
+  align-self: center;
+  margin-right: calc(var(--ts) * 0.12);
+  font: 700 calc(var(--ts) * 0.5) / 1 var(--f-display);
+}
+
+/* одометр */
+.odo-strip {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+}
+
+.odo-strip span {
+  display: grid;
+  place-items: center;
+  height: var(--ts);
+}
+
+.odo-ready .odo-still {
+  visibility: hidden;
+}
+
+.odo-ready .odo-strip {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+}
+
+.odo-ready.is-rolled .odo-strip {
+  transform: translate3d(0, calc(var(--k) * -5%), 0);
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d) * 110ms);
+}
+
+/* ------------------------------------------------------------ HERO */
+.hero {
+  padding: 96px 0 120px;
+}
+
+.hero__in {
+  display: grid;
+  gap: 40px;
+}
+
+.cross {
+  --ts: clamp(30px, 9vw, 70px);
+  display: grid;
+  grid-template-columns: repeat(6, var(--ts));
+  grid-auto-rows: var(--ts);
+  gap: calc(var(--ts) * 0.12);
+}
+
+.t {
+  grid-column: var(--c);
+  grid-row: var(--r);
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  color: var(--forest);
+  border-radius: calc(var(--ts) * 0.18);
+  box-shadow: 0 calc(var(--ts) * 0.075) 0 var(--tile-edge-def);
+  font: 800 calc(var(--ts) * 0.5) / 1 var(--f-display);
+}
+
+.t--gold {
+  background: var(--gold);
+  box-shadow: 0 calc(var(--ts) * 0.075) 0 var(--gold-edge);
+}
+
+.t--green {
+  background: var(--green);
+  color: var(--white);
+  box-shadow: 0 calc(var(--ts) * 0.075) 0 var(--green-edge);
+}
+
+.t__mark {
+  position: absolute;
+  top: 9%;
+  left: 10%;
+  width: 22%;
+  height: 22%;
+  color: var(--forest);
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .cross:not(.tiles-drop):not(.tiles-still) .t {
+    opacity: 0;
+    animation: failsafe 0s linear 1s forwards;
+  }
+}
+
+.tiles-drop .t {
+  animation: drop 0.45s var(--ease-spring) both;
+  animation-delay: calc(140ms + var(--i) * 35ms);
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -28px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    padding: 0;
+  }
+  .hero__in {
+    min-height: 100vh;
+    min-height: 100svh;
+    grid-template-columns: 1.45fr 1fr;
+    align-items: center;
+    padding-block: 120px 160px;
+  }
+  .cross {
+    justify-content: end;
+    --ts: clamp(48px, 4.6vw, 72px);
+  }
+}
+
+/* ------------------------------------------------------------ ШЛЯХ ЗІРКИ */
+.path {
+  padding-top: 160px;
+}
+
+.path__head {
+  padding-bottom: 48px;
+}
+
+.path__track {
+  padding-bottom: 160px;
+}
+
+.path__facts {
+  display: none;
+}
+
+/* базовий (телефон / без руху) — вертикальна лінія */
+.rail {
+  position: relative;
+  --rail-len: 100%;
+}
+
+.rail__base,
+.rail__fill {
+  position: absolute;
+  left: 21px;
+  top: 24px;
+  width: 6px;
+  height: var(--rail-len);
+  border-radius: 3px;
+}
+
+.rail__base {
+  background: rgb(230 245 234 / 0.2);
+}
+
+.rail__fill {
+  background: var(--gold);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+}
+
+.is-static .rail__fill {
+  transform: none;
+}
+
+.rail__star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--gold);
+  box-shadow: 0 4px 0 var(--gold-edge);
+  will-change: transform;
+}
+
+.rail__star svg {
+  width: 58%;
+  height: 58%;
+  color: var(--forest);
+}
+
+.is-static .rail__star {
+  display: none;
+}
+
+.stop {
+  position: relative;
+  min-height: 48px;
+  padding: 0 0 44px 72px;
+}
+
+.stop:last-child {
+  padding-bottom: 0;
+}
+
+.stop__tile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--forest);
+  box-shadow: 0 4px 0 var(--tile-edge-def);
+  font: 800 1.25rem/1 var(--f-display);
+  overflow: hidden;
+}
+
+.stop__tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.stop.passed .stop__tile::before {
+  opacity: 1;
+}
+
+.stop__label {
+  display: block;
+  padding-top: 10px;
+  font: 700 var(--fs-h3) / 1.2 var(--f-display);
+  letter-spacing: -0.02em;
+}
+
+.stop__fact {
+  margin-top: 16px;
+}
+
+.stop__fact .tiles {
+  --ts: 48px;
+}
+
+.stop__fact p {
+  margin-top: 18px;
+  max-width: 36ch;
+  color: var(--tone-muted);
+}
+
+.is-flow .stop__fact {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.35s, transform 0.5s var(--ease-out);
+}
+
+.is-flow .stop.passed .stop__fact {
+  opacity: 1;
+  transform: none;
+}
+
+/* десктоп: закріплена сцена зі scrub */
+.is-pin .path__track {
+  height: calc(100vh + var(--n) * 55vh);
+  padding-bottom: 0;
+}
+
+.is-pin .path__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.is-pin .path__grid {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  padding-block: 10vh 8vh;
+}
+
+.is-pin .path__facts {
+  display: grid;
+  align-content: center;
+}
+
+.fact {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translate3d(0, 48px, 0);
+  transition: opacity 0.3s, transform 0.55s var(--ease-out);
+}
+
+.fact.out-up {
+  transform: translate3d(0, -48px, 0);
+}
+
+.fact.on {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.08s;
+}
+
+.fact__step {
+  color: var(--tone-muted);
+  font-size: var(--fs-md);
+}
+
+.tiles--xl {
+  --ts: clamp(84px, 8.6vw, 136px);
+  margin-top: 24px;
+}
+
+.fact .tile {
+  transform: translate3d(0, 28px, 0);
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.fact.on .tile {
+  transform: none;
+}
+
+.fact.on .tile:nth-child(2) { transition-delay: 0.05s; }
+.fact.on .tile:nth-child(3) { transition-delay: 0.1s; }
+.fact.on .tile:nth-child(4) { transition-delay: 0.15s; }
+.fact.on .tile:nth-child(5) { transition-delay: 0.2s; }
+.fact.on .tile:nth-child(6) { transition-delay: 0.25s; }
+
+.fact__text {
+  margin-top: 30px;
+  max-width: 34ch;
+  font-size: var(--fs-h3);
+  line-height: 1.4;
+}
+
+.is-pin .rail {
+  height: 132px;
+  margin-inline: 60px;
+}
+
+.is-pin .rail__base,
+.is-pin .rail__fill {
+  left: 0;
+  top: 24px;
+  width: 100%;
+  height: 6px;
+}
+
+.is-pin .rail__fill {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.is-pin .rail__stops {
+  position: relative;
+  height: 100%;
+}
+
+.is-pin .stop {
+  position: absolute;
+  top: 0;
+  left: calc(var(--i) / (var(--n) - 1) * 100%);
+  width: 150px;
+  min-height: 0;
+  padding: 0;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.is-pin .stop__tile {
+  left: 50%;
+  top: 3px;
+  transform: translateX(-50%);
+}
+
+.is-pin .stop__label {
+  padding-top: 68px;
+  font-size: var(--fs-sm);
+  color: var(--tone-muted);
+}
+
+.is-pin .stop.current .stop__label {
+  color: var(--tone-ink);
+}
+
+.is-pin .stop__fact {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.is-pin .rail__star {
+  left: -30px;
+  top: -3px;
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  box-shadow: 0 5px 0 var(--gold-edge);
+}
+
+/* ------------------------------------------------------------ ЯК ЗАРОБЛЯЄМО МИ */
+.earn {
+  padding: 160px 0 180px;
+  --tile-face: var(--mint);
+}
+
+.earn__rows {
+  margin-top: 48px;
+  display: grid;
+  gap: 56px;
+}
+
+.earn__row {
+  display: grid;
+  gap: 20px 48px;
+  align-items: end;
+}
+
+.tiles--lg {
+  --ts: clamp(64px, 11vw, 132px);
+}
+
+.earn__text {
+  max-width: 34ch;
+  font-size: var(--fs-lead);
+  color: var(--tone-muted);
+}
+
+@media (min-width: 900px) {
+  .earn__row {
+    grid-template-columns: auto 1fr;
+  }
+  .earn__row--alt {
+    grid-template-columns: 1fr auto;
+  }
+  .earn__row--alt .earn__text {
+    order: -1;
+    justify-self: end;
+    text-align: right;
+  }
+}
+
+.lab-flag {
+  margin-top: 56px;
+  max-width: 52ch;
+  padding: 12px 16px;
+  border: 2px dashed currentColor;
+  border-radius: 8px;
+  font-size: var(--fs-sm);
+}
+
+/* ------------------------------------------------------------ ЗАПРОШЕННЯ В КАТАЛОГ */
+.invite {
+  padding: 160px 0 96px;
+}
+
+.invite__in {
+  display: grid;
+  gap: 32px;
+  justify-items: start;
+}
+
+.lab-notes {
+  padding-block: 32px 64px;
+  color: var(--muted);
+}
+
+.lab-notes h2 {
+  font: 700 var(--fs-h3) / 1.2 var(--f-display);
+  color: var(--forest);
+  margin-bottom: 10px;
+}
+
+.lab-notes p {
+  max-width: 72ch;
+}
+
+/* ------------------------------------------------------------ КАТАЛОГ */
+.catalog {
+  min-height: 100vh;
+  padding: 112px 0 96px;
+}
+
+.cards {
+  margin-top: 48px;
+  display: grid;
+  gap: 40px 24px;
+}
+
+@media (min-width: 700px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1040px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: grid;
+  gap: 18px;
+  text-decoration: none;
+}
+
+.cover {
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  background: var(--g-bg);
+  box-shadow: inset 0 0 0 1px rgb(13 42 28 / 0.12);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.tiles--cover {
+  --ts: clamp(30px, 5.4vw, 52px);
+  --tile-face: var(--g-tile);
+  --tile-ink: var(--g-tile-ink);
+  --tile-edge: rgb(0 0 0 / 0.28);
+}
+
+.card .tile {
+  transition: transform 0.35s var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .tile {
+    transform: translate3d(0, -6px, 0);
+  }
+  .card:hover .tile:nth-child(2) { transition-delay: 0.03s; }
+  .card:hover .tile:nth-child(3) { transition-delay: 0.06s; }
+  .card:hover .tile:nth-child(4) { transition-delay: 0.09s; }
+  .card:hover .tile:nth-child(5) { transition-delay: 0.12s; }
+  .card:hover .tile:nth-child(6) { transition-delay: 0.15s; }
+}
+
+.card__name {
+  font: 800 1.75rem/1.05 var(--f-display);
+  letter-spacing: -0.03em;
+}
+
+.card__genre {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.card__line {
+  margin-top: 10px;
+  max-width: 40ch;
+}
+
+.card__status {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  font-size: var(--fs-sm);
+}
+
+.card__status::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--tile-edge-def);
+}
+
+.card__status.is-live::before {
+  background: var(--green);
+}
+
+/* ------------------------------------------------------------ СТОРІНКА ГРИ */
+.game {
+  min-height: 100vh;
+  padding: 104px 0 96px;
+  background: var(--g-bg);
+  color: var(--g-ink);
+}
+
+.game--dark {
+  --focus: var(--gold);
+}
+
+.game__in {
+  display: grid;
+  gap: 32px;
+}
+
+.game__back {
+  justify-self: start;
+}
+
+.cover--hero .tiles--cover {
+  --ts: clamp(44px, 7vw, 92px);
+}
+
+.game__genre {
+  font-size: var(--fs-md);
+  opacity: 0.85;
+}
+
+.game .lead {
+  color: inherit;
+}
+
+.game__soon {
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+.prices {
+  margin-top: 36px;
+  display: grid;
+  max-width: 420px;
+  border-top: 1px solid currentColor;
+}
+
+.prices div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 10px;
+  border-bottom: 1px solid rgb(230 245 234 / 0.25);
+}
+
+.prices dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 900px) {
+  .game__in {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 40px 64px;
+  }
+  .game__back {
+    grid-column: 1 / -1;
+  }
+}
+
+.foot {
+  padding-block: 32px 48px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+[data-page-tone='dark'] .foot {
+  color: var(--on-dark-muted);
+}
+
+/* ------------------------------------------------------------ переходи між сторінками */
+::view-transition-old(root) {
+  animation: vt-out 0.22s ease both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 0.42s var(--ease-out) both;
+}
+
+::view-transition-group(game-cover) {
+  animation-duration: 0.55s;
+  animation-timing-function: var(--ease-out);
+}
+
+@keyframes vt-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+
+/* ------------------------------------------------------------ без руху */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Калькулятор доходу (логіка в src/lib/economics.ts не змінюється).
+   ========================================================================== */
+.calc {
+  display: grid;
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.calc__inputs {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.calc__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.calc__label {
+  font-weight: 650;
+}
+
+.calc__output {
+  font: 800 var(--fs-h3) / 1 var(--f-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__output--sm {
+  font-size: var(--fs-lead);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset {
+  min-width: 64px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--forest);
+  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
+  font: 700 var(--fs-md) / 1 var(--f-display);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.preset:active {
+  transform: translate3d(0, 2px, 0);
+}
+
+.preset.is-active {
+  background: var(--gold);
+}
+
+.range {
+  --fill: 50%;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, var(--forest) var(--fill), rgb(13 42 28 / 0.15) var(--fill));
+}
+
+.range::-moz-range-track {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, var(--forest) var(--fill), rgb(13 42 28 / 0.15) var(--fill));
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 34px;
+  margin-top: -12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gold);
+  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
+}
+
+.range::-moz-range-thumb {
+  width: 30px;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gold);
+  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
+}
+
+.calc__scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.calc__more {
+  margin-top: 8px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 2px rgb(13 42 28 / 0.25);
+}
+
+.calc__more summary {
+  min-height: 32px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.calc__more[open] {
+  display: grid;
+  gap: 14px;
+}
+
+.calc__hint {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.calc__result {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 28px;
+  border-radius: 24px;
+  background: var(--forest);
+  color: var(--on-dark);
+}
+
+.calc__result-label {
+  color: var(--on-dark-muted);
+}
+
+.calc__net {
+  display: inline-block;
+  font: 800 clamp(2.5rem, 1.6rem + 3vw, 4rem) / 1 var(--f-display);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+}
+
+.calc.is-negative .calc__net {
+  color: var(--on-dark);
+}
+
+.calc__year {
+  color: var(--on-dark-muted);
+}
+
+.calc__rows {
+  display: grid;
+  margin-top: 14px;
+  border-top: 1px solid rgb(230 245 234 / 0.3);
+}
+
+.calc__rows div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 10px;
+  border-bottom: 1px solid rgb(230 245 234 / 0.3);
+}
+
+.calc__rows dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__payback {
+  margin-top: 8px;
+}
+
+.calc__note {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  max-width: 70ch;
+}
+
+@media (min-width: 900px) {
+  .calc {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 64px;
+  }
+  .calc__note {
+    grid-column: 1 / -1;
+  }
+  .calc__result {
+    padding: 36px;
+  }
+}

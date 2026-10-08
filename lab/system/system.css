@@ -1,0 +1,11 @@
+.sys-meta { color: var(--muted); margin-bottom: 16px; }
+.sys-gap { margin-top: 72px; }
+.sys-colors { margin-top: 32px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.sys-colors li { display: grid; grid-template-columns: 56px 1fr; column-gap: 14px; align-items: center; }
+.sys-chip { grid-row: span 3; width: 56px; height: 56px; border-radius: 12px; box-shadow: inset 0 0 0 2px var(--forest); }
+.sys-colors code, .sys-type code { font: inherit; font-size: var(--fs-sm); color: var(--muted); }
+.sys-colors span:last-child { font-size: var(--fs-sm); color: var(--muted); }
+.sys-type { margin-top: 32px; display: grid; gap: 22px; }
+.sys-type li { display: grid; gap: 4px; border-top: 2px solid var(--forest); padding-top: 14px; }
+.sys-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-end; margin-top: 36px; }
+.sys-note { margin-top: 28px; }

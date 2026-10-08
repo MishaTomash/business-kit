@@ -1,44 +1,41 @@
 /**
- * Data access layer: lookups and derived data.
- * Views never touch the raw arrays directly → swapping the source
- * (e.g. to a CMS or JSON fetch later) only changes this file.
+ * Доступ до даних: пошук і похідні значення. Сторінки не чіпають масиви напряму,
+ * тож зміна джерела (CMS, JSON) торкнеться лише цього файлу.
  */
 
-import type { Category, Project } from '@/types';
-import { CATEGORIES } from './categories';
-import { PROJECTS } from './projects';
+import type { Game } from '@/types';
+import { GAMES } from './games';
 
-export { CATEGORIES, PROJECTS };
+export { GAMES };
 
-const categoryById = new Map(CATEGORIES.map((c) => [c.id, c] as const));
-const projectById = new Map(PROJECTS.map((p) => [p.id, p] as const));
+const byId = new Map(GAMES.map((g) => [g.id, g] as const));
 
-export const getCategory = (id: string): Category | undefined => categoryById.get(id);
-export const getProject = (id: string): Project | undefined => projectById.get(id);
+export const getGame = (id: string): Game | undefined => byId.get(id);
 
-/** Projects of a category: available first, then "soon". */
-export function projectsIn(categoryId: string): Project[] {
-  return PROJECTS.filter((p) => p.categoryId === categoryId).sort(
-    (a, b) => Number(a.status === 'soon') - Number(b.status === 'soon'),
-  );
-}
+/** Чи можна грати й купити. Заглушка (`mock`) завжди поводиться як «скоро». */
+export const isPlayable = (g: Game): boolean => g.status === 'available' && g.mock !== true;
 
-/** Number of projects that can be bought right now. */
-export const availableCount = (categoryId: string): number =>
-  projectsIn(categoryId).filter((p) => p.status === 'available').length;
+/** Каталог: спершу доступні, потім «скоро», усередині — порядок з games.ts. */
+export const catalog = (): Game[] =>
+  GAMES.map((g, i) => ({ g, i }))
+    .sort((a, b) => Number(isPlayable(b.g)) - Number(isPlayable(a.g)) || a.i - b.i)
+    .map(({ g }) => g);
 
-/** Lowest launch price among available projects of a category, or `null`. */
-export function minPriceIn(categoryId: string): number | null {
-  const prices = projectsIn(categoryId)
-    .filter((p) => p.status === 'available')
-    .map((p) => p.priceUah);
-  return prices.length ? Math.min(...prices) : null;
-}
+export const liveCount = (): number => GAMES.filter(isPlayable).length;
+export const soonCount = (): number => GAMES.length - liveCount();
 
-/* Dev-time integrity checks: catch broken references while editing content. */
-if (import.meta.env.DEV) {
-  for (const p of PROJECTS) {
-    if (!categoryById.has(p.categoryId)) console.warn(`[data] Project "${p.id}" has unknown categoryId "${p.categoryId}"`);
+/** Жанри в порядку появи в каталозі. */
+export const genres = (): string[] => [...new Set(catalog().map((g) => g.genre))];
+
+/** Фільтр за жанром з'являється, коли ігор більше шести. */
+export const FILTER_FROM = 7;
+
+/* Перевірки під час розробки: биті дані помітно одразу. */
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  if (byId.size !== GAMES.length) console.warn('[ігри] Повторюється id гри');
+  for (const g of GAMES) {
+    if (!/^[a-z0-9-]+$/.test(g.id)) console.warn(`[ігри] id «${g.id}»: лише латиниця, цифри й дефіс`);
   }
-  if (projectById.size !== PROJECTS.length) console.warn('[data] Duplicate project ids');
+  const mocks = GAMES.filter((g) => g.mock).map((g) => g.id);
+  if (mocks.length) console.warn(`[ігри] Досі заглушки (mock): ${mocks.join(', ')}`);
 }

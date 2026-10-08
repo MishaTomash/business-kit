@@ -17,7 +17,6 @@ import { SLIDER_STEPS, TRAFFIC_MAX, TRAFFIC_MIN, forecast, sliderToTraffic, traf
 import { AnimatedNumber } from '@/lib/animated-number';
 import { formatInt, formatPercent, formatSignedUah, formatUah, pluralDays } from '@/lib/format';
 import { html, qs, qsa, render, type SafeHtml } from '@/lib/dom';
-import { icon } from '@/lib/icons';
 import { prefersReducedMotion } from '@/lib/motion';
 import type { Cleanup } from '@/views/view';
 
@@ -29,22 +28,30 @@ const RATE_MAX_PCT = 30;
 const payWhat = (project: Project): string =>
   project.economics.kind === 'orders' ? 'роблять замовлення' : 'платять';
 
+function paybackText(days: number | null): SafeHtml {
+  return days === null
+    ? html`<span>Поки що плата за підтримку більша за дохід. Збільште кількість гравців, щоб вийти в плюс.</span>`
+    : html`<span>Запуск окупиться приблизно за <strong>${formatInt(days)} ${pluralDays(days)}</strong>, далі прибуток ваш.</span>`;
+}
+
 export function calculatorMarkup(project: Project): SafeHtml {
+  // Початкові значення рахуються одразу, щоб калькулятор читався і без JS (prerender).
+  const f0 = forecast(project, PREVIEW_TRAFFIC, project.economics.payerRate, RATES);
   return html`
     <div class="calc" data-calc>
       <div class="calc__inputs">
         <div class="calc__row">
           <label class="calc__label" for="traffic-range">
-            Скільки людей прийде з ${project.trafficSource} за місяць
+            Скільки гравців прийде з ${project.trafficSource} за місяць
           </label>
-          <output class="calc__output" for="traffic-range" data-out="traffic"></output>
+          <output class="calc__output" for="traffic-range" data-out="traffic">${formatInt(PREVIEW_TRAFFIC)}</output>
         </div>
 
         <div class="presets" role="group" aria-label="Швидкий вибір">
           ${PRESETS.map((n) => html`<button type="button" class="preset" data-preset="${n}">${formatInt(n)}</button>`)}
         </div>
 
-        <input id="traffic-range" class="range" type="range" min="0" max="${SLIDER_STEPS}" step="1" data-input="traffic" />
+        <input id="traffic-range" class="range" type="range" min="0" max="${SLIDER_STEPS}" step="1" value="${trafficToSlider(PREVIEW_TRAFFIC)}" data-input="traffic" />
         <div class="calc__scale" aria-hidden="true">
           <span>${formatInt(TRAFFIC_MIN)}</span><span>${formatInt(TRAFFIC_MAX)}</span>
         </div>
@@ -53,29 +60,29 @@ export function calculatorMarkup(project: Project): SafeHtml {
           <summary>Налаштувати припущення</summary>
           <div class="calc__row">
             <label class="calc__label" for="rate-range">Скільки з них ${payWhat(project)}</label>
-            <output class="calc__output calc__output--sm" for="rate-range" data-out="rate"></output>
+            <output class="calc__output calc__output--sm" for="rate-range" data-out="rate">${formatPercent(project.economics.payerRate)}</output>
           </div>
-          <input id="rate-range" class="range" type="range" min="${RATE_MIN_PCT}" max="${RATE_MAX_PCT}" step="1" data-input="rate" />
+          <input id="rate-range" class="range" type="range" min="${RATE_MIN_PCT}" max="${RATE_MAX_PCT}" step="1" value="${Math.round(project.economics.payerRate * 100)}" data-input="rate" />
           <p class="calc__hint">За замовчуванням стоїть обережна оцінка для цього проєкту.</p>
         </details>
       </div>
 
       <div class="calc__result">
         <span class="calc__result-label">Чистий прибуток на місяць</span>
-        <span class="calc__net" data-out="net"></span>
-        <span class="calc__year">≈ <span data-out="year"></span> за рік</span>
+        <span class="calc__net" data-out="net">${formatSignedUah(f0.netUah)}</span>
+        <span class="calc__year">≈ <span data-out="year">${formatUah(Math.max(0, f0.netYearUah))}</span> за рік</span>
 
         <dl class="calc__rows">
-          <div><dt>Покупців</dt><dd data-out="payers"></dd></div>
-          <div><dt>Виручка</dt><dd data-out="gross"></dd></div>
-          <div><dt>Витрати${project.economics.kind === 'orders' ? ' і собівартість' : ''}</dt><dd data-out="costs"></dd></div>
+          <div><dt>Гравців, які платять</dt><dd data-out="payers">${formatInt(f0.payers)}</dd></div>
+          <div><dt>Виручка</dt><dd data-out="gross">${formatUah(f0.grossUah)}</dd></div>
+          <div><dt>Плата за підтримку</dt><dd data-out="costs">−${formatUah(f0.costsUah)}</dd></div>
         </dl>
 
-        <p class="calc__payback" data-out="payback"></p>
+        <p class="calc__payback" data-out="payback">${paybackText(f0.paybackDays)}</p>
       </div>
 
       <p class="calc__note">
-        Це модель, а не обіцянка. Stars рахуємо за курсом виплати Telegram ≈ $${RATES.starPayoutUsd}, 1 $ = ${RATES.uahPerUsd} ₴.
+        Прогноз — модель, а не гарантія доходу. Зірки рахуємо за курсом виплати Telegram ≈ $${String(RATES.starPayoutUsd).replace('.', ',')}, 1 $ = ${String(RATES.uahPerUsd).replace('.', ',')} ₴.
       </p>
     </div>
   `;
@@ -93,11 +100,12 @@ export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
     payerRate: project.economics.payerRate,
   });
 
-  const net = new AnimatedNumber(out('net'), formatSignedUah, 0, 800);
-  const year = new AnimatedNumber(out('year'), formatUah, 0, 900);
-  const payers = new AnimatedNumber(out('payers'), formatInt, 0, 600);
-  const gross = new AnimatedNumber(out('gross'), formatUah, 0, 600);
-  const costs = new AnimatedNumber(out('costs'), (n) => `\u2212${formatUah(n)}`, 0, 600);
+  const f0 = forecast(project, PREVIEW_TRAFFIC, project.economics.payerRate, RATES);
+  const net = new AnimatedNumber(out('net'), formatSignedUah, Math.round(f0.netUah), 800);
+  const year = new AnimatedNumber(out('year'), formatUah, Math.max(0, Math.round(f0.netYearUah)), 900);
+  const payers = new AnimatedNumber(out('payers'), formatInt, f0.payers, 600);
+  const gross = new AnimatedNumber(out('gross'), formatUah, Math.round(f0.grossUah), 600);
+  const costs = new AnimatedNumber(out('costs'), (n) => `\u2212${formatUah(n)}`, Math.round(f0.costsUah), 600);
 
   const setFill = (input: HTMLInputElement): void => {
     const min = Number(input.min);
@@ -121,7 +129,7 @@ export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
     const f = forecast(project, state.traffic, state.payerRate, RATES);
 
     trafficInput.value = String(trafficToSlider(state.traffic));
-    trafficInput.setAttribute('aria-valuetext', `${formatInt(state.traffic)} людей`);
+    trafficInput.setAttribute('aria-valuetext', `${formatInt(state.traffic)} гравців`);
     rateInput.value = String(Math.round(state.payerRate * 100));
     rateInput.setAttribute('aria-valuetext', formatPercent(state.payerRate));
     setFill(trafficInput);
@@ -138,12 +146,7 @@ export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
     costs.set(Math.round(f.costsUah));
     el.classList.toggle('is-negative', f.netUah < 0);
 
-    render(
-      out('payback'),
-      f.paybackDays === null
-        ? html`${icon('trend', 18)}<span>Поки що витрати більші за дохід. Збільште кількість людей, щоб вийти в плюс.</span>`
-        : html`${icon('rocket', 18)}<span>Запуск окупиться приблизно за <strong>${formatInt(f.paybackDays)} ${pluralDays(f.paybackDays)}</strong>, далі прибуток ваш.</span>`,
-    );
+    render(out('payback'), paybackText(f.paybackDays));
 
     if (prev) {
       const prevNet = forecast(project, prev.traffic, prev.payerRate, RATES).netUah;

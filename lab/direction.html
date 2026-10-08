@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Арт-дирекшн: три напрями</title>
+    <link rel="stylesheet" href="./direction.css" />
+  </head>
+
+  <body>
+    <!-- Спільні SVG-символи: зірка, логотипи -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="star" viewBox="0 0 100 100">
+        <polygon
+          points="50.00,2.00 61.76,33.82 95.65,35.17 69.02,56.18 78.21,88.83 50.00,70.00 21.79,88.83 30.98,56.18 4.35,35.17 38.24,33.82"
+          fill="currentColor"
+          stroke="currentColor"
+          stroke-width="6"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <!-- Логотип A: плитка-фішка, на якій замість літери зірка -->
+      <symbol id="logo-a" viewBox="0 0 48 48">
+        <rect x="4" y="9" width="40" height="35" rx="9" fill="var(--logo-edge)" />
+        <rect x="4" y="4" width="40" height="35" rx="9" fill="var(--logo-face)" />
+        <polygon
+          points="24.00,10.00 26.94,17.45 34.94,17.95 28.76,23.05 30.76,30.80 24.00,26.50 17.24,30.80 19.24,23.05 13.06,17.95 21.06,17.45"
+          fill="var(--logo-star)"
+          stroke="var(--logo-star)"
+          stroke-width="2.2"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <!-- Логотип B: шлях зірки, три плитки, що ростуть до зірки -->
+      <symbol id="logo-b" viewBox="0 0 48 48">
+        <rect x="3" y="37" width="8" height="8" rx="2.4" fill="var(--logo-path)" opacity=".55" />
+        <rect x="11" y="25" width="11" height="11" rx="3" fill="var(--logo-path)" />
+        <polygon
+          points="34.50,1.50 37.67,9.63 46.39,10.14 39.64,15.67 41.85,24.11 34.50,19.40 27.15,24.11 29.36,15.67 22.61,10.14 31.33,9.63"
+          fill="var(--logo-star)"
+          stroke="var(--logo-star)"
+          stroke-width="2.6"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
+
+    <!-- ================================================================ ВСТУП -->
+    <header class="doc wrap">
+      <p class="doc-meta">Лабораторія, етап 1. Код сайту не змінено, ця сторінка в збірку не потрапляє.</p>
+      <h1 class="doc-title">Три напрями для сайту ігор у Telegram</h1>
+      <p class="doc-lead">
+        Попередній дизайн тримався на макетах телефонів і бульбашках чату, тому сайт виглядав як ще один шаблон про ботів.
+        Тут три різні способи розповісти одну історію: власник каналу отримує гру, гравці купують підказки за зірки, а зірки
+        стають гривнями на картці власника. Кожен напрям показано на справжніх заголовках і цифрах з даних сайту.
+      </p>
+      <nav class="doc-nav" aria-label="Розділи">
+        <a href="#refs">Референси</a>
+        <a href="#d1">1. Плитка</a>
+        <a href="#d2">2. Маршрут</a>
+        <a href="#d3">3. Афіша</a>
+        <a href="#brand">Назви й логотипи</a>
+      </nav>
+    </header>
+
+    <!-- ================================================================ РЕФЕРЕНСИ -->
+    <section class="doc refs wrap" id="refs" aria-labelledby="refs-t">
+      <h2 class="doc-h2" id="refs-t">Що беремо з референсів і чого не беремо</h2>
+      <dl class="refs-list">
+        <div class="ref">
+          <dt>Apple, сторінки продуктів</dt>
+          <dd><b>Беремо</b> сцену, прив'язану до скролу, де один предмет живе кілька екранів, а текст поруч змінюється синхронно. У нас цей предмет — зірка Telegram у сцені «Шлях зірки».</dd>
+          <dd><b>Не беремо</b> чорне «преміальне» тло, продуктові рендери й телефон у кожній сцені.</dd>
+        </div>
+        <div class="ref">
+          <dt>Stripe</dt>
+          <dd><b>Беремо</b> точні схеми руху грошей з підписами-цифрами на кожному вузлі, табличні цифри й вирівнювання до пікселя.</dd>
+          <dd><b>Не беремо</b> градієнтну хвилю, фіолетову гаму й щільний текст для корпорацій.</dd>
+        </div>
+        <div class="ref">
+          <dt>Linear</dt>
+          <dd><b>Беремо</b> стриманість, рівний ритм відступів, короткі речення й ретельні стани фокусу та натискання.</dd>
+          <dd><b>Не беремо</b> темне тло зі світінням і скляні панелі.</dd>
+        </div>
+        <div class="ref">
+          <dt>Locomotive і Studio Freight</dt>
+          <dd><b>Беремо</b> рядки, що виїжджають з-під маски, заголовок як частину композиції, плавний скрол і один біжучий рядок.</dd>
+          <dd><b>Не беремо</b> кастомний курсор, прелоадери й такий розмір шрифту, що на телефоні слово не вміщається в рядок.</dd>
+        </div>
+        <div class="ref">
+          <dt>Telegram і Telegram Stars</dt>
+          <dd><b>Беремо</b> синій Telegram як колір системи (посилання, лінія руху), золото зірки і саму форму зірки як головний мотив.</dd>
+          <dd><b>Не беремо</b> копію інтерфейсу Telegram і бульбашки чату як декор. Це було в попередній версії й зробило її схожою на будь-який сайт про ботів.</dd>
+        </div>
+        <div class="ref">
+          <dt>Duolingo (бренд)</dt>
+          <dd><b>Беремо</b> характер через форму: щільні гліфи, кнопки з «дном», які просідають при натисканні, сміливі кольорові поля.</dd>
+          <dd><b>Не беремо</b> маскота, дитячі ілюстрації й зелену гаму Duolingo напряму.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ================================================================ НАПРЯМ 1 -->
+    <section class="dir d1" id="d1" aria-labelledby="d1-t">
+      <div class="wrap">
+        <header class="dir-head">
+          <p class="dir-num">Напрям 1</p>
+          <h2 class="dir-title" id="d1-t">Плитка</h2>
+          <p class="dir-idea">
+            Бізнес пояснено матеріалом словесних ігор: заголовки й цифри складаються з літерних плиток з тактильним «дном», а
+            плитки падають на місце, коли блок з'являється на екрані.
+          </p>
+        </header>
+
+        <div class="dir-specs">
+          <ul class="swatches" aria-label="Палітра">
+            <li><span class="chip" style="--sw: #d5eedc"></span><b>М'ята</b><code>#D5EEDC</code><small>основне тло</small></li>
+            <li><span class="chip" style="--sw: #0d2a1c"></span><b>Хвоя</b><code>#0D2A1C</code><small>текст, темні поля</small></li>
+            <li><span class="chip" style="--sw: #ffffff"></span><b>Плитка</b><code>#FFFFFF</code><small>грань плитки</small></li>
+            <li><span class="chip" style="--sw: #ffb81c"></span><b>Зірка</b><code>#FFB81C</code><small>Stars, з темним текстом</small></li>
+            <li><span class="chip" style="--sw: #1f7a47"></span><b>Відгадано</b><code>#1F7A47</code><small>кнопки, «гривні»</small></li>
+          </ul>
+
+          <div class="specimen">
+            <p class="spec-meta">Geologica Variable для заголовків і плиток (вісі ваги, курсиву й гостроти) і Golos Text Variable для тексту.</p>
+            <p class="spec-big">Гра у вашому Telegram. Зірки — на вашому рахунку.</p>
+            <p class="spec-body">Гравці відгадують слова безкоштовно. Коли застрягають, купують підказку за 1 <svg class="ist" aria-label="зірок"><use href="#star" /></svg>, і зірка надходить на баланс бота, який належить вам.</p>
+            <p class="spec-glyphs">Ґанок, їжак, з'їв, є, Ї — 5 000 ₴ і 500 ₴ на місяць</p>
+          </div>
+        </div>
+
+        <p class="dir-label">Hero</p>
+        <div class="frame d1-hero">
+          <div class="mini-nav">
+            <span class="mini-logo"><svg width="28" height="28"><use href="#logo-a" /></svg>Клітинка</span>
+            <span class="mini-links"><span>Ігри</span><span>Як це працює</span><span>Ціни</span><span>Питання</span></span>
+            <span class="d1-btn d1-btn--sm">Написати</span>
+          </div>
+          <div class="d1-hero__body">
+            <div class="d1-hero__text">
+              <h3 class="d1-h1 mask">
+                <span class="ln"><span>Гра у вашому</span></span>
+                <span class="ln"><span>Telegram.</span></span>
+                <span class="ln"><span>Зірки — на вашому</span></span>
+                <span class="ln"><span>рахунку.</span></span>
+              </h3>
+              <p class="d1-sub">Запускаємо словесну гру під назвою вашого каналу. Гравці купують підказки за Telegram Stars, а зірки йдуть на баланс вашого бота.</p>
+              <div class="d1-actions">
+                <span class="d1-btn">Обговорити гру</span>
+                <span class="d1-link">Переглянути ігри</span>
+              </div>
+            </div>
+            <div class="d1-cross" role="img" aria-label="Плитки зі словами: гра, зірки, гривні">
+              <!-- ЗІРКИ вертикально, ГРА й ГРИВНІ горизонтально -->
+              <span class="t t--gold" style="--c: 3; --r: 1; --i: 0"><svg class="t-star"><use href="#star" /></svg>З</span>
+              <span class="t t--gold" style="--c: 3; --r: 2; --i: 1">І</span>
+              <span class="t" style="--c: 2; --r: 3; --i: 2">Г</span>
+              <span class="t t--gold" style="--c: 3; --r: 3; --i: 3">Р</span>
+              <span class="t" style="--c: 4; --r: 3; --i: 4">А</span>
+              <span class="t t--gold" style="--c: 3; --r: 4; --i: 5">К</span>
+              <span class="t t--green" style="--c: 1; --r: 5; --i: 6">Г</span>
+              <span class="t t--green" style="--c: 2; --r: 5; --i: 7">Р</span>
+              <span class="t t--gold" style="--c: 3; --r: 5; --i: 8">И</span>
+              <span class="t t--green" style="--c: 4; --r: 5; --i: 9">В</span>
+              <span class="t t--green" style="--c: 5; --r: 5; --i: 10">Н</span>
+              <span class="t t--green" style="--c: 6; --r: 5; --i: 11">І</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="dir-label">Секція «Чому це вигідно»</p>
+        <div class="frame d1-why">
+          <h3 class="d1-h2">Оплата вже вбудована в Telegram. Вам лишається канал і гра.</h3>
+          <div class="d1-facts">
+            <div class="d1-fact d1-fact--lead">
+              <p class="tiles" aria-label="1 зірка"><span>1</span><span class="tg"><svg><use href="#star" /></svg></span></p>
+              <p>Стільки коштує одна підказка. Гравець платить у два дотики всередині Telegram, без картки, форми й еквайрингу.</p>
+            </div>
+            <div class="d1-fact">
+              <p class="tiles" aria-label="21"><span>2</span><span>1</span></p>
+              <p>день проходить від покупки до можливості вивести зірки. Це правило Telegram однакове для всіх ботів.</p>
+            </div>
+            <div class="d1-fact">
+              <p class="tiles tiles--green" aria-label="500 гривень"><span>5</span><span>0</span><span>0</span><span>₴</span></p>
+              <p>на місяць за сервер, домен, оновлення й підтримку. Сума фіксована й не залежить від кількості гравців.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fit">
+          <div><h3>Кому зайде</h3><p>Блогерам, вчителям і освітнім проєктам. Мова словесних ігор впізнається одразу, вона грайлива, але не дитяча, а плитки природно стають лічильниками для цифр.</p></div>
+          <div><h3>Ризик</h3><p>Плитки можуть нагадати екран конкретної гри, а на головній ігор бути не повинно. Тому в плитках лише слова про бізнес. Друге: багато дрібних елементів, і анімацію плиток доведеться полегшити для слабких телефонів.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ НАПРЯМ 2 -->
+    <section class="dir d2" id="d2" aria-labelledby="d2-t">
+      <div class="wrap">
+        <header class="dir-head">
+          <p class="dir-num">Напрям 2</p>
+          <h2 class="dir-title" id="d2-t">Маршрут</h2>
+          <p class="dir-idea">
+            Сайт як схема маршруту: зірка Telegram їде синьою лінією від гравця до картки власника, і кожна станція на лінії — один
+            факт про гроші з точною цифрою.
+          </p>
+        </header>
+
+        <div class="dir-specs">
+          <ul class="swatches" aria-label="Палітра">
+            <li><span class="chip" style="--sw: #ffffff"></span><b>Папір</b><code>#FFFFFF</code><small>основне тло</small></li>
+            <li><span class="chip" style="--sw: #0f1b2a"></span><b>Чорнило</b><code>#0F1B2A</code><small>текст</small></li>
+            <li><span class="chip" style="--sw: #229ed9"></span><b>Лінія</b><code>#229ED9</code><small>синій Telegram, лише графіка</small></li>
+            <li><span class="chip" style="--sw: #156a9e"></span><b>Глибокий</b><code>#156A9E</code><small>кнопки й посилання</small></li>
+            <li><span class="chip" style="--sw: #ffb800"></span><b>Зірка</b><code>#FFB800</code><small>Stars</small></li>
+            <li><span class="chip" style="--sw: #dce3e9"></span><b>Рейка</b><code>#DCE3E9</code><small>непройдений шлях</small></li>
+          </ul>
+
+          <div class="specimen">
+            <p class="spec-meta">Одна родина: Commissioner Variable. Заголовки з віссю «розширення» засічок (FLAR), текст без неї, усі цифри табличні.</p>
+            <p class="spec-big">Гра у вашому Telegram. Зірки — на вашому рахунку.</p>
+            <p class="spec-body">Telegram платить розробнику приблизно $0,013 за кожну зірку. Мінімальне виведення становить 1 000 <svg class="ist" aria-label="зірок"><use href="#star" /></svg>, тобто близько $13.</p>
+            <p class="spec-glyphs">Ґанок, їжак, з'їв, є, Ї — 1 000 <svg class="ist" aria-label="зірок"><use href="#star" /></svg> ≈ 540 ₴</p>
+          </div>
+        </div>
+
+        <p class="dir-label">Hero</p>
+        <div class="frame d2-hero">
+          <div class="mini-nav">
+            <span class="mini-logo"><svg width="28" height="28"><use href="#logo-b" /></svg>Зорепад</span>
+            <span class="mini-links"><span>Ігри</span><span>Як це працює</span><span>Ціни</span><span>Питання</span></span>
+            <span class="d2-btn d2-btn--sm">Написати</span>
+          </div>
+          <div class="d2-hero__body">
+            <h3 class="d2-h1 mask">
+              <span class="ln"><span>Гра у вашому Telegram.</span></span>
+              <span class="ln"><span>Зірки — на вашому</span></span>
+              <span class="ln"><span>рахунку.</span></span>
+            </h3>
+            <div class="d2-rail" aria-hidden="true">
+              <svg class="d2-rail__star"><use href="#star" /></svg>
+              <span class="d2-rail__line"></span>
+              <span class="d2-rail__stop"></span>
+            </div>
+            <div class="d2-hero__foot">
+              <p class="d2-sub">Запускаємо словесну гру під назвою вашого каналу. Гравці купують підказки за Telegram Stars, а зірки йдуть на баланс вашого бота.</p>
+              <div class="d2-actions">
+                <span class="d2-btn">Обговорити гру</span>
+                <span class="d2-link">Переглянути ігри</span>
+              </div>
+            </div>
+            <p class="d2-first">Гравець відкриває гру безкоштовно</p>
+          </div>
+        </div>
+
+        <p class="dir-label">Секція «Шлях зірки» (кадр, коли зірка на станції «21 день»)</p>
+        <div class="frame d2-path">
+          <h3 class="d2-h2">Шлях однієї зірки від гравця до вашої картки</h3>
+          <ol class="d2-line">
+            <li class="done"><b>Гравець грає</b><span>Перші рівні й стартові підказки безкоштовні.</span></li>
+            <li class="done"><b>Застрягає</b><span>Слово не відгадується, а серію днів шкода переривати.</span></li>
+            <li class="done"><b>Купує підказку</b><span>Від 1 <svg class="ist" aria-label="зірок"><use href="#star" /></svg>, оплата в два дотики без картки.</span></li>
+            <li class="done"><b>Зірка на балансі</b><span>Зараховується на бот, який належить вам.</span></li>
+            <li class="now wait"><b>21 день</b><span>Після цього Telegram дозволяє вивести зірку.</span><svg class="d2-star" aria-hidden="true"><use href="#star" /></svg></li>
+            <li><b>Fragment</b><span>Від 1 000 <svg class="ist" aria-label="зірок"><use href="#star" /></svg>, приблизно $0,013 за зірку.</span></li>
+            <li><b>Гривні на картці</b><span>Сума залежить від курсу в день виведення.</span></li>
+          </ol>
+        </div>
+
+        <div class="fit">
+          <div><h3>Кому зайде</h3><p>Тим, хто боїться «обдурять» і «не окупиться». Схема з цифрою на кожній станції читається як прозорий документ, і це найближче до точності Stripe.</p></div>
+          <div><h3>Ризик</h3><p>Це найстриманіший напрям, і без сильного руху він знову може здатися «мертвим». Уся виразність тримається на сцені «Шлях зірки», тож вона має бути зроблена бездоганно.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ НАПРЯМ 3 -->
+    <section class="dir d3" id="d3" aria-labelledby="d3-t">
+      <div class="wrap">
+        <header class="dir-head">
+          <p class="dir-num">Напрям 3</p>
+          <h2 class="dir-title" id="d3-t">Афіша</h2>
+          <p class="dir-idea">
+            Кожен екран — плакат: величезні вузькі слова виїжджають з-під маски й стискаються на місце, а кольорові поля змінюють
+            одне одне під час скролу, як обкладинки випусків каналу.
+          </p>
+        </header>
+
+        <div class="dir-specs">
+          <ul class="swatches" aria-label="Палітра">
+            <li><span class="chip" style="--sw: #ff7a1a"></span><b>Мандарин</b><code>#FF7A1A</code><small>головне поле, текст лише темний</small></li>
+            <li><span class="chip" style="--sw: #1c1206"></span><b>Чорнило</b><code>#1C1206</code><small>текст, кнопки</small></li>
+            <li><span class="chip" style="--sw: #ffffff"></span><b>Білий</b><code>#FFFFFF</code><small>зірка, світлі поля</small></li>
+            <li><span class="chip" style="--sw: #a8dbff"></span><b>Небо</b><code>#A8DBFF</code><small>друге поле</small></li>
+            <li><span class="chip" style="--sw: #0b5c91"></span><b>Глибина</b><code>#0B5C91</code><small>посилання на білому</small></li>
+          </ul>
+
+          <div class="specimen">
+            <p class="spec-meta">Одна родина: Noto Sans Display Variable з осями ширини й ваги. Заголовки найвужчі й найважчі, текст звичайної ширини. У русі слова виїжджають з-під маски широкими й стискаються на місце.</p>
+            <p class="spec-big">Гра у вашому Telegram. Зірки — на вашому рахунку.</p>
+            <p class="spec-ramp" aria-label="Слово зірки в шести ширинах і вагах"><span style="--w: 100; --fw: 300">зірки</span><span style="--w: 92; --fw: 420">зірки</span><span style="--w: 84; --fw: 540">зірки</span><span style="--w: 76; --fw: 660">зірки</span><span style="--w: 68; --fw: 780">зірки</span><span style="--w: 62.5; --fw: 900">зірки</span></p>
+            <p class="spec-body">Ви платите 5 000 ₴ один раз за запуск і 500 ₴ щомісяця за сервер, домен, оновлення й підтримку.</p>
+            <p class="spec-glyphs">Ґанок, їжак, з'їв, є, Ї — 5 000 ₴</p>
+          </div>
+        </div>
+
+        <p class="dir-label">Hero і біжучий рядок</p>
+        <div class="frame d3-hero">
+          <div class="mini-nav">
+            <span class="mini-logo"><svg width="28" height="28"><use href="#logo-a" /></svg>Клітинка</span>
+            <span class="mini-links"><span>Ігри</span><span>Як це працює</span><span>Ціни</span><span>Питання</span></span>
+            <span class="d3-btn d3-btn--sm">Написати</span>
+          </div>
+          <svg class="d3-bigstar" aria-hidden="true"><use href="#star" /></svg>
+          <h3 class="d3-h1 mask">
+            <span class="ln"><span>Гра у вашому</span></span>
+            <span class="ln"><span>Telegram.</span></span>
+            <span class="ln"><span>Зірки — на</span></span>
+            <span class="ln"><span>вашому рахунку.</span></span>
+          </h3>
+          <div class="d3-hero__foot">
+            <p class="d3-sub">Запускаємо словесну гру під назвою вашого каналу. Гравці купують підказки за Telegram Stars, а зірки йдуть на баланс вашого бота.</p>
+            <div class="d3-actions">
+              <span class="d3-btn">Обговорити гру</span>
+              <span class="d3-link">Переглянути ігри</span>
+            </div>
+          </div>
+        </div>
+        <div class="d3-marquee" aria-label="1 підказка коштує 1 зірку. 21 день до виведення. Мінімум 1 000 зірок. Приблизно 0,013 долара за зірку.">
+          <div class="d3-marquee__track" aria-hidden="true">
+            <span>1 підказка = 1 <svg class="ist" aria-label="зірок"><use href="#star" /></svg></span><svg><use href="#star" /></svg>
+            <span>21 день до виведення</span><svg><use href="#star" /></svg>
+            <span>мінімум 1 000 <svg class="ist" aria-label="зірок"><use href="#star" /></svg></span><svg><use href="#star" /></svg>
+            <span>≈ $0,013 за зірку</span><svg><use href="#star" /></svg>
+            <span>1 підказка = 1 <svg class="ist" aria-label="зірок"><use href="#star" /></svg></span><svg><use href="#star" /></svg>
+            <span>21 день до виведення</span><svg><use href="#star" /></svg>
+            <span>мінімум 1 000 <svg class="ist" aria-label="зірок"><use href="#star" /></svg></span><svg><use href="#star" /></svg>
+            <span>≈ $0,013 за зірку</span><svg><use href="#star" /></svg>
+          </div>
+        </div>
+
+        <p class="dir-label">Секція «Як заробляємо ми»</p>
+        <div class="frame d3-price">
+          <h3 class="d3-h2">Як заробляємо ми</h3>
+          <div class="d3-price__row">
+            <p class="d3-big">5 000 ₴</p>
+            <p class="d3-note">один раз за запуск: гра під вашою назвою й кольорами, бот, адмін-панель і план просування.</p>
+          </div>
+          <div class="d3-price__row d3-price__row--alt">
+            <p class="d3-big">500 ₴</p>
+            <p class="d3-note">щомісяця: сервер, домен, оновлення й підтримка. Сума однакова, скільки б зірок не заробила гра.</p>
+          </div>
+          <p class="lab-flag">Чи беремо відсоток зі зірок, з'явиться тут лише після вашого підтвердження.</p>
+        </div>
+
+        <div class="fit">
+          <div><h3>Кому зайде</h3><p>Молодшим блогерам і тематичним спільнотам. Найсильніше перше враження, і найкраще працює на телефоні: вузький шрифт дає великі слова навіть на екрані 390 px.</p></div>
+          <div><h3>Ризик</h3><p>Гучність. Якщо переборщити, сайт стане схожим на рекламу розпродажу, а це б'є по довірі. Помаранчеве поле вимагає дисципліни: лише темний текст на ньому й не більше двох полів на екран. Noto Sans у звичайній ширині нейтральний, тож характер тримається лише на стиснутих заголовках і кольорі.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ НАЗВИ Й ЛОГОТИПИ -->
+    <section class="doc brand wrap" id="brand" aria-labelledby="brand-t">
+      <h2 class="doc-h2" id="brand-t">П'ять назв і два логотипи</h2>
+      <p class="doc-lead">Назви й логотипи спільні для всіх напрямів. Логотип A найкраще працює з назвою «Клітинка», логотип B — із «Зорепадом», але їх можна поєднувати як завгодно.</p>
+
+      <ol class="names">
+        <li><b>Клітинка</b><span>Клітинка словесної гри й місце на балансі, куди падає зірка. Коротка, українська, легко вимовити вголос.</span></li>
+        <li><b>Зорепад</b><span>Зірки, що падають на рахунок власника. Прямо пов'язана з Telegram Stars і зі сценою «Шлях зірки».</span></li>
+        <li><b>Хід</b><span>Хід у грі й хід грошей. Одне слово, але його важко знайти в пошуку.</span></li>
+        <li><b>Зоряна каса</b><span>Найпряміше каже про гроші. Ризик у тому, що звучить як обіцянка заробітку, тож поруч завжди потрібен чесний контекст.</span></li>
+        <li><b>Starkit</b><span>Латиницею, якщо колись захочете вийти за межі України. Звучить нейтральніше й менш запам'ятовується.</span></li>
+      </ol>
+
+      <div class="logos">
+        <figure class="logo-card l-d1">
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-a" /></svg><span class="wm wm--d1">Клітинка</span></div>
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-b" /></svg><span class="wm wm--d1">Зорепад</span></div>
+          <figcaption>У кольорах напряму 1</figcaption>
+        </figure>
+        <figure class="logo-card l-d2">
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-a" /></svg><span class="wm wm--d2">Клітинка</span></div>
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-b" /></svg><span class="wm wm--d2">Зорепад</span></div>
+          <figcaption>У кольорах напряму 2</figcaption>
+        </figure>
+        <figure class="logo-card l-d3">
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-a" /></svg><span class="wm wm--d3">Клітинка</span></div>
+          <div class="logo-row"><svg width="64" height="64"><use href="#logo-b" /></svg><span class="wm wm--d3">Зорепад</span></div>
+          <figcaption>У кольорах напряму 3</figcaption>
+        </figure>
+      </div>
+      <div class="favicons" aria-label="Логотипи в розмірі іконки вкладки">
+        <svg width="16" height="16" class="l-d1"><use href="#logo-a" /></svg>
+        <svg width="32" height="32" class="l-d1"><use href="#logo-a" /></svg>
+        <svg width="16" height="16" class="l-d2"><use href="#logo-b" /></svg>
+        <svg width="32" height="32" class="l-d2"><use href="#logo-b" /></svg>
+        <span>Так логотипи виглядають у розмірі 16 і 32 px.</span>
+      </div>
+    </section>
+
+    <footer class="doc wrap doc-end">
+      <p>Далі власник обирає напрям, назву й логотип. Після цього етап 2: прототип руху на обраному напрямі в <code>lab/motion.html</code>.</p>
+    </footer>
+  </body>
+</html>

@@ -1,253 +1,211 @@
 /**
- * Domain types for the Business Kit site.
+ * Типи сайту «Клітинка»: ігри в Telegram (Mini App) під ключ.
  *
- * Information architecture:
- *   Category (напрям)  →  Project (готовий бот + план)  →  Project page
+ *   Головна (про бізнес)  →  Каталог ігор /games  →  Сторінка гри /games/<id>
  *
- * Content lives in `src/data/`. Everything rendered on the site is described
- * here, so a typo in content becomes a compile error, not a broken page.
+ * Весь вміст лежить у src/data/. Помилка в даних стає помилкою компіляції, а не зламаною сторінкою.
  */
 
-import type { IconName } from '@/lib/icons';
-
-/**
- * Назва старої ілюстрації. Поле `art` залишено для сумісності даних:
- * новий дизайн показує замість ілюстрацій екрани ботів і іконки напрямів.
- */
-export type ArtName = 'media' | 'ai' | 'voice' | 'crossword' | 'education' | 'shop' | 'games';
-
-/** Hex color literal, e.g. `#3b82f6`. */
+/** Hex-колір, напр. `#0d2a1c`. */
 export type HexColor = `#${string}`;
 
 /* -------------------------------------------------------------------------- */
-/*  Category                                                                   */
+/*  Гра                                                                        */
 /* -------------------------------------------------------------------------- */
 
-export interface Category {
-  /** URL slug: `#/c/<id>`. Latin letters, digits and dashes. */
-  readonly id: string;
-  readonly name: string;
-  /** One sentence: what kind of business is in this direction. */
-  readonly description: string;
-  readonly icon: IconName;
-  readonly accent: HexColor;
-  /** Стара ілюстрація (не показується в новому дизайні, залишено для сумісності). */
-  readonly art: ArtName;
-  /** Optional real image (path in /public, e.g. '/images/media.webp'). Overrides `art`. */
-  readonly image?: string;
-}
+/** `available` — можна грати й купити; `soon` — у розробці. */
+export type GameStatus = 'available' | 'soon';
 
-/* -------------------------------------------------------------------------- */
-/*  Demo chat (phone mockup on the project page)                               */
-/* -------------------------------------------------------------------------- */
-
-export interface ChatMessage {
-  readonly from: 'user' | 'bot' | 'system';
-  readonly text: string;
-  /** Inline keyboard button under a bot message (e.g. "Купити за 15 ⭐"). */
-  readonly button?: string;
-}
-
-/** A real screenshot of the bot (file in /public). */
+/** Справжній скріншот гри (файл у /public). */
 export interface Screenshot {
   readonly src: string;
-  /** Short description for screen readers, e.g. "Оплата пакета в боті". */
+  /** Короткий опис для читачів екрана. */
   readonly alt: string;
 }
 
-/** What the buyer's customers pay inside the bot. */
+/** Що платять гравці всередині гри. */
 export interface CustomerPrice {
   readonly label: string;
+  /** Напр. '10 ★' або '3 підказки безкоштовно'. Символ ★ можна писати як ⭐ — сайт замінить. */
   readonly price: string;
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Unit economics (drives the calculator on the project page)                 */
-/* -------------------------------------------------------------------------- */
-
-/** Digital product monetized with Telegram Stars. */
+/** Модель доходу від зірок (для калькулятора, src/lib/economics.ts). */
 export interface StarsEconomics {
   readonly kind: 'stars';
-  /** Default share of visitors who pay at least once a month (0..1). */
+  /** Частка гравців, які платять хоча б раз на місяць (0..1). */
   readonly payerRate: number;
-  /** Average Stars spent by one paying user per month. */
+  /** Скільки зірок у середньому витрачає один платник за місяць. */
   readonly arppuStars: number;
-  /** Variable third-party cost per paying user per month, USD (AI APIs etc.). */
+  /** Змінні витрати на одного платника за місяць, USD (сторонні API тощо). */
   readonly apiCostPerPayerUsd: number;
 }
 
-/** Physical-goods store: profit = orders × average order × margin. */
+/** Модель для фізичних товарів. Для ігор не використовується, лишена для сумісності калькулятора. */
 export interface OrdersEconomics {
   readonly kind: 'orders';
   readonly payerRate: number;
   readonly avgOrderUah: number;
-  /** Seller's gross margin on goods (0..1). */
   readonly marginRate: number;
 }
 
-export type ProjectEconomics = StarsEconomics | OrdersEconomics;
+export type GameEconomics = StarsEconomics | OrdersEconomics;
 
-/* -------------------------------------------------------------------------- */
-/*  Project page building blocks                                               */
-/* -------------------------------------------------------------------------- */
-
-/** Inclusive numeric range, e.g. days to first client `[3, 7]`. */
+/** Діапазон, напр. дні до першого платника `[5, 14]`. */
 export type Range = readonly [min: number, max: number];
 
-/** A way to find clients for this project. */
-export interface AcquisitionChannel {
-  readonly icon: IconName;
+/** Канал просування гри. */
+export interface PromoChannel {
   readonly title: string;
   readonly description: string;
-  /** Does this channel cost money? Beginners start with `free`. */
+  /** Чи коштує канал грошей. Починати варто з `free`. */
   readonly cost: 'free' | 'paid';
 }
 
-/** One stage of the development plan that ships with the bot. */
+/** Етап плану просування. */
 export interface PlanPhase {
-  /** "Тиждень 1", "Місяць 2"… */
+  /** «Тиждень 1», «Місяць 2+»… */
   readonly period: string;
   readonly title: string;
-  /** Short daily/weekly actions. Shown as a preview of the full plan. */
   readonly tasks: readonly string[];
 }
 
-/** A direction for growing beyond the basic plan. */
-export interface GrowthDirection {
-  readonly title: string;
-  readonly description: string;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Project                                                                    */
-/* -------------------------------------------------------------------------- */
-
-export type ProjectStatus = 'available' | 'soon';
-
 /**
- * «Колірний світ» продукту: панель на головній і hero сторінки проєкту.
- * Усі поля необов'язкові: чого немає, те сайт виведе з `accent`
- * (див. src/lib/theme.ts). Перевіряйте контраст тексту `ink` на `bg` (≥ 4.5 : 1).
+ * Колірний світ гри: обкладинка в каталозі й hero сторінки гри.
+ * Перевіряйте контраст `ink` на `bg` (≥ 4,5 : 1).
  */
-export interface ProjectTheme {
-  /** Тло панелі, напр. '#0E3B3F'. */
-  readonly bg?: HexColor;
+export interface GameTheme {
+  /** Тло обкладинки й hero. */
+  readonly bg: HexColor;
   /** Колір тексту на тлі. */
-  readonly ink?: HexColor;
-  /** Колір головної кнопки на тлі. */
-  readonly accent?: HexColor;
-  /** Колір тексту на головній кнопці. */
-  readonly onAccent?: HexColor;
+  readonly ink: HexColor;
+  /** Колір плиток на обкладинці. */
+  readonly tile: HexColor;
+  /** Колір літер на плитках. */
+  readonly tileInk: HexColor;
 }
 
-export interface Project {
-  /** URL slug: `#/p/<id>`. */
+export interface Game {
+  /** Адреса сторінки: /games/<id>. Латиниця, цифри й дефіс. */
   readonly id: string;
-  /** Must match a `Category.id`. */
-  readonly categoryId: string;
-  /** `soon` = visible in the list, but not clickable yet. */
-  readonly status: ProjectStatus;
+  readonly status: GameStatus;
+  /** Заглушка: гра ще не існує. Завжди поводиться як `soon`, навіть якщо status помилково 'available'. */
+  readonly mock?: true;
 
   readonly name: string;
-  /** Коротка назва для великих заголовків і кнопок, напр. 'Слововир'. За замовчуванням: частина `name` до двокрапки. */
-  readonly shortName?: string;
-  readonly icon: IconName;
-  readonly accent: HexColor;
-  /** Колірний світ продукту. Без нього кольори виводяться з `accent`. */
-  readonly theme?: ProjectTheme;
-  /** One line under the name in lists. */
+  /** Жанр одним-двома словами: «Кросворд», «Вгадай слово». Фільтр у каталозі будується з цього поля. */
+  readonly genre: string;
+  /** Один рядок суті для картки в каталозі. */
   readonly tagline: string;
-  /** Who pays and for what, in plain words. */
+  /** Хто платить і за що, 2–3 речення. */
   readonly howItEarns: string;
+  /** Механіки гри, по одній на рядок. */
+  readonly mechanics: readonly string[];
 
-  /** One-time launch price, UAH. */
+  readonly theme: GameTheme;
+  /** Слово з плиток на обкладинці (до 7 літер), напр. 'СЛОВО'. */
+  readonly coverWord: string;
+  /** Справжня обкладинка (файл у /public). Замінює обкладинку з плиток. */
+  readonly cover?: string;
+  /** Картинка прев'ю посилання 1200×630 PNG у /public/og/. Без неї береться /og/<id>.png або загальна. */
+  readonly ogImage?: string;
+
+  /** Разова ціна запуску, ₴. */
   readonly priceUah: number;
-  /** Monthly hosting & support, UAH. */
+  /** Щомісячна плата за сервер, домен, оновлення й підтримку, ₴. */
   readonly monthlyUah: number;
 
-  /** Estimated days to the first paying client when following the plan. */
+  /** Ціни для гравців. */
+  readonly customerPrices: readonly CustomerPrice[];
+  /** Орієнтир: днів до першого платника за планом. */
   readonly firstClientDays: Range;
-  /** Estimated minutes per day the owner spends working the plan. */
+  /** Орієнтир: хвилин на день на просування. */
   readonly dailyMinutes: Range;
-  /** Where customers typically come from (used in calculator copy). */
+  /** Звідки зазвичай приходять гравці (для калькулятора). */
   readonly trafficSource: string;
-  readonly economics: ProjectEconomics;
+  readonly economics: GameEconomics;
 
-  readonly channels: readonly AcquisitionChannel[];
-  readonly plan: readonly PlanPhase[];
-  readonly directions: readonly GrowthDirection[];
-  /** What the bot does / what we set up. */
   readonly includes: readonly string[];
+  readonly channels: readonly PromoChannel[];
+  readonly plan: readonly PlanPhase[];
 
-  /** Short scripted chat shown in a phone mockup. Omit to hide the phone. */
-  readonly demo?: readonly ChatMessage[];
-  /** Built-in Mini App screen mockup instead of a chat (for games). */
-  readonly screen?: 'crossword';
-  /** Стара ілюстрація (не показується в новому дизайні, залишено для сумісності). */
-  readonly art?: ArtName;
-  /** Optional real screenshot (path in /public). Overrides the phone mockup and the list thumbnail. */
-  readonly image?: string;
-  /** Extra real screenshots shown as a gallery on the project page. Empty → section hidden. */
-  readonly screenshots?: readonly Screenshot[];
-  /** Link to a live demo bot, e.g. 'https://t.me/your_bot'. Shows "Спробувати бота" buttons. */
+  /** Посилання на гру в Telegram. Дає кнопку «Пограти». */
   readonly botUrl?: string;
-  /** Prices the end customers see inside the bot. */
-  readonly customerPrices?: readonly CustomerPrice[];
+  /** Справжні скріншоти. Порожньо → галерея прихована. */
+  readonly screenshots?: readonly Screenshot[];
+  /** Маленька робоча демо-гра на сторінці гри: 3–4 слова з питаннями. */
+  readonly demo?: readonly DemoWord[];
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Site content                                                               */
-/* -------------------------------------------------------------------------- */
-
-export interface WorkflowStep {
-  readonly title: string;
-  readonly description: string;
-  readonly icon: IconName;
-}
-
-export interface Offering {
-  readonly title: string;
-  readonly description: string;
-  readonly icon: IconName;
-}
-
-export interface FaqItem {
-  readonly question: string;
+/** Слово демо-кросворду. */
+export interface DemoWord {
+  readonly clue: string;
+  /** Відповідь великими літерами, без пробілів. */
   readonly answer: string;
 }
 
-/** Один крок на шкалі «Шлях за 30 днів» на головній. */
-export interface JourneyStep {
-  /** Коли: «День 0», «Тиждень 1»… */
+/**
+ * Сумісність із src/lib/economics.ts: калькулятор рахує «проєкт», тобто гру.
+ * Логіку економіки не змінюємо, тому лишаємо стару назву типу.
+ */
+export type Project = Game;
+
+/* -------------------------------------------------------------------------- */
+/*  Головна: бізнес                                                            */
+/* -------------------------------------------------------------------------- */
+
+/** Станція сцени «Шлях зірки». */
+export interface StarStep {
+  readonly label: string;
+  /** Фігура з плиток: '★' — плитка-зірка, ' ' — вузька проставка, '₴' — плитка гривні. */
+  readonly figure: string;
+  readonly prefix?: string;
+  readonly text: string;
+}
+
+/** Причина «Чому це вигідно». */
+export interface Reason {
+  readonly figure: string;
+  readonly title: string;
+  readonly text: string;
+}
+
+/** Що ми надаємо. */
+export interface Offering {
+  /** Коротке слово з плиток (до 6 літер), напр. 'ПЛАН'. */
+  readonly word: string;
+  readonly title: string;
+  readonly text: string;
+}
+
+/** Для кого: одна конкретна ситуація. */
+export interface Audience {
+  readonly title: string;
+  readonly situation: string;
+}
+
+/** Етап запуску. */
+export interface LaunchStep {
   readonly when: string;
   readonly title: string;
   readonly text: string;
 }
 
-/** Що потрібно від покупця (чесний блок на головній). */
-export interface Requirement {
-  /** Коротко й великим шрифтом: «30–60 хв», «Телефон». */
-  readonly value: string;
-  readonly text: string;
-}
-
-/** Реальна статистика ботів. Блок на головній прихований, поки масив порожній. */
-export interface ProofStat {
-  /** Число або коротке значення, напр. '1 240'. Лише справжні дані. */
-  readonly value: string;
-  /** Що це, напр. 'людей скористалися «Голос → Текст» за вересень'. */
-  readonly label: string;
+export interface FaqItem {
+  readonly question: string;
+  /** `null` — відповідь чекає підтвердження власника, питання не показується. */
+  readonly answer: string | null;
 }
 
 export interface MarketRates {
-  /** USD a developer receives per 1 Telegram Star on withdrawal. */
+  /** USD, які розробник отримує за 1 зірку при виведенні. */
   readonly starPayoutUsd: number;
-  /** UAH per 1 USD. */
+  /** Гривень за 1 USD. */
   readonly uahPerUsd: number;
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Calculator & routing                                                       */
+/*  Калькулятор і маршрути                                                     */
 /* -------------------------------------------------------------------------- */
 
 export interface RevenueForecast {
@@ -257,18 +215,19 @@ export interface RevenueForecast {
   readonly costsUah: number;
   readonly netUah: number;
   readonly netYearUah: number;
-  /** Days until the launch price is earned back; `null` if never. */
+  /** Днів до окупності запуску; `null`, якщо не окупається. */
   readonly paybackDays: number | null;
 }
 
-/** Calculator inputs (local state of one calculator instance). */
 export interface CalculatorState {
   readonly traffic: number;
   readonly payerRate: number;
 }
 
-/** Hash routes: `#/`, `#/c/<categoryId>`, `#/p/<projectId>`. */
+/** Маршрути: /, /games, /games/<id>, /offer, /privacy, усе інше — 404. */
 export type Route =
   | { readonly name: 'home' }
-  | { readonly name: 'category'; readonly id: string }
-  | { readonly name: 'project'; readonly id: string };
+  | { readonly name: 'games' }
+  | { readonly name: 'game'; readonly id: string }
+  | { readonly name: 'legal'; readonly id: 'offer' | 'privacy' }
+  | { readonly name: 'notFound' };

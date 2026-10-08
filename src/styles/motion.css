@@ -1,53 +1,111 @@
 /* ==========================================================================
-   Рух. Появи при скролі лише під .js (без JS контент видно одразу),
-   лише transform/opacity. prefers-reduced-motion вимикає все.
+   Рух: кінетичні заголовки, падіння плиток, переходи між сторінками.
+   Анімуються лише transform і opacity.
    ========================================================================== */
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal],
-  .js [data-stagger] > * {
-    opacity: 0;
-    translate: 0 22px;
-    transition:
-      opacity var(--dur-slow) var(--ease-out),
-      translate var(--dur-slow) var(--ease-out);
-    transition-delay: calc(var(--i, 0) * var(--stagger-step));
-  }
 
-  .js [data-reveal].is-visible,
-  .js [data-stagger].is-visible > * {
-    opacity: 1;
-    translate: 0 0;
+/* Кінетичні заголовки. Без JS текст просто видно; з JS — ховаємо до поділу на слова,
+   а failsafe показує його не пізніше ніж за 1 с, навіть якщо скрипт не спрацював. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .kinetic:not(.is-split):not(.is-static) {
+    opacity: 0;
+    animation: failsafe 0s linear 0.9s forwards;
+  }
+  [data-drop]:not(.drop-ready):not(.drop-still) .t,
+  [data-drop]:not(.drop-ready):not(.drop-still) .tile {
+    opacity: 0;
+    animation: failsafe 0s linear 0.9s forwards;
   }
 }
 
-::view-transition-old(root),
+@keyframes failsafe {
+  to { opacity: 1; }
+}
+
+.kinetic.is-split .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.12em 0 0.16em;
+  margin: -0.12em 0 -0.16em;
+}
+
+.kinetic.is-split .wi {
+  display: inline-block;
+  transform: translate3d(0, 112%, 0);
+  transition: transform 0.7s var(--ease-out);
+  transition-delay: calc(var(--i) * 38ms);
+}
+
+.kinetic.is-in .wi {
+  transform: none;
+}
+
+/* Плитки падають на місце один раз; на слабких пристроях — одразу на місці. */
+.drop-ready .t,
+.drop-ready .tile {
+  opacity: 0;
+  transform: translate3d(0, -28px, 0);
+}
+
+.drop-go .t,
+.drop-go .tile {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.25s, transform 0.45s var(--ease-spring);
+  transition-delay: calc(80ms + var(--i, var(--t, 0)) * 35ms);
+}
+
+/* Переходи між сторінками (View Transitions API) */
+::view-transition-old(root) {
+  animation: vt-out 0.2s ease both;
+}
+
 ::view-transition-new(root) {
-  animation-duration: 240ms;
+  animation: vt-in 0.42s var(--ease-out) both;
+}
+
+::view-transition-group(game-cover) {
+  animation-duration: 0.55s;
   animation-timing-function: var(--ease-out);
 }
 
-@keyframes msg-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.96); }
-  to { opacity: 1; transform: none; }
+@keyframes vt-out {
+  to { opacity: 0; }
 }
 
-@keyframes live-pulse {
-  0% { transform: scale(1); opacity: 0.6; }
-  80%, 100% { transform: scale(2.6); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .live__dot::after { animation: live-pulse 2.4s ease-out infinite; }
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
   *,
   *::before,
   *::after {
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
-    transition-delay: 0ms !important;
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  /* Без руху стрічка стає переліком фактів: ряд переноситься, роздільники й копії зникають. */
+  .marquee__track {
+    display: block;
+    width: auto;
+    padding-inline: var(--gutter);
+    white-space: normal;
+    animation: none;
+  }
+  .marquee__row {
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    padding-right: 0;
+  }
+  .marquee__item {
+    white-space: normal;
+  }
+  .marquee__sep,
+  .marquee__row--copy {
+    display: none;
   }
 }
