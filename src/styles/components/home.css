@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Home page sections.
+   ========================================================================== */
+
+/* --- Hero: centred, one message, two actions ------------------------------ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding-top: calc(var(--nav-h) + clamp(3.5rem, 2rem + 7vw, 8rem));
+  padding-bottom: clamp(2rem, 1rem + 4vw, 4rem);
+  text-align: center;
+}
+
+.hero__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+  padding: 0.4rem 0.95rem 0.4rem 0.8rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / 0.03);
+  font-size: var(--fs-xs);
+  color: var(--c-text-soft);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-profit);
+  animation: pulse-dot 2.2s var(--ease-out) infinite;
+}
+
+.hero__title {
+  font-size: var(--fs-h1);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+  max-width: 17ch;
+  margin-bottom: 1.5rem;
+}
+
+.hero__lead {
+  font-size: var(--fs-xl);
+  line-height: 1.5;
+  color: var(--c-muted);
+  max-width: 44ch;
+  margin-bottom: 2.5rem;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* --- Category grid --------------------------------------------------------- */
+/* Flex-wrap instead of grid: an incomplete last row stretches to fill the
+   width, so any number of categories looks intentional (3 + 2, 3 + 1…). */
+.cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cat-grid > li {
+  display: flex;
+  flex: 1 1 300px;
+}
+
+/* --- Offer: three things in the box --------------------------------------- */
+.section--tint {
+  background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.02) 30%, rgb(255 255 255 / 0.02) 70%, transparent);
+}
+
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.offer {
+  padding: 2rem;
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.offer h3 {
+  font-size: var(--fs-h3);
+  margin-bottom: 0.6rem;
+}
+
+.offer p {
+  color: var(--c-muted);
+  font-size: var(--fs-sm);
+}
+
+.offer__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  color: var(--c-text);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid var(--c-border);
+}
+
+/* The plan is the differentiator: give it the money colour */
+.offer--key {
+  border-color: rgb(61 255 143 / 0.25);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgb(61 255 143 / 0.08), transparent 70%),
+    var(--c-surface);
+}
+
+.offer--key .offer__icon {
+  color: var(--c-profit);
+  background: var(--c-profit-dim);
+  border-color: rgb(61 255 143 / 0.25);
+}
+
+/* --- Steps ----------------------------------------------------------------- */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+  counter-reset: step;
+}
+
+.step__num {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1.25rem;
+  border-radius: 50%;
+  font-weight: 600;
+  color: var(--c-text);
+  border: 1px solid var(--c-border-strong);
+}
+
+.step:last-child .step__num {
+  color: #000;
+  background: var(--c-profit);
+  border-color: var(--c-profit);
+}
+
+.step__title {
+  font-size: var(--fs-h3);
+  margin-bottom: 0.6rem;
+}
+
+.step__text {
+  color: var(--c-muted);
+  font-size: var(--fs-sm);
+  max-width: 34ch;
+}
+
+/* --- Final CTA ------------------------------------------------------------- */
+.final-cta {
+  padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4rem);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-border);
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 120%, rgb(61 255 143 / 0.12), transparent 70%),
+    var(--c-surface);
+  text-align: center;
+}
+
+.final-cta h2 {
+  font-size: var(--fs-h2);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: 1rem;
+}
+
+.final-cta p {
+  max-width: 46ch;
+  margin: 0 auto 2rem;
+  color: var(--c-muted);
+  font-size: var(--fs-lg);
+}
+
+@media (max-width: 860px) {
+  .offer-grid,
+  .steps { grid-template-columns: 1fr; }
+  .steps { gap: 2rem; }
+}
+
+@media (max-width: 560px) {
+  .hero__actions { width: 100%; }
+  .hero__actions .btn { flex: 1 1 100%; }
+}

@@ -1,0 +1,95 @@
+/* ==========================================================================
+   Buttons. Motion uses the individual `translate` / `scale` properties so
+   the magnetic offset (JS → --tx/--ty) and press scale compose freely.
+   ========================================================================== */
+.btn {
+  --tx: 0px;
+  --ty: 0px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.7rem 1.35rem;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  isolation: isolate;
+  translate: var(--tx) var(--ty);
+  transition:
+    translate 450ms var(--ease-spring),
+    scale var(--dur-fast) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.btn:active { scale: 0.97; }
+
+.btn--sm { min-height: 38px; padding: 0.5rem 1rem; font-size: var(--fs-xs); }
+.btn--lg { min-height: 52px; padding: 0.9rem 1.75rem; font-size: var(--fs-md); }
+.btn--block { width: 100%; }
+
+.btn--primary {
+  background: var(--c-text);
+  color: #000;
+}
+
+.btn--primary:hover {
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.08), 0 8px 32px -8px rgb(255 255 255 / 0.4);
+}
+
+.btn--secondary {
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid var(--c-border-strong);
+  color: var(--c-text);
+}
+
+.btn--secondary:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+/* Ghost: hairline border with a light that orbits it on hover */
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes orbit {
+  to { --angle: 360deg; }
+}
+
+.btn--ghost {
+  color: var(--c-text-soft);
+  border: 1px solid var(--c-border-strong);
+  background: transparent;
+}
+
+.btn--ghost::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), transparent 0 55%, rgb(255 255 255 / 0.85) 72%, transparent 88%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+  animation: orbit 2.8s linear infinite paused;
+}
+
+.btn--ghost:hover { color: var(--c-text); }
+
+.btn--ghost:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+}

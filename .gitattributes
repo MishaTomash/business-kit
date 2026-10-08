@@ -1,0 +1,3 @@
+# Скрипти завжди з LF, інакше на Linux: "bad interpreter: /bin/bash^M"
+*.sh text eol=lf
+* text=auto

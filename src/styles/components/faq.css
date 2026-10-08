@@ -1,0 +1,50 @@
+/* FAQ accordion on native <details>; smooth height where supported. */
+.faq { border-top: 1px solid var(--c-border); }
+
+.faq__item { border-bottom: 1px solid var(--c-border); }
+
+.faq__item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 450ms var(--ease-out),
+    content-visibility 450ms allow-discrete;
+}
+
+.faq__item[open]::details-content { block-size: auto; }
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 0;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  color: var(--c-text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__q::-webkit-details-marker { display: none; }
+
+.faq__toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--c-border);
+  color: var(--c-muted);
+  rotate: 45deg;
+  transition: rotate 400ms var(--ease-spring), color var(--dur-fast);
+}
+
+.faq__item[open] .faq__toggle { rotate: 0deg; color: var(--c-text); }
+
+.faq__a p {
+  padding-bottom: 1.5rem;
+  max-width: 64ch;
+  color: var(--c-muted);
+}

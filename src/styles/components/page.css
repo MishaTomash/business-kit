@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Inner pages (category, project, not found): shared layout pieces.
+   ========================================================================== */
+.page {
+  position: relative;
+  padding-top: calc(var(--nav-h) + clamp(2rem, 1rem + 3vw, 3.5rem));
+  padding-bottom: var(--section-y);
+  min-height: 80vh;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.35rem 0.85rem 0.35rem 0.6rem;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  color: var(--c-muted);
+  border: 1px solid var(--c-border);
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+
+.back .icon {
+  rotate: 180deg;
+  transition: translate 350ms var(--ease-spring);
+}
+
+.back:hover { color: var(--c-text); border-color: var(--c-border-strong); }
+.back:hover .icon { translate: -3px 0; }
+
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.page-head__title {
+  font-size: var(--fs-h2);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: 0.35rem;
+}
+
+.page-head__lead {
+  color: var(--c-muted);
+  font-size: var(--fs-lg);
+  max-width: 56ch;
+}
+
+/* Empty / not-found state */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: clamp(2.5rem, 2rem + 4vw, 5rem) 1.5rem;
+  text-align: center;
+  border: 1px dashed var(--c-border-strong);
+  border-radius: var(--r-xl);
+}
+
+.empty h1,
+.empty h2 { font-size: var(--fs-h3); }
+
+.empty p {
+  color: var(--c-muted);
+  max-width: 44ch;
+  margin-bottom: 0.75rem;
+}
+
+.empty__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: var(--c-text);
+  background: rgb(255 255 255 / 0.05);
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .page-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}

@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Project calculator: inputs on top, one clear answer below.
+   ========================================================================== */
+.calc {
+  display: grid;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+
+.calc__inputs {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+}
+
+.calc__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.calc__label { font-size: var(--fs-sm); color: var(--c-text-soft); }
+
+.calc__output {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 600;
+  color: var(--c-text);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calc__output--sm { font-size: var(--fs-xl); }
+
+.calc__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -0.5rem;
+  font-size: 0.75rem;
+  color: var(--c-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__hint { font-size: var(--fs-xs); color: var(--c-subtle); }
+
+/* Assumptions, folded away for beginners */
+.calc__more {
+  border-top: 1px solid var(--c-border);
+  padding-top: 1rem;
+}
+
+.calc__more summary {
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  color: var(--c-muted);
+  list-style: none;
+  width: fit-content;
+  transition: color var(--dur-fast);
+}
+
+.calc__more summary::-webkit-details-marker { display: none; }
+.calc__more summary::after { content: ' +'; }
+.calc__more[open] summary::after { content: ' −'; }
+.calc__more summary:hover { color: var(--c-text); }
+.calc__more[open] summary { margin-bottom: 1rem; }
+.calc__more > :not(summary) + :not(summary) { margin-top: 0.75rem; }
+
+/* --- Presets --------------------------------------------------------------- */
+.presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.preset {
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  color: var(--c-text-soft);
+  border: 1px solid var(--c-border-strong);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-fast), background-color var(--dur-fast), border-color var(--dur-fast), scale 200ms var(--ease-spring);
+}
+
+.preset:hover { color: var(--c-text); border-color: rgb(255 255 255 / 0.3); }
+.preset:active { scale: 0.95; }
+
+.preset.is-active {
+  color: #000;
+  background: var(--c-text);
+  border-color: var(--c-text);
+}
+
+/* --- Range slider ---------------------------------------------------------- */
+.range {
+  --fill: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--c-profit) var(--fill), rgb(255 255 255 / 0.1) var(--fill));
+}
+
+.range::-moz-range-track { height: 6px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.1); }
+.range::-moz-range-progress { height: 6px; border-radius: var(--r-pill); background: var(--c-profit); }
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 6px rgb(61 255 143 / 0.15), 0 4px 14px rgb(0 0 0 / 0.6);
+  transition: box-shadow var(--dur-base) var(--ease-out), scale 250ms var(--ease-spring);
+}
+
+.range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 6px rgb(61 255 143 / 0.15), 0 4px 14px rgb(0 0 0 / 0.6);
+}
+
+.range:hover::-webkit-slider-thumb,
+.range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 10px rgb(61 255 143 / 0.2), 0 0 24px var(--c-profit-glow); }
+.range:active::-webkit-slider-thumb { scale: 1.12; }
+.range:focus-visible { outline: none; }
+
+/* --- Result ---------------------------------------------------------------- */
+.calc__result {
+  display: grid;
+  gap: 0.25rem;
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  border-top: 1px solid rgb(61 255 143 / 0.18);
+  background: radial-gradient(ellipse 70% 90% at 0% 0%, rgb(61 255 143 / 0.08), transparent 70%), #070907;
+}
+
+.calc__result-label { font-size: var(--fs-sm); color: var(--c-text-soft); }
+
+.calc__net {
+  font-size: var(--fs-profit);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  color: var(--c-profit);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calc__year {
+  font-size: var(--fs-sm);
+  color: var(--c-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__year span { color: var(--c-text); font-weight: 500; }
+
+.calc__rows {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--c-border);
+}
+
+.calc__rows dt { font-size: var(--fs-xs); color: var(--c-muted); }
+
+.calc__rows dd {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__payback {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin-top: 1.25rem;
+  font-size: var(--fs-sm);
+  color: var(--c-text-soft);
+}
+
+.calc__payback .icon { color: var(--c-profit); margin-top: 3px; }
+.calc__payback strong { color: var(--c-profit); }
+
+.calc.is-negative .calc__net { color: var(--c-loss); }
+.calc.is-negative .calc__payback .icon { color: var(--c-muted); }
+
+.calc__note {
+  padding: 0.9rem clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  font-size: 0.75rem;
+  color: var(--c-subtle);
+  border-top: 1px solid var(--c-border);
+}
+
+@media (max-width: 480px) {
+  .calc__rows { grid-template-columns: 1fr 1fr; }
+}

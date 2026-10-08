@@ -1,0 +1,36 @@
+# /etc/nginx/sites-available/business-kit
+# Статичний сайт (Vite). HTTPS додасть certbot: sudo certbot --nginx -d business-kit.smartekua.store
+server {
+    listen 80;
+    listen [::]:80;
+    server_name business-kit.smartekua.store;
+
+    root /var/www/business-kit;
+    index index.html;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml application/json;
+
+    # Файли з хешем у назві (/assets/index-AbC123.js) не змінюються: кеш на рік
+    location /assets/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        include /etc/nginx/snippets/business-kit-security.conf;
+    }
+
+    # HTML і решта: браузер щоразу перевіряє свіжість, оновлення видно одразу
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache" always;
+        include /etc/nginx/snippets/business-kit-security.conf;
+    }
+}
+
+# --- /etc/nginx/snippets/business-kit-security.conf --------------------------
+# Окремий файл, бо add_header усередині location скасовує заголовки рівня server.
+# Сайт не вантажить нічого стороннього (шрифти в збірці), тому політика сувора.
+#
+# add_header X-Content-Type-Options "nosniff" always;
+# add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+# add_header X-Frame-Options "DENY" always;
+# add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;

@@ -1,0 +1,6 @@
+node_modules
+dist
+*.local
+.DS_Store
+# Конфіг середовища: на сервері створюється з .env.example
+.env

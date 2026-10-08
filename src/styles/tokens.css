@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Design tokens. Every color, radius, duration and easing lives here.
+   Theme = pitch black + white type + one emotional color: profit green.
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* --- Color: surfaces --------------------------------------------------- */
+  --c-bg: #000000;
+  --c-surface: #0a0a0a;          /* cards: a breath above black */
+  --c-surface-2: #121212;        /* inputs, nested tiles */
+  --c-border: rgb(255 255 255 / 0.08);
+  --c-border-strong: rgb(255 255 255 / 0.16);
+
+  /* --- Color: text ------------------------------------------------------- */
+  --c-text: #ffffff;
+  --c-text-soft: #d4d4d4;
+  --c-muted: #8f8f8f;
+  --c-subtle: #5c5c5c;
+
+  /* --- Color: meaning ---------------------------------------------------- */
+  --c-profit: #3dff8f;           /* the money color: used ONLY for profit */
+  --c-profit-dim: rgb(61 255 143 / 0.12);
+  --c-profit-glow: rgb(61 255 143 / 0.35);
+  --c-loss: #ff6b6b;
+  --c-star: #ffcf4a;
+
+  /* Per-component accent (overridden inline per product) */
+  --accent: #ffffff;
+
+  /* --- Typography -------------------------------------------------------- */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-xs: 0.8125rem;   /* 13 */
+  --fs-sm: 0.9375rem;   /* 15 */
+  --fs-md: 1rem;        /* 16 */
+  --fs-lg: 1.125rem;    /* 18 */
+  --fs-xl: clamp(1.25rem, 1rem + 0.8vw, 1.5rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --fs-h2: clamp(1.875rem, 1.4rem + 1.8vw, 2.75rem);
+  --fs-h1: clamp(2.5rem, 1.6rem + 3.8vw, 4.5rem);
+  --fs-profit: clamp(2.75rem, 2rem + 3vw, 4rem);
+
+  --tracking-tight: -0.045em;
+  --tracking-snug: -0.025em;
+
+  /* --- Space & shape ----------------------------------------------------- */
+  --container: 1200px;
+  --gutter: clamp(1.25rem, 0.8rem + 2vw, 2rem);
+  --section-y: clamp(4.5rem, 3rem + 5vw, 7.5rem);
+
+  --r-xl: 28px;   /* major panels */
+  --r-lg: 22px;   /* cards */
+  --r-md: 14px;   /* tiles, inputs */
+  --r-sm: 10px;
+  --r-pill: 999px;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);      /* expo-out: silky */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 900ms;
+  --stagger-step: 90ms;
+
+  --nav-h: 64px;
+}

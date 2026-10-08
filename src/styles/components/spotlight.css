@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Spotlight: soft cursor-tracked light on card borders and surfaces.
+   JS writes --mx/--my relative to each card (see lib/spotlight.ts).
+   ========================================================================== */
+.spotlight {
+  --mx: -1000px;
+  --my: -1000px;
+  --spot-size: 420px;
+  --spot-tint: color-mix(in srgb, var(--accent) 50%, white);
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before,
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+}
+
+/* Border ring */
+.spotlight::before {
+  z-index: 2;
+  padding: 1px;
+  background: radial-gradient(var(--spot-size) circle at var(--mx) var(--my), var(--spot-tint), transparent 40%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* Surface glow */
+.spotlight::after {
+  z-index: -1;
+  background: radial-gradient(
+    calc(var(--spot-size) * 1.2) circle at var(--mx) var(--my),
+    color-mix(in srgb, var(--accent) 8%, transparent),
+    transparent 45%
+  );
+}
+
+.spotlight-group:hover .spotlight::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .spotlight::before,
+  .spotlight::after { display: none; }
+}
