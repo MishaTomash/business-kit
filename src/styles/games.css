@@ -107,7 +107,11 @@
 }
 
 .nf__spiral {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
+}
+
+.nf__eyebrow {
+  margin-bottom: var(--space-3);
 }
 
 .spiral--nf {

@@ -72,6 +72,7 @@ export const GAME_PAGE = {
 } as const;
 
 export const NOT_FOUND = {
+  eyebrow: 'Помилка 404',
   title: 'Такої сторінки немає',
   lead: 'Можливо, адреса змінилась або гру прибрали з каталогу. Усі ігри зібрані в одному місці.',
   home: 'На головну',

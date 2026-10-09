@@ -24,6 +24,7 @@ export function notFoundView(path = '/404'): View {
       <section class="sec nf" aria-labelledby="nf-t">
         <div class="wrap">
           <div class="nf__spiral">${spiralMarkup({ rungs: 22, name: 'nf', className: 'spiral--nf spiral--h' })}</div>
+          <p class="eyebrow nf__eyebrow">${NOT_FOUND.eyebrow}</p>
           <h1 class="h1 nf__title" id="nf-t">${NOT_FOUND.title}</h1>
           <p class="lead">${NOT_FOUND.lead}</p>
           <div class="actions">${button(href.home(), NOT_FOUND.home)}${button(href.games(), NOT_FOUND.catalog, { variant: 'ghost' })}</div>

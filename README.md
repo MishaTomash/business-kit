@@ -123,21 +123,50 @@ sudo certbot --nginx -d klitynka.online
 попередження зі списком місць. **Такі місця потрапляють на сайт як є**, тож перед запуском замініть їх.
 Зараз їх три: ім'я бота-магазину (оферта і політика) і регіон кластера MongoDB Atlas (політика).
 
-## Дизайн
+## Дизайн («ДНК»)
+
+Джерело правди — `design/DESIGN-SPEC.md` і макети `design/pages/*.png` (індекс `design/PAGES.md`).
+Живий огляд усіх токенів, компонентів і відбитків: `npm run dev` → `/lab/system.html`.
 
 | Що | Де |
 | --- | --- |
-| Кольори, шрифти, шкала тексту, відступи, рух | `src/styles/tokens.css` |
-| Шрифти (лише latin і cyrillic; cyrillic-ext лише заради ₴) | `src/styles/fonts.css` |
-| Колірний світ гри | `theme` у грі (`src/data/games.ts`) |
-| Огляд дизайн-системи й відбитків усіх ігор | `npm run dev` → `/lab/system.html` |
-| Генетичний відбиток гри | `src/lib/fingerprint.ts` (правило), `src/components/fingerprint.ts` (картка й смужка), поле `dna` у `games.ts` |
+| Кольори, шкала тексту, відступи, тривалості руху | `src/styles/tokens.css` |
+| Тони секцій (темна, «Шар», світла, коралова) | класи `.tone-layer`, `.tone-light`, `.tone-coral` у `tokens.css` |
+| Шрифти: Rubik 800 (заголовки), Golos Text 400/600 (текст) | `src/styles/fonts.css`, пакети `@fontsource/*` |
+| Генетичний відбиток гри | `src/lib/fingerprint.ts` (правило), `src/components/fingerprint.ts` (смужка й картка), поле `dna` у `src/data/games.ts` |
+| Спіраль і «Шлях зірки» | `src/components/spiral.ts` + `src/lib/spiral.ts`, `src/components/starPath.ts` + `src/lib/star-path.ts` |
+| Значки (зірка, стрілка, ≈, логотип) | SVG-спрайт в `index.html` |
 
-Рух: спіраль ДНК у hero (`src/lib/spiral.ts`: один rAF-цикл, пауза поза екраном, слабкий режим за спекою),
-«Шлях зірки» з підсвічуванням кроків і перекладин (`src/lib/star-path.ts`, IntersectionObserver), біжучий рядок,
-переходи між сторінками (View Transitions). Скрол нативний. З `prefers-reduced-motion` і без JS усе статичне й читається.
+### Як змінити колір
 
-Папка `lab/` (дизайн-система, генератор прев'ю, етапи арт-дирекшну) у збірку не потрапляє.
+Змінюйте лише змінні в `:root` файлу `tokens.css` (`--ground`, `--layer`, `--ivory`, `--lichen`, `--coral`, `--star`…).
+Компоненти беруть семантичні змінні (`--bg`, `--fg`, `--fg-muted`, `--accent`), які тони секцій перевизначають,
+тож окремих правок у компонентах не треба. Біля кожного кольору в коментарі вказано контраст: новий колір
+перевірте на AA (текст ≥ 4,5 : 1, рамки й значки ≥ 3 : 1). Золото `--star` — лише для ★ і сум у зірках.
+Після зміни кольорів перегенеруйте прев'ю: `node lab/og-export.mjs` (кольори продубльовані в `lab/og/og.ts`).
+
+### Як змінити шрифти
+
+Шрифти лише локальні (CSP не пускає CDN). Новий шрифт: `npm i @fontsource/<назва>`, у `fonts.css` підключіть
+лише потрібні ваги й підмножини latin і cyrillic (cyrillic-ext — тільки якщо потрібен ₴, через `unicode-range`),
+оновіть `--font-display` / `--font-text` у `tokens.css` і регулярний вираз preload у `vite.config.ts`.
+
+### Як змінити відбиток
+
+Відбиток рахується з назви, жанру й кольору гри (`dna: { genre, color }`), нічого не зберігається.
+Змінити вигляд конкретної гри — змініть `dna.color` (на сусідній відтінок) або жанр. Саме правило
+(`src/lib/fingerprint.ts`) — точна копія `design/ka-lib.cjs`; міняйте його лише разом з еталоном.
+Перевірка: `npm test` (контрольний приклад спеки, порівняння з ka-lib, унікальність відбитків ігор).
+Кольори жанрів — `--genre-*` у `tokens.css` і `GENRE_COLORS` у `src/lib/fingerprint.ts` (тест стежить, щоб збігались).
+
+### Рух
+
+Спіраль ДНК у hero (один rAF-цикл, пауза поза екраном, слабкий режим за спекою: ≤ 4 ГБ пам'яті, ≤ 4 ядра
+або < 45 FPS → 12 перекладин і рух лише від скролу), «Шлях зірки» з підсвічуванням кроків (IntersectionObserver),
+переходи між сторінками (View Transitions). Лише `transform` і `opacity`. Скрол нативний.
+З `prefers-reduced-motion` і без JS усе статичне й читається.
+
+Папка `lab/` (дизайн-система, генератор прев'ю) у збірку не потрапляє.
 
 ## Структура коду
 
@@ -151,9 +180,11 @@ src/
 ├── data/              brand, site, games, business + index.ts з пошуком
 ├── views/             home, games, game, legal, notFound, common (спільна поведінка)
 ├── components/        spiral, starPath, fingerprint, faq, calculator, ui
+tests/                 тести відбитка (npm test)
 ├── lib/               значки (icons), відбиток (fingerprint), рух (spiral, star-path, scroll),
 │                      economics (калькулятор), format, theme, markdown (оферта й політика), dom (безпечні шаблони)
-└── styles/            fonts → tokens → base → components → layout → legacy (тимчасово) → tiles → home/games/game/calculator → motion
+└── styles/            fonts → tokens → base → components → layout → fingerprint → spiral → path →
+                       home/games/game/legal/calculator → motion
 docs/ADD-GAME.md       як додати гру
 content/legal/         оферта й політика конфіденційності (Markdown)
 lab/                   system.html, og.html + og-export.mjs, tg-preview.mjs (макет прев'ю в Telegram) (не входить у збірку)
