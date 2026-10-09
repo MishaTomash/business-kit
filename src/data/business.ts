@@ -124,7 +124,6 @@ export const AUDIENCES: readonly Audience[] = [
 export const LAUNCH: readonly LaunchStep[] = [
   { when: 'День 0', title: 'Обговорення', text: 'Пишете нам у Telegram. Обираємо гру, назву, кольори й тему контенту.' },
   { when: 'Оплата', title: `${textNumber(PRICING.launchUah)} ₴ за запуск`, text: 'Платите один раз. Далі лише щомісячна плата за сервер і підтримку.' },
-  // ПІДТВЕРДИТИ: строк запуску (DEPLOY_TIME у site.ts)
   { when: DEPLOY_TIME, title: 'Гра працює', text: 'Бот на вашому акаунті, гра під вашою назвою. Ви отримуєте адмін-панель і план просування.' },
   { when: 'Тиждень 1', title: 'Перші гравці', text: 'Закріплюєте гру в каналі й робите перші пости й відео за планом.' },
   {
