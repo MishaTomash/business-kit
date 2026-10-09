@@ -133,8 +133,9 @@ sudo certbot --nginx -d klitynka.online
 | Огляд дизайн-системи й відбитків усіх ігор | `npm run dev` → `/lab/system.html` |
 | Генетичний відбиток гри | `src/lib/fingerprint.ts` (правило), `src/components/fingerprint.ts` (картка й смужка), поле `dna` у `games.ts` |
 
-Рух: сцена «Шлях зірки», біжучий рядок, переходи між сторінками (View Transitions). Скрол нативний.
-З `prefers-reduced-motion` усе статичне. Спіраль ДНК і новий «Шлях зірки» додаються на етапі S4.
+Рух: спіраль ДНК у hero (`src/lib/spiral.ts`: один rAF-цикл, пауза поза екраном, слабкий режим за спекою),
+«Шлях зірки» з підсвічуванням кроків і перекладин (`src/lib/star-path.ts`, IntersectionObserver), біжучий рядок,
+переходи між сторінками (View Transitions). Скрол нативний. З `prefers-reduced-motion` і без JS усе статичне й читається.
 
 Папка `lab/` (дизайн-система, генератор прев'ю, етапи арт-дирекшну) у збірку не потрапляє.
 
@@ -150,7 +151,7 @@ src/
 ├── data/              brand, site, games, business + index.ts з пошуком
 ├── views/             home, games, game, legal, notFound, common (спільна поведінка)
 ├── components/        starPath, customizer, offerings, marquee, faq, calculator, demoGame, ui
-├── lib/               числа-фігури (tiles), рух (star-path, strip, scroll),
+├── lib/               числа-фігури (tiles), відбиток (fingerprint), рух (spiral, star-path, strip, scroll),
 │                      economics (калькулятор), format, theme, markdown (оферта й політика), dom (безпечні шаблони)
 └── styles/            fonts → tokens → base → components → layout → legacy (тимчасово) → tiles → home/games/game/calculator → motion
 docs/ADD-GAME.md       як додати гру
