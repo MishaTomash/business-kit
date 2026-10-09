@@ -14,12 +14,16 @@ export const isDesktop = (): boolean => mq('(min-width: 900px)');
 
 type NavigatorWithMemory = Navigator & { readonly deviceMemory?: number };
 
-/** Слабкий сенсорний пристрій: мало ядер або пам'яті. */
+/**
+ * Слабкий пристрій за спекою (DESIGN-SPEC, розділ 4): deviceMemory ≤ 4 або hardwareConcurrency ≤ 4.
+ * Третю ознаку (FPS < 45 за перші 2 с) міряє сама спіраль (src/lib/spiral.ts).
+ * Невідомі значення (Safari не дає deviceMemory) вважаються сильними.
+ */
 export function isWeakDevice(): boolean {
   if (typeof navigator === 'undefined') return false;
   const cores = navigator.hardwareConcurrency || 8;
   const memory = (navigator as NavigatorWithMemory).deviceMemory ?? 8;
-  return (cores <= 4 || memory <= 4) && !hasFinePointer();
+  return cores <= 4 || memory <= 4;
 }
 
 export type MotionLevel = 'full' | 'lite' | 'none';

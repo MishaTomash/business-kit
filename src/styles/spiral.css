@@ -1,0 +1,209 @@
+/* ==========================================================================
+   Спіраль ДНК (src/components/spiral.ts, src/lib/spiral.ts).
+   Анімуються лише transform і opacity. Статичне положення (φ = 0.6) рахує CSS зі значень
+   --s/--c у кожній перекладині. Орієнтацію задають --kx/--ky:
+   вертикальна вісь (перекладини горизонтальні) — kx = 1; горизонтальна вісь — ky = 1.
+   ========================================================================== */
+.spiral {
+  --n: 22;            /* скільки перекладин видно (менше на телефоні й слабкому пристрої) */
+  --kx: 1;
+  --ky: 0;
+  --dot: 9px;
+  --rung-line: #2c3d36;
+  position: relative;
+}
+
+.sp-rung {
+  position: absolute;
+  /* Статичні значення для φ = 0.6 (без JS і з prefers-reduced-motion) */
+  --sv: var(--s);
+  --cv: var(--c);
+}
+
+/* Вертикальна вісь: перекладини одна під одною на всю ширину */
+.spiral,
+.spiral--v {
+  --kx: 1;
+  --ky: 0;
+}
+
+.spiral .sp-rung {
+  left: 0;
+  right: 0;
+  top: calc(var(--i) / (var(--n) - 1) * (100% - var(--dot)));
+  height: var(--dot);
+}
+
+/* Горизонтальна вісь: перекладини одна за одною на всю висоту */
+.spiral--h {
+  --kx: 0;
+  --ky: 1;
+}
+
+.spiral--h .sp-rung {
+  top: 0;
+  bottom: 0;
+  left: calc(var(--i) / (var(--n) - 1) * (100% - var(--dot)));
+  right: auto;
+  width: var(--dot);
+  height: auto;
+}
+
+/* Рух: src/lib/spiral.ts пише transform і opacity прямо крапкам і лініям (inline-стилі мають
+   пріоритет над статичними значеннями нижче). Обгортки кінців тоді стоять на місці. */
+.spiral.is-live .sp-a,
+.spiral.is-live .sp-b {
+  transform: none;
+}
+
+/* Лінія між кінцями: довжина 88 % · sin θ (від'ємне значення лише віддзеркалює лінію) */
+.sp-line {
+  position: absolute;
+  inset: 0;
+  transform: scale(
+    calc(1 - var(--kx) + var(--kx) * 0.88 * var(--sv)),
+    calc(1 - var(--ky) + var(--ky) * 0.88 * var(--sv))
+  );
+}
+
+.sp-line::before,
+.sp-lit {
+  content: '';
+  position: absolute;
+  background: var(--rung-line);
+}
+
+.spiral .sp-line::before,
+.spiral .sp-lit {
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+}
+
+.spiral--h .sp-line::before,
+.spiral--h .sp-lit {
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  right: auto;
+  width: 2px;
+  height: auto;
+}
+
+/* Коралова підсвітка перекладини («Шлях зірки»): scaleX 0 → 1, 320 мс */
+.sp-lit {
+  background: var(--coral);
+  transition: transform var(--dur-step) var(--ease-out);
+}
+
+.spiral .sp-lit {
+  transform: scale(0, 1);
+}
+
+.spiral--h .sp-lit {
+  transform: scale(1, 0);
+}
+
+.sp-rung.is-lit .sp-lit {
+  transform: none;
+}
+
+/* Кінці: обгортка на весь розмір перекладини зсувається на ±44 % поперек осі */
+.sp-a,
+.sp-b {
+  position: absolute;
+  inset: 0;
+}
+
+.sp-a {
+  transform: translate(calc(var(--kx) * 44% * var(--sv)), calc(var(--ky) * 44% * var(--sv)));
+}
+
+.sp-b {
+  transform: translate(calc(var(--kx) * -44% * var(--sv)), calc(var(--ky) * -44% * var(--sv)));
+}
+
+.sp-dot {
+  position: absolute;
+  left: calc(50% - var(--dot) / 2);
+  top: calc(50% - var(--dot) / 2);
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: var(--radius-round);
+}
+
+/* Крапка, що «йде назад», менша й тьмяніша: 9 ± 5·cos θ px, прозорість 0.5 ± 0.5·cos θ */
+.sp-a .sp-dot {
+  background: var(--coral);
+  transform: scale(calc(1 + 5 / 9 * var(--cv)));
+  opacity: calc(0.5 + 0.5 * var(--cv));
+}
+
+.sp-b .sp-dot {
+  background: var(--ivory);
+  transform: scale(calc(1 - 5 / 9 * var(--cv)));
+  opacity: calc(0.5 - 0.5 * var(--cv));
+}
+
+/* Скільки перекладин видно: зайві ховаються, решта розтягується на всю довжину.
+   --n задає лише CSS (не атрибут style), щоб медіазапити й слабкий режим могли його змінити. */
+.spiral.is-weak {
+  --n: 12;
+}
+
+.spiral.is-weak .sp-rung:nth-child(n + 13) {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- hero */
+.spiral--hero {
+  --n: 18;
+  height: 132px;
+  margin-bottom: var(--space-6);
+}
+
+.spiral--hero .sp-rung:nth-child(n + 19) {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .spiral--hero {
+    --kx: 1;
+    --ky: 0;
+    --n: 22;
+    height: min(560px, 70vh);
+    margin: 0;
+  }
+  .spiral--hero .sp-rung {
+    top: calc(var(--i) / (var(--n) - 1) * (100% - var(--dot)));
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: var(--dot);
+  }
+  .spiral--hero .sp-rung:nth-child(n + 19) {
+    display: block;
+  }
+  .spiral--hero.is-weak {
+    --n: 12;
+  }
+  .spiral--hero.is-weak .sp-rung:nth-child(n + 13) {
+    display: none;
+  }
+  .spiral--hero .sp-line::before {
+    left: 0;
+    right: 0;
+    top: calc(50% - 1px);
+    bottom: auto;
+    width: auto;
+    height: 2px;
+  }
+}
+
+/* ---------------------------------------------------------------- «Шлях зірки» */
+.spiral--path {
+  --n: 21;
+  height: min(520px, 62vh);
+}
