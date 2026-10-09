@@ -11,4 +11,4 @@ export const BRAND_OF = 'Клітинки';
 export const DEFAULT_SITE_URL = 'https://klitynka.online';
 
 /** Один рядок суті бренду для головної й прев'ю посилань. */
-export const BRAND_LINE = 'Ігри в Telegram під ключ для вашого каналу';
+export const BRAND_LINE = 'Ігри в Telegram під ключ';

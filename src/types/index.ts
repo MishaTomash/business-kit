@@ -200,6 +200,8 @@ export interface Offering {
 export interface Audience {
   readonly title: string;
   readonly situation: string;
+  /** Чесне застереження жирним (виділена картка). */
+  readonly note?: string;
 }
 
 /** Етап запуску. */
