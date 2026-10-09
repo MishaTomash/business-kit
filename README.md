@@ -150,11 +150,11 @@ src/
 ├── types/index.ts     типи: Game, StarStep, Reason, FaqItem…
 ├── data/              brand, site, games, business + index.ts з пошуком
 ├── views/             home, games, game, legal, notFound, common (спільна поведінка)
-├── components/        starPath, customizer, offerings, marquee, faq, calculator, demoGame, ui
-├── lib/               числа-фігури (tiles), відбиток (fingerprint), рух (spiral, star-path, strip, scroll),
+├── components/        spiral, starPath, fingerprint, faq, calculator, ui
+├── lib/               значки (icons), відбиток (fingerprint), рух (spiral, star-path, scroll),
 │                      economics (калькулятор), format, theme, markdown (оферта й політика), dom (безпечні шаблони)
 └── styles/            fonts → tokens → base → components → layout → legacy (тимчасово) → tiles → home/games/game/calculator → motion
 docs/ADD-GAME.md       як додати гру
 content/legal/         оферта й політика конфіденційності (Markdown)
-lab/                   system.html, og.html, tg-preview.mjs (макет прев'ю в Telegram) (не входить у збірку)
+lab/                   system.html, og.html + og-export.mjs, tg-preview.mjs (макет прев'ю в Telegram) (не входить у збірку)
 ```
