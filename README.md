@@ -8,7 +8,7 @@
 - `/games/<id>` — сторінка гри.
 - `/offer` — публічна оферта, `/privacy` — політика конфіденційності (тексти в `content/legal/*.md`).
 
-Дизайн «Плитка»: м'ята, хвоя, золото зірки, шрифти Geologica й Golos Text.
+Дизайн «ДНК» (перенесення триває, гілка `dna`, план у `docs/DNA-STAGES.md`): темна палітра «Ґрунт / Слонова кістка / Корал», золото лише для зірок, шрифти Rubik 800 і Golos Text 400/600.
 
 ## Запуск
 
@@ -127,14 +127,12 @@ sudo certbot --nginx -d klitynka.online
 | Що | Де |
 | --- | --- |
 | Кольори, шрифти, шкала тексту, відступи, рух | `src/styles/tokens.css` |
-| Шрифти (лише latin і cyrillic; cyrillic-ext у Geologica лише заради ₴) | `src/styles/fonts.css` |
+| Шрифти (лише latin і cyrillic; cyrillic-ext лише заради ₴) | `src/styles/fonts.css` |
 | Колірний світ гри | `theme` у грі (`src/data/games.ts`) |
 | Огляд дизайн-системи | `npm run dev` → `/lab/system.html` |
 
-Рух: кінетичні заголовки, сцена «Шлях зірки» (закріплення й перевертання плиток), «завіса» між
-секціями, одометри, магнітні кнопки, біжучий рядок, переходи між сторінками (View Transitions),
-плавний скрол Lenis для миші. З `prefers-reduced-motion` усе статичне. На слабких телефонах
-плитки не падають, а одразу стоять на місці.
+Рух: сцена «Шлях зірки», біжучий рядок, переходи між сторінками (View Transitions). Скрол нативний.
+З `prefers-reduced-motion` усе статичне. Спіраль ДНК і новий «Шлях зірки» додаються на етапі S4.
 
 Папка `lab/` (дизайн-система, генератор прев'ю, етапи арт-дирекшну) у збірку не потрапляє.
 
@@ -150,10 +148,10 @@ src/
 ├── data/              brand, site, games, business + index.ts з пошуком
 ├── views/             home, games, game, legal, notFound, common (спільна поведінка)
 ├── components/        starPath, customizer, offerings, marquee, faq, calculator, demoGame, ui
-├── lib/               плитки, рух (split, curtain, star-path, strip, odometer, magnetic, scroll),
+├── lib/               числа-фігури (tiles), рух (star-path, strip, scroll),
 │                      economics (калькулятор), format, theme, markdown (оферта й політика), dom (безпечні шаблони)
-└── styles/            fonts → tokens → base → tiles → layout → home/games/game/calculator → motion
+└── styles/            fonts → tokens → base → components → layout → legacy (тимчасово) → tiles → home/games/game/calculator → motion
 docs/ADD-GAME.md       як додати гру
 content/legal/         оферта й політика конфіденційності (Markdown)
-lab/                   system.html, og.html, tg-preview.mjs (макет прев'ю в Telegram), direction.html (не входить у збірку)
+lab/                   system.html, og.html, tg-preview.mjs (макет прев'ю в Telegram) (не входить у збірку)
 ```
