@@ -7,21 +7,22 @@
     <title>Картинки прев'ю посилань</title>
     <link rel="stylesheet" href="../src/styles/fonts.css" />
     <style>
-      body { margin: 0; padding: 32px 16px 64px; background: #f1f2f3; color: #0d2a1c; font: 400 17px/1.5 'Golos Text', system-ui, sans-serif; }
-      h1 { font: 800 32px/1.1 'Geologica', system-ui, sans-serif; letter-spacing: -0.03em; margin: 0 0 8px; }
-      p { max-width: 70ch; margin: 0 0 24px; }
+      body { margin: 0; padding: 32px 16px 64px; background: #0e1714; color: #f1ece1; font: 400 17px/1.5 'Golos Text', system-ui, sans-serif; }
+      h1 { font: 800 32px/1.1 'Rubik', system-ui, sans-serif; margin: 0 0 8px; }
+      p { max-width: 70ch; margin: 0 0 24px; color: #c9cfc6; }
       .item { margin: 0 0 40px; }
-      canvas { width: min(100%, 600px); height: auto; border-radius: 12px; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.15); display: block; }
+      canvas { width: min(100%, 600px); height: auto; display: block; outline: 1px solid #26362f; }
       .row { display: flex; gap: 16px; align-items: center; margin: 10px 0 0; flex-wrap: wrap; }
-      button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #0d2a1c; color: #fff; font-weight: 650; cursor: pointer; }
-      code { font: inherit; font-weight: 650; }
+      button { min-height: 44px; padding: 0 16px; border: 0; background: #ee8466; color: #0e1714; font: 600 16px 'Golos Text', sans-serif; cursor: pointer; }
+      code { font: inherit; font-weight: 600; }
     </style>
   </head>
   <body>
     <h1>Картинки прев'ю посилань</h1>
     <p>
       Кожна картинка має розмір 1200×630. Натисніть «Завантажити PNG» і покладіть файл у папку <code>public/og/</code> під назвою,
-      яка написана поруч. Після <code>npm run build</code> посилання на гру в Telegram показуватиме саме цю картинку.
+      яка написана поруч (або виконайте <code>node lab/og-export.mjs</code> при запущеному <code>npm run dev</code>, щоб зберегти всі одразу).
+      Після <code>npm run build</code> посилання на гру в Telegram показуватиме саме цю картинку.
     </p>
     <div id="list"></div>
     <script type="module" src="./og/og.ts"></script>

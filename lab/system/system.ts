@@ -3,7 +3,6 @@ import '@/styles/index.css';
 import './system.css';
 import { html, type SafeHtml } from '@/lib/dom';
 import { contrast } from '@/lib/theme';
-import { tiles } from '@/lib/tiles';
 import { ARROW_ICON, badge, button, chip, tlink } from '@/components/ui';
 import { BRAND } from '@/data/site';
 import { GAMES } from '@/data';
@@ -135,7 +134,7 @@ if (root) {
           ${sizes.map(([v, label, text]) => html`<li><code class="code">${label} · ${v}</code><p class="${label.startsWith('h') ? label : ''}" style="font-size:var(${v})">${text}</p></li>`)}
         </ul>
         <div class="sys-row">
-          ${tiles('1 500₴', { className: 'tiles--lg' })}${tiles('1 000★', { className: 'tiles--lg' })}${tiles('540₴', { className: 'tiles--md', prefix: '≈' })}
+          <p class="num sys-num">1&nbsp;500&nbsp;₴</p><p class="num sys-num star-sum">1&nbsp;000&nbsp;<svg class="i-inline" aria-hidden="true"><use href="#i-star"></use></svg></p><p class="num sys-num"><svg class="i-approx" aria-hidden="true"><use href="#i-approx"></use></svg>&nbsp;540&nbsp;₴</p>
         </div>
         <p class="eyebrow sys-gap-sm">Надзаголовок · шлях зірки</p>
         <p class="code">слововир | slova | #ee8466 — службовий підпис</p>

@@ -1,79 +1,62 @@
 /**
- * Генератор картинок прев'ю (og:image) 1200×630 на canvas, без залежностей.
- * Відкрийте /lab/og.html у `npm run dev`, натисніть «Завантажити PNG» і покладіть файл у public/og/.
+ * Генератор картинок прев'ю посилань (og:image) 1200×630 у стилі «ДНК», на canvas, без залежностей.
+ * Відкрийте /lab/og.html у `npm run dev`: кожну картинку можна завантажити кнопкою й покласти в public/og/.
+ * Або все одразу: `node lab/og-export.mjs` (потрібен запущений `npm run dev` і Playwright).
+ *
+ * Загальна картинка: логотип, заголовок головної, спіраль ДНК. Картинка гри: назва, жанр, статус,
+ * опис і генетичний відбиток (той самий, що на сайті: src/lib/fingerprint.ts).
  */
-import { GAMES } from '@/data';
-import { BRAND } from '@/data/site';
+import { GAMES, isPlayable } from '@/data';
+import { BRAND, BRAND_LINE } from '@/data/site';
+import { HOME } from '@/data/home';
+import { GAME_PAGE } from '@/data/pages';
+import { GENRE_LABELS } from '@/data/genres';
+import { COLUMNS, FIELD_UNITS, BAR_WIDTH } from '@/lib/fingerprint';
+import { gameFingerprint } from '@/components/fingerprint';
+import { PHI_STATIC, RUNG_STEP } from '@/components/spiral';
 import type { Game } from '@/types';
 
 const W = 1200;
 const H = 630;
-const FOREST = '#0d2a1c';
-const MINT = '#d5eedc';
-const GOLD = '#ffb81c';
-const GREEN = '#1f7a47';
+const PAD = 72;
+const C = {
+  ground: '#0e1714',
+  layer: '#15221e',
+  ivory: '#f1ece1',
+  lichen: '#a9b3aa',
+  coral: '#ee8466',
+  ink: '#0e1714',
+  line: '#2c3d36',
+  ui: '#66736c',
+} as const;
 
-const STAR = [
-  [50, 2], [61.76, 33.82], [95.65, 35.17], [69.02, 56.18], [78.21, 88.83],
-  [50, 70], [21.79, 88.83], [30.98, 56.18], [4.35, 35.17], [38.24, 33.82],
-] as const;
+const DISPLAY = 'Rubik';
+const TEXT = '"Golos Text"';
 
-function rr(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+/** Логотип: кільце й два ланцюги (ті самі шляхи, що в символі #i-logo, поле 24×24). */
+function logo(c: CanvasRenderingContext2D, x: number, y: number, size: number): void {
+  c.save();
+  c.translate(x, y);
+  c.scale(size / 24, size / 24);
+  c.lineCap = 'round';
   c.beginPath();
-  c.moveTo(x + r, y);
-  c.arcTo(x + w, y, x + w, y + h, r);
-  c.arcTo(x + w, y + h, x, y + h, r);
-  c.arcTo(x, y + h, x, y, r);
-  c.arcTo(x, y, x + w, y, r);
-  c.closePath();
-}
-
-function star(c: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string): void {
-  c.beginPath();
-  STAR.forEach(([px, py], i) => {
-    const x = cx + ((px - 50) / 100) * size;
-    const y = cy + ((py - 50) / 100) * size;
-    if (i === 0) c.moveTo(x, y);
-    else c.lineTo(x, y);
-  });
-  c.closePath();
-  c.fillStyle = color;
-  c.lineJoin = 'round';
-  c.lineWidth = size * 0.06;
-  c.strokeStyle = color;
-  c.fill();
+  c.arc(12, 12, 10.1, 0, Math.PI * 2);
+  c.strokeStyle = C.ivory;
+  c.lineWidth = 1.8;
   c.stroke();
-}
-
-interface TileStyle {
-  face: string;
-  ink: string;
-  edge: string;
-  line?: string;
-}
-
-function tile(c: CanvasRenderingContext2D, x: number, y: number, s: number, ch: string, st: TileStyle): void {
-  const w = s * 0.8;
-  rr(c, x, y + s * 0.07, w, s, s * 0.18);
-  c.fillStyle = st.edge;
-  c.fill();
-  rr(c, x, y, w, s, s * 0.18);
-  c.fillStyle = st.face;
-  c.fill();
-  if (st.line) {
-    c.lineWidth = Math.max(3, s * 0.035);
-    c.strokeStyle = st.line;
-    rr(c, x + c.lineWidth / 2, y + c.lineWidth / 2, w - c.lineWidth, s - c.lineWidth, s * 0.17);
-    c.stroke();
-  }
-  if (ch === '★') star(c, x + w / 2, y + s / 2, s * 0.56, st.ink);
-  else {
-    c.fillStyle = st.ink;
-    c.font = `800 ${Math.round(s * 0.56)}px Geologica`;
-    c.textAlign = 'center';
-    c.textBaseline = 'middle';
-    c.fillText(ch, x + w / 2, y + s / 2 + s * 0.03);
-  }
+  const strand = (d: string, color: string): void => {
+    c.strokeStyle = color;
+    c.lineWidth = 2.4;
+    c.stroke(new Path2D(d));
+  };
+  strand('M8.7 6.4C13.2 9.2 10.8 14.8 15.3 17.6', C.coral);
+  strand('M15.3 6.4C10.8 9.2 13.2 14.8 8.7 17.6', C.lichen);
+  c.restore();
+  c.fillStyle = C.ivory;
+  c.font = `800 34px ${DISPLAY}`;
+  c.textAlign = 'left';
+  c.textBaseline = 'middle';
+  c.fillText(BRAND, x + size + 16, y + size / 2 + 1);
 }
 
 function wrap(c: CanvasRenderingContext2D, text: string, x: number, y: number, maxW: number, lh: number, maxLines: number): number {
@@ -85,7 +68,7 @@ function wrap(c: CanvasRenderingContext2D, text: string, x: number, y: number, m
     if (c.measureText(test).width > maxW && line) {
       lines++;
       if (lines === maxLines) {
-        c.fillText(`${line.replace(/[,.;:]$/, '')}…`, x, y);
+        c.fillText(`${line.replace(/[,.;:—–-]$/, '')}…`, x, y);
         return y + lh;
       }
       c.fillText(line, x, y);
@@ -97,91 +80,117 @@ function wrap(c: CanvasRenderingContext2D, text: string, x: number, y: number, m
   return y + lh;
 }
 
-function brandMark(c: CanvasRenderingContext2D, x: number, y: number, ink: string, face: string, edge: string): void {
-  rr(c, x, y + 6, 52, 46, 12);
-  c.fillStyle = edge;
-  c.fill();
-  rr(c, x, y, 52, 46, 12);
-  c.fillStyle = face;
-  c.fill();
-  star(c, x + 26, y + 23, 30, GOLD);
-  c.fillStyle = ink;
-  c.font = '800 34px Geologica';
-  c.textAlign = 'left';
-  c.textBaseline = 'middle';
-  c.fillText(BRAND, x + 68, y + 25);
+/** Спіраль ДНК із вертикальною віссю (статична, φ = 0.6), як у hero на десктопі. */
+function spiral(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, rungs: number): void {
+  for (let i = 0; i < rungs; i++) {
+    const t = RUNG_STEP * i + PHI_STATIC;
+    const s = Math.sin(t);
+    const cs = Math.cos(t);
+    const cy = y + (i / (rungs - 1)) * h;
+    const cx = x + w / 2;
+    const x1 = cx + 0.44 * w * s;
+    const x2 = cx - 0.44 * w * s;
+    c.strokeStyle = C.line;
+    c.lineWidth = 2;
+    c.beginPath();
+    c.moveTo(x1, cy);
+    c.lineTo(x2, cy);
+    c.stroke();
+    const dot = (px: number, depth: number, color: string): void => {
+      c.globalAlpha = Math.max(0.08, 0.5 + 0.5 * depth);
+      c.fillStyle = color;
+      c.beginPath();
+      c.arc(px, cy, (9 + 5 * depth) * 0.75, 0, Math.PI * 2);
+      c.fill();
+      c.globalAlpha = 1;
+    };
+    dot(x1, cs, C.coral);
+    dot(x2, -cs, C.ivory);
+  }
 }
 
-const luminance = (hex: string): number => {
-  const n = parseInt(hex.slice(1), 16);
-  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
-    const s = v / 255;
-    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+/** Генетичний відбиток гри в прямокутнику (поле 16 × 30 одиниць, як SVG на сайті). */
+function fingerprint(c: CanvasRenderingContext2D, g: Game, x: number, y: number, w: number, h: number): void {
+  const fp = gameFingerprint(g);
+  const uw = w / COLUMNS;
+  const uh = h / FIELD_UNITS;
+  const mid = FIELD_UNITS / 2;
+  fp.bars.forEach((b, i) => {
+    const bx = x + (i + (1 - BAR_WIDTH) / 2) * uw;
+    c.fillStyle = b.c1;
+    c.fillRect(bx, y + (mid - 0.5 - b.top) * uh, BAR_WIDTH * uw, b.top * uh);
+    c.fillStyle = b.c2;
+    c.fillRect(bx, y + (mid + 0.5) * uh, BAR_WIDTH * uw, b.bottom * uh);
   });
-  return 0.2126 * (ch[0] ?? 0) + 0.7152 * (ch[1] ?? 0) + 0.0722 * (ch[2] ?? 0);
-};
-
-function drawGame(c: CanvasRenderingContext2D, g: Game, live: boolean): void {
-  const t = g.theme;
-  const dark = luminance(t.bg) < 0.2;
-  c.fillStyle = t.bg;
-  c.fillRect(0, 0, W, H);
-  if (!dark) {
-    c.lineWidth = 6;
-    c.strokeStyle = FOREST;
-    c.strokeRect(3, 3, W - 6, H - 6);
-  }
-  brandMark(c, 64, 56, t.ink, dark ? MINT : FOREST, dark ? '#93c3a3' : GREEN);
-
-  const word = [...g.coverWord.toUpperCase()];
-  const s = Math.min(150, (W - 128) / (word.length * 0.88));
-  let x = 64;
-  const y = 170;
-  for (const ch of word) {
-    tile(c, x, y, s, ch, { face: t.tile, ink: t.tileInk, edge: 'rgba(0,0,0,0.3)' });
-    x += s * 0.88;
-  }
-
-  c.fillStyle = t.ink;
-  c.textAlign = 'left';
-  c.textBaseline = 'alphabetic';
-  c.font = '800 76px Geologica';
-  c.fillText(g.name, 64, y + s + 110);
-  c.font = '500 30px "Golos Text"';
-  const sub = live ? `${g.genre} у Telegram для вашого каналу` : `${g.genre}. У розробці`;
-  wrap(c, sub, 64, y + s + 160, W - 128, 40, 1);
 }
 
 function drawDefault(c: CanvasRenderingContext2D): void {
-  c.fillStyle = MINT;
+  c.fillStyle = C.ground;
   c.fillRect(0, 0, W, H);
-  brandMark(c, 64, 56, FOREST, FOREST, GREEN);
-  c.fillStyle = FOREST;
-  c.font = '800 72px Geologica';
+  logo(c, PAD, 56, 48);
+  c.fillStyle = C.ivory;
+  c.font = `800 66px ${DISPLAY}`;
   c.textAlign = 'left';
   c.textBaseline = 'alphabetic';
-  ['Гра у вашому', 'Telegram.', 'Зірки — на вашому', 'рахунку.'].forEach((l, i) => c.fillText(l, 64, 240 + i * 78));
-  const s = 64;
-  const cells: Array<[string, number, number, string]> = [
-    ['З', 3, 1, 'g'], ['І', 3, 2, 'g'], ['Г', 2, 3, 'w'], ['Р', 3, 3, 'g'], ['А', 4, 3, 'w'], ['К', 3, 4, 'g'],
-    ['Г', 1, 5, 'n'], ['Р', 2, 5, 'n'], ['И', 3, 5, 'g'], ['В', 4, 5, 'n'], ['Н', 5, 5, 'n'], ['І', 6, 5, 'n'],
-  ];
-  const ox = W - 64 - 6 * (s * 0.8) - 5 * 8;
-  const oy = 150;
-  for (const [ch, col, row, tone] of cells) {
-    const face = tone === 'g' ? GOLD : tone === 'n' ? GREEN : '#ffffff';
-    const ink = tone === 'n' ? '#ffffff' : FOREST;
-    tile(c, ox + (col - 1) * (s * 0.8 + 8), oy + (row - 1) * (s + 10), s, ch, { face, ink, edge: FOREST, line: FOREST });
+  const y = wrap(c, HOME.hero.title, PAD, 236, 680, 72, 4);
+  c.fillStyle = C.lichen;
+  c.font = `400 30px ${TEXT}`;
+  const [launch, , share] = HOME.hero.facts;
+  wrap(c, `${BRAND_LINE}. Запуск ${launch?.value ?? ''}, ${share?.label ?? ''}: ${share?.value ?? ''}.`, PAD, y + 24, 680, 40, 2);
+  spiral(c, 820, 70, 320, 490, 16);
+}
+
+function drawGame(c: CanvasRenderingContext2D, g: Game): void {
+  const live = isPlayable(g);
+  c.fillStyle = C.ground;
+  c.fillRect(0, 0, W, H);
+  logo(c, PAD, 56, 48);
+
+  // Відбиток на панелі Шару праворуч угорі
+  c.fillStyle = C.layer;
+  c.fillRect(640, 56, 488, 210);
+  fingerprint(c, g, 672, 80, 424, 162);
+
+  // Статус і жанр
+  const by = 330;
+  c.font = `600 24px ${TEXT}`;
+  c.textBaseline = 'middle';
+  const label = live ? 'працює' : GAME_PAGE.soon.badge;
+  const bw = c.measureText(label).width + 28;
+  if (live) {
+    c.fillStyle = C.coral;
+    c.fillRect(PAD, by - 20, bw, 40);
+    c.fillStyle = C.ink;
+  } else {
+    c.setLineDash([6, 5]);
+    c.strokeStyle = C.ui;
+    c.lineWidth = 2;
+    c.strokeRect(PAD + 1, by - 19, bw - 2, 38);
+    c.setLineDash([]);
+    c.fillStyle = C.lichen;
   }
+  c.fillText(label, PAD + 14, by + 1);
+  c.fillStyle = C.lichen;
+  c.font = `400 24px ${TEXT}`;
+  c.fillText(GENRE_LABELS[g.dna.genre], PAD + bw + 18, by + 1);
+
+  // Назва й опис
+  c.textBaseline = 'alphabetic';
+  c.fillStyle = C.ivory;
+  c.font = `800 92px ${DISPLAY}`;
+  wrap(c, g.name, PAD, by + 118, W - PAD * 2, 96, 1);
+  c.fillStyle = C.lichen;
+  c.font = `400 30px ${TEXT}`;
+  wrap(c, g.tagline, PAD, by + 182, W - PAD * 2, 40, 2);
 }
 
 async function main(): Promise<void> {
-  await Promise.all(['800 72px Geologica', '500 30px "Golos Text"'].map((f) => document.fonts.load(f, 'ҐЄІЇґєіїАБВ₴123')));
+  await Promise.all([`800 66px ${DISPLAY}`, `400 30px ${TEXT}`, `600 24px ${TEXT}`].map((f) => document.fonts.load(f, 'ҐЄІЇґєіїАБВ₴123')));
   const list = document.getElementById('list');
   if (!list) return;
   const items: Array<{ file: string; draw: (c: CanvasRenderingContext2D) => void }> = [
     { file: 'default.png', draw: drawDefault },
-    ...GAMES.map((g) => ({ file: `${g.id}.png`, draw: (c: CanvasRenderingContext2D) => drawGame(c, g, g.status === 'available' && !g.mock) })),
+    ...GAMES.map((g) => ({ file: `${g.id}.png`, draw: (c: CanvasRenderingContext2D) => drawGame(c, g) })),
   ];
   for (const it of items) {
     const box = document.createElement('div');
