@@ -36,24 +36,4 @@
     transition: none !important;
     scroll-behavior: auto !important;
   }
-  /* Без руху стрічка стає переліком фактів: ряд переноситься, роздільники й копії зникають. */
-  .marquee__track {
-    display: block;
-    width: auto;
-    padding-inline: var(--gutter);
-    white-space: normal;
-    animation: none;
-  }
-  .marquee__row {
-    flex-wrap: wrap;
-    gap: 8px 32px;
-    padding-right: 0;
-  }
-  .marquee__item {
-    white-space: normal;
-  }
-  .marquee__sep,
-  .marquee__row--copy {
-    display: none;
-  }
 }

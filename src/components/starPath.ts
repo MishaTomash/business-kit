@@ -1,6 +1,6 @@
 /**
  * «Шлях зірки»: 7 кроків від гравця до гривень. Тексти й числа — з src/data/business.ts (STAR_PATH),
- * у розмітці нічого не захардкоджено, крім заголовка секції.
+ * заголовок і примітка — з src/data/home.ts; у розмітці нічого не захардкоджено.
  *
  * На десктопі поруч із кроками стоїть спіраль із 21 перекладини (7 кроків × 3), колонка липне
  * (position: sticky). Коли крок перетинає 60 % висоти екрана, його три перекладини, номер і крапка
@@ -9,6 +9,7 @@
  */
 
 import { STAR_PATH } from '@/data/business';
+import { HOME } from '@/data/home';
 import { html, type SafeHtml } from '@/lib/dom';
 import { STAR_ICON, pluralStars } from '@/lib/tiles';
 import { spiralMarkup } from './spiral';
@@ -35,9 +36,11 @@ export function starPathMarkup(): SafeHtml {
     <section class="sec path" id="how" aria-labelledby="how-t" data-path>
       <div class="wrap path__grid">
         <div class="path__aside">
-          <h2 class="h2" id="how-t">Шлях однієї зірки від гравця до вашої картки</h2>
+          <p class="eyebrow">${HOME.path.eyebrow}</p>
+          <h2 class="h2" id="how-t">${HOME.path.title}</h2>
           <div class="path__spiral">${spiralMarkup({ rungs: STAR_PATH.length * RUNGS_PER_STEP, name: 'path', className: 'spiral--path', perStep: RUNGS_PER_STEP })}</div>
         </div>
+        <div class="path__list">
         <ol class="path__steps">
           ${STAR_PATH.map(
             (s, i) => html`
@@ -52,6 +55,8 @@ export function starPathMarkup(): SafeHtml {
             `,
           )}
         </ol>
+        <p class="path__note small muted">${HOME.path.disclaimer}</p>
+        </div>
       </div>
     </section>
   `;

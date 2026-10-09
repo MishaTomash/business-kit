@@ -12,7 +12,13 @@
 }
 
 .hero .h1 {
-  max-width: 13ch;
+  max-width: 15ch;
+}
+
+@media (max-width: 899px) {
+  .hero .btn {
+    min-width: min(100%, 272px);
+  }
 }
 
 @media (min-width: 900px) {
@@ -145,4 +151,9 @@
   .pstep__value {
     font-size: var(--fs-h3);
   }
+}
+
+.path__note {
+  margin-top: var(--space-5);
+  max-width: 60ch;
 }
