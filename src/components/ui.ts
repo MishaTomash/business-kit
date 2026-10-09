@@ -2,7 +2,7 @@
 
 import type { Game } from '@/types';
 import { html, raw, type SafeHtml } from '@/lib/dom';
-import { wordTiles } from '@/lib/tiles';
+import { fingerprintStrip } from './fingerprint';
 
 /** Стрілка зі спрайту (у шрифтах сайту немає знака →). */
 export const ARROW_ICON: SafeHtml = raw('<svg class="i-arrow" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg>');
@@ -63,11 +63,14 @@ export function themeVars(g: Game): string {
   return `--g-bg:${t.bg};--g-ink:${t.ink};--g-tile:${t.tile};--g-tile-ink:${t.tileInk}`;
 }
 
-/** Обкладинка: справжня картинка або назва-слово в кольорі гри (тимчасово, до відбитків на S3). */
+/**
+ * Обкладинка гри: справжня картинка або генетичний відбиток (S3).
+ * У каталозі — смужка на темному тлі, у hero сторінки гри — велика картка з ключем.
+ */
 export function cover(g: Game, opts: { hero?: boolean; morph?: boolean } = {}): SafeHtml {
-  const style = `${themeVars(g)};--n:${[...g.coverWord].length}${opts.morph ? ';view-transition-name:game-cover' : ''}`;
+  const style = opts.morph ? 'view-transition-name:game-cover' : '';
   const inner = g.cover
     ? html`<img src="${g.cover}" alt="" width="800" height="600" loading="lazy" decoding="async" />`
-    : wordTiles(g.coverWord, 'tiles--cover');
-  return html`<div class="cover${opts.hero ? ' cover--hero' : ''}" style="${style}" data-cover="${g.id}">${inner}</div>`;
+    : fingerprintStrip(g, opts.hero ? 'card' : 'row');
+  return html`<div class="cover${opts.hero ? ' cover--hero' : ''}${g.cover ? '' : ' cover--fp'}" style="${style}" data-cover="${g.id}">${inner}</div>`;
 }

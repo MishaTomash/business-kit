@@ -33,10 +33,19 @@
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
-  background: var(--g-bg);
-  color: var(--g-ink);
+  background: var(--layer);
   overflow: hidden;
   container-type: inline-size;
+}
+
+.cover--fp {
+  padding: var(--space-5);
+}
+
+.cover--fp .fp-strip--row {
+  width: 100%;
+  max-width: none;
+  height: 24cqw;
 }
 
 .cover img {
@@ -45,10 +54,6 @@
   object-fit: cover;
 }
 
-/* Тимчасово до відбитків (S3): назва-слово займає ~76% ширини поля. --n задає cover(). */
-.tiles--cover {
-  --ts: min(calc(76cqw / (0.72 * var(--n, 5))), 120px);
-}
 
 .card:active .cover {
   transform: translate3d(0, 2px, 0);

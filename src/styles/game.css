@@ -20,12 +20,10 @@
   margin-bottom: -12px;
 }
 
-.cover--hero {
-  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.25);
-}
-
-.game-hero:not(.is-dark) .cover--hero {
-  box-shadow: inset 0 0 0 2px var(--forest);
+.cover--hero.cover--fp {
+  display: block;
+  aspect-ratio: auto;
+  padding: 0;
 }
 
 .game-hero__genre {

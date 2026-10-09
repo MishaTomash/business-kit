@@ -184,6 +184,7 @@ main:focus, h1:focus {
 
 /* Службовий підпис: ключ відбитка, номери кроків (замість моноширинного шрифту) */
 .code {
+  font-family: var(--font-text);
   font-size: var(--fs-small);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;

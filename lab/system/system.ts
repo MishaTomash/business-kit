@@ -6,6 +6,9 @@ import { contrast } from '@/lib/theme';
 import { tiles } from '@/lib/tiles';
 import { ARROW_ICON, badge, button, chip, tlink } from '@/components/ui';
 import { BRAND } from '@/data/site';
+import { GAMES } from '@/data';
+import { GENRE_LABELS } from '@/data/genres';
+import { fingerprintStrip, gameFingerprint } from '@/components/fingerprint';
 
 type Swatch = readonly [name: string, token: string, hex: string, role: string, on: string];
 
@@ -175,6 +178,24 @@ if (root) {
           <li><span class="dna-mark" aria-hidden="true"><span></span></span>Гра під вашою назвою, кольорами й знаком.</li>
           <li><span class="dna-mark" aria-hidden="true"><span></span></span>Адмін-панель: гравці, оплати, де гравці застрягають.</li>
         </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="fingerprints">
+      <div class="wrap">
+        <h2 class="h2">Відбитки</h2>
+        <p class="lead">Усі ігри з src/data/games.ts. Візерунок рахується з назви, жанру й кольору гри (поле dna) і ніде не зберігається: нова гра отримує його сама.</p>
+        <ul class="rows sys-fp">
+          ${GAMES.map((g) => {
+            const fp = gameFingerprint(g);
+            return html`<li>
+              ${fingerprintStrip(g, 'row')}
+              <div><p class="h3">${g.name}</p><p class="small muted">${GENRE_LABELS[g.dna.genre]} · ${g.dna.color}${fp.colorReplaced ? ' · темний колір замінено кольором жанру' : ''}</p></div>
+              <code class="code">seed ${fp.seed}</code>
+            </li>`;
+          })}
+        </ul>
+        <div class="sys-fp-cards">${GAMES.map((g) => fingerprintStrip(g, 'card'))}</div>
       </div>
     </section>
 

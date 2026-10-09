@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Генетичний відбиток гри (src/components/fingerprint.ts, src/lib/fingerprint.ts).
+   SVG тягнеться на розмір контейнера; кольори смуг беруться з токенів.
+   Колір гри (.fp-game) лишається з атрибута fill: це колір клієнта, не токен.
+   ========================================================================== */
+.fp {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fp .fp-coral { fill: var(--coral); }
+.fp .fp-ivory { fill: var(--ivory); }
+.fp--slova .fp-genre { fill: var(--genre-slova); }
+.fp--viktoryny .fp-genre { fill: var(--genre-viktoryny); }
+.fp--holovolomky .fp-genre { fill: var(--genre-holovolomky); }
+.fp--pamiat .fp-genre { fill: var(--genre-pamiat); }
+.fp--druzi .fp-genre { fill: var(--genre-druzi); }
+
+/* Рядок каталогу */
+.fp-strip--row {
+  width: 100%;
+  max-width: 220px;
+  height: 34px;
+}
+
+/* Велика картка на сторінці гри: тло Шар, підпис службовим шрифтом */
+.fp-strip--card {
+  margin: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  background: var(--layer);
+  color: var(--lichen);
+}
+
+.fp-strip__field {
+  height: clamp(56px, 4.5vw + 38px, 96px);
+}
+
+.fp-strip__cap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.fp-strip__key {
+  overflow-wrap: anywhere;
+}
