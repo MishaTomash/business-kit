@@ -1,3 +1,6 @@
+/* ==========================================================================
+   База: скидання, типографіка, фокус, виділення, контейнер.
+   ========================================================================== */
 *,
 *::before,
 *::after {
@@ -6,19 +9,29 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  background: var(--mint);
+  background: var(--ground);
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
   margin: 0;
-  background: var(--mint);
-  color: var(--forest);
-  font: 400 var(--fs-md) / 1.55 var(--f-text);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font: var(--fw-text) var(--fs-body) / var(--lh-body) var(--font-text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: clip;
 }
 
-h1, h2, h3, h4, p, ol, ul, dl, dd, figure, fieldset {
+h1, h2, h3, h4, p, ol, ul, dl, dd, figure, fieldset, blockquote {
   margin: 0;
 }
 
@@ -40,26 +53,40 @@ img, svg {
 
 a {
   color: inherit;
+  text-underline-offset: 0.2em;
 }
 
-button, input {
+button, input, select, textarea {
   font: inherit;
   color: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
+b, strong {
+  font-weight: var(--fw-strong);
+}
+
+::selection {
+  background: var(--coral);
+  color: var(--ink);
+}
+
 :focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 4px;
-  border-radius: 6px;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 main:focus, h1:focus {
   outline: none;
 }
 
+/* ---------------------------------------------------------------- контейнер */
 .wrap {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--container);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -79,147 +106,119 @@ main:focus, h1:focus {
 .skip {
   position: absolute;
   left: 16px;
-  top: -80px;
+  top: 12px;
   z-index: 60;
-  padding: 10px 14px;
-  background: var(--forest);
-  color: var(--white);
-  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--coral);
+  color: var(--ink);
+  font-weight: var(--fw-strong);
+  transform: translateY(-200%);
 }
 
 .skip:focus {
-  top: 12px;
+  transform: none;
 }
 
-/* Типографіка */
+/* ---------------------------------------------------------------- типографіка */
 .h1,
 .h2,
-.h3 {
-  font-family: var(--f-display);
-  font-weight: 800;
-  letter-spacing: -0.035em;
+.h3,
+.num {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-display);
 }
 
 .h1 {
   font-size: var(--fs-h1);
-  line-height: 0.98;
+  line-height: var(--lh-h1);
+  text-wrap: balance;
 }
 
 .h2 {
   font-size: var(--fs-h2);
-  line-height: 1.02;
-  max-width: 18ch;
+  line-height: var(--lh-h2);
+  max-width: 20ch;
+  text-wrap: balance;
 }
 
 .h3 {
   font-size: var(--fs-h3);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: var(--lh-h3);
+  letter-spacing: -0.01em;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .lead {
-  margin-top: 20px;
+  margin-top: var(--space-5);
   max-width: 46ch;
   font-size: var(--fs-lead);
-  line-height: 1.5;
-  color: var(--tone-muted, var(--muted));
+  line-height: 1.55;
+  color: var(--fg-soft);
 }
 
-.i-star {
+.muted {
+  color: var(--fg-muted);
+}
+
+.small {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+/* Надзаголовок: «ІГРИ В TELEGRAM ПІД КЛЮЧ», «ШЛЯХ ЗІРКИ» */
+.eyebrow {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-strong);
+  line-height: 1.3;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Службовий підпис: ключ відбитка, номери кроків (замість моноширинного шрифту) */
+.code {
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+
+/* ---------------------------------------------------------------- значки зі спрайту */
+.i-star,
+.i-arrow,
+.i-approx {
   width: 1em;
   height: 1em;
 }
 
-.i-star-inline .i-star {
+.i-arrow,
+.i-approx {
   display: inline-block;
-  width: 0.92em;
-  height: 0.92em;
   vertical-align: -0.12em;
-  color: var(--star-inline, #d99a00);
 }
 
-/* Кнопка-плитка з «дном» */
-.key {
-  --key-face: var(--forest);
-  --key-ink: var(--white);
-  --key-bottom: #04140b;
-  position: relative;
-  display: inline-flex;
-  margin-top: 5px;
-  border-radius: 14px;
-  background: var(--key-bottom);
-  text-decoration: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.4s var(--ease-out);
-}
-
-.key.is-pulled {
-  transition-duration: 0.12s;
-  transition-timing-function: linear;
-}
-
-.key[data-magnetic]::after {
-  content: '';
-  position: absolute;
-  inset: -12px;
-}
-
-.key__face {
-  display: inline-flex;
-  align-items: center;
-  min-height: 52px;
-  padding: 14px 26px;
-  border-radius: 14px;
-  background: var(--key-face);
-  color: var(--key-ink);
-  font: 650 var(--fs-md) / 1.2 var(--f-text);
-  transform: translate3d(0, -5px, 0);
-  transition: transform 0.14s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .key:hover .key__face {
-    transform: translate3d(0, -7px, 0);
-  }
-}
-
-.key:active .key__face {
-  transform: translate3d(0, -1px, 0);
-  transition-duration: 0.04s;
-}
-
-.key--sm .key__face {
-  min-height: 44px;
-  padding: 10px 16px;
-  font-size: var(--fs-sm);
-}
-
-.key--gold {
-  --key-face: var(--gold);
-  --key-ink: var(--forest);
-  --key-bottom: var(--gold-edge);
-}
-
-.key--light {
-  --key-face: var(--white);
-  --key-ink: var(--forest);
-  --key-bottom: #93c3a3;
-}
-
-.tlink {
+.i-star-inline .i-star,
+.i-inline {
   display: inline-block;
-  padding-block: 10px;
-  font-weight: 650;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: -0.1em;
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 28px;
-  margin-top: 32px;
+/* Зірка завжди золота: це єдине місце, де живе колір --star */
+.i-star-inline,
+.star {
+  color: var(--star);
+}
+
+.star-sum {
+  color: var(--star);
+  white-space: nowrap;
 }

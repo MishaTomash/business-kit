@@ -1,0 +1,272 @@
+/* ==========================================================================
+   Базові компоненти «ДНК»: кнопки, посилання, чіпи фільтра, бейджі статусу.
+   Кольори беруться із семантичних змінних тону секції (tokens.css), тож один
+   і той самий клас правильно виглядає на темному, світлому й кораловому тлі.
+   Анімуються лише transform і opacity.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- кнопки */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--btn-h);
+  padding: 0 28px;
+  border: var(--border) solid transparent;
+  border-radius: var(--radius);
+  font: var(--fw-strong) var(--fs-body) / 1.2 var(--font-text);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+/* Тло наведення — окремий шар, щоб змінювати лише opacity */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--border) * -1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.btn > * {
+  position: relative;
+}
+
+.btn--primary {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.btn--primary::before {
+  background: var(--btn-bg-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--ghost-line);
+  color: var(--ghost-fg);
+}
+
+.btn--ghost::before {
+  background: var(--ghost-hover);
+}
+
+.btn--sm {
+  min-height: var(--btn-h-sm);
+  padding: 0 18px;
+  font-size: var(--fs-small);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover::before {
+    opacity: 1;
+  }
+}
+
+.btn.is-hover::before {
+  opacity: 1;
+}
+
+.btn:active,
+.btn.is-active {
+  transform: translateY(1px);
+}
+
+.btn:active::before {
+  opacity: 1;
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn .i-arrow {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* Ряд дій під заголовком */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* ---------------------------------------------------------------- текстове посилання */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: var(--tap);
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.25em;
+}
+
+.link--accent {
+  color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+.link.is-hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------------------------------------------------------------- чіпи фільтра (button aria-pressed) */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: var(--border) solid var(--ui-line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--fg);
+  font: var(--fw-text) var(--fs-body) / 1.2 var(--font-text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.chip__count {
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    border-color: var(--fg);
+  }
+}
+
+.chip.is-hover {
+  border-color: var(--fg);
+}
+
+.chip:active {
+  transform: translateY(1px);
+}
+
+.chip[aria-pressed='true'],
+.chip[aria-current='true'] {
+  border-color: var(--coral);
+  background: var(--coral);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] .chip__count,
+.chip[aria-current='true'] .chip__count {
+  color: var(--ink);
+}
+
+.chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------- бейджі статусу */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: var(--border) solid transparent;
+  border-radius: var(--radius);
+  font: var(--fw-strong) var(--fs-small) / 1.2 var(--font-text);
+  white-space: nowrap;
+}
+
+.badge--live {
+  background: var(--coral);
+  color: var(--ink);
+}
+
+.badge--soon {
+  border: var(--border) dashed var(--ui-line);
+  color: var(--fg-muted);
+  font-weight: var(--fw-text);
+}
+
+/* ---------------------------------------------------------------- маркер «•–•» зі списків */
+.dna-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.dna-mark::before,
+.dna-mark::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-round);
+}
+
+.dna-mark::before {
+  background: var(--accent);
+}
+
+.dna-mark::after {
+  background: var(--fg);
+}
+
+.dna-mark > span {
+  width: 6px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ---------------------------------------------------------------- логотип */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  font: var(--fw-display) 1.25rem / 1 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.logo svg {
+  flex: none;
+}
+
+/* Показ стану фокусу в lab/system.html (на сайті фокус дає :focus-visible) */
+.is-focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}

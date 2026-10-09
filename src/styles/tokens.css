@@ -1,57 +1,160 @@
 /* ==========================================================================
-   Дизайн-токени «Плитка». Кольори, шрифти, шкала, відступи, рух.
-   Кольори ігор живуть у даних (game.theme), а не тут.
+   Дизайн-токени «ДНК» (напрям A «Подвійна спіраль»).
+   Джерела: design/DESIGN-SPEC.md і docs/DESIGN-IMPORT.md (розділ а).
+   Темна тема основна. Світлі й коралові секції перевизначають семантичні змінні
+   (--bg, --fg, --fg-muted…) у своєму класі, тож компоненти працюють на будь-якому тлі.
    ========================================================================== */
 :root {
-  /* Палітра бренду */
-  --mint: #d5eedc;          /* основне світле тло */
-  --forest: #0d2a1c;        /* текст і темні секції */
-  --white: #ffffff;         /* грань плитки, світлі секції */
-  --gold: #ffb81c;          /* зірка Telegram Stars, лише з темним текстом */
-  --gold-edge: #c98a00;
-  --green: #1f7a47;         /* «відгадано», гривні; білий текст 5,3 : 1 */
-  --green-edge: #11502c;
+  /* ---------------------------------------------------------------- палітра */
+  --ground: #0e1714;        /* Ґрунт: основне тло */
+  --layer: #15221e;         /* Шар: секції-вставки, картки */
+  --ivory: #f1ece1;         /* Слонова кістка: текст на темному 15,5 : 1; світле тло */
+  --ivory-soft: #c9cfc6;    /* вступні абзаци на темному 11,5 : 1 */
+  --lichen: #a9b3aa;        /* Лишайник: другорядний текст 8,4 : 1 (на Шарі 7,6 : 1) */
+  --coral: #ee8466;         /* Корал: кнопки, активні стани; темний текст на ньому 7,1 : 1 */
+  --coral-hover: #f49d84;   /* наведення на коралову кнопку; темний текст 8,4 : 1 */
+  --star: #f0b44c;          /* Зірка: ЛИШЕ знак ★ і суми в зірках (9,8 : 1) */
+  --star-on-light: #8f5b00; /* та сама зірка на світлому тлі, де золото не читається */
 
-  /* Текст */
-  --muted: #38543f;         /* 6,4 : 1 на м'яті, 8 : 1 на білому */
-  --on-dark: #e6f5ea;       /* 14 : 1 на хвої */
-  --on-dark-muted: #bcd9c4; /* 10 : 1 на хвої */
+  /* Світлі секції */
+  --paper: #f1ece1;         /* тло світлої секції */
+  --paper-card: #faf7f0;    /* картка на світлому */
+  --ink: #0e1714;           /* текст на світлому 15,5 : 1 */
+  --ink-muted: #4e5a53;     /* другорядний на світлому 6,1 : 1 */
+  --coral-text: #a63e26;    /* корал як текст і значки на світлому 5,3 : 1 */
 
-  /* Шрифти: 2 родини з повною українською */
-  --f-display: 'Geologica', 'Golos Text', system-ui, sans-serif;
-  --f-text: 'Golos Text', 'Geologica', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Лінії: декоративні (роздільники) і межі елементів керування (≥ 3 : 1) */
+  --line-dark: #26362f;
+  --line-light: #cfc8b9;
+  --ui-line-dark: #66736c;  /* 3,3 : 1 на Шарі, 3,7 : 1 на Ґрунті */
+  --ui-line-light: #857f73; /* 3,4 : 1 на світлому */
 
-  /* Шкала тексту: 6 розмірів, найменший 16 px */
-  --fs-sm: 1rem;
-  --fs-md: 1.0625rem;
-  --fs-lead: 1.1875rem;
-  --fs-h3: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
-  --fs-h2: clamp(2rem, 1.2rem + 3vw, 3.5rem);
-  --fs-h1: clamp(2.5rem, 1.15rem + 5.4vw, 5rem);
+  /* Кольори жанрів для генетичного відбитка (DESIGN-SPEC, розділ 5) */
+  --genre-slova: #e9d8a6;
+  --genre-viktoryny: #a9c79a;
+  --genre-holovolomky: #e0a9b8;
+  --genre-pamiat: #d6b98c;
+  --genre-druzi: #9fc1cf;
 
-  /* Відступи */
-  --gutter: 16px;
-  --sec-pad: 96px;
-  --sheet-r: 24px;          /* заокруглення «завіси» */
+  /* ---------------------------------------------------------------- семантика (темне тло за замовчуванням) */
+  --bg: var(--ground);
+  --fg: var(--ivory);
+  --fg-soft: var(--ivory-soft);
+  --fg-muted: var(--lichen);
+  --accent: var(--coral);          /* акцентний текст, крапки, активні межі */
+  --line: var(--line-dark);
+  --ui-line: var(--ui-line-dark);
+  --focus: var(--coral);
+  --btn-bg: var(--coral);
+  --btn-bg-hover: var(--coral-hover);
+  --btn-fg: var(--ink);
+  --ghost-fg: var(--ivory);
+  --ghost-line: var(--ivory);
+  --ghost-hover: rgb(241 236 225 / 0.08);
 
-  /* Рух */
+  /* ---------------------------------------------------------------- шрифти */
+  --font-display: 'Rubik', 'Golos Text', system-ui, sans-serif;
+  --font-text: 'Golos Text', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fw-display: 800;
+  --fw-text: 400;
+  --fw-strong: 600;
+
+  /* Шкала: значення на 390 px → на 1440 px (виміряно з макетів, DESIGN-IMPORT а) */
+  --fs-h1: clamp(2.5rem, 1.3rem + 4.95vw, 5.75rem);      /* 40 → 92 */
+  --fs-h2: clamp(1.9375rem, 1.36rem + 2.38vw, 3.5rem);   /* 31 → 56 */
+  --fs-h3: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);  /* 17 → 22 */
+  --fs-num-sm: clamp(1.25rem, 1.08rem + 0.7vw, 1.75rem); /* числа у фактах: 20 → 28 */
+  --fs-num-lg: clamp(1.75rem, 1.38rem + 1.5vw, 2.75rem); /* ціни, результат калькулятора: 28 → 44 */
+  --fs-lead: clamp(1.0625rem, 1rem + 0.24vw, 1.1875rem); /* 17 → 19 */
+  --fs-body: 1rem;                                       /* 16 */
+  --fs-small: 0.875rem;                                  /* 14: примітки, найменший текст */
+  --fs-eyebrow: 0.75rem;                                 /* 12, великі літери з розрядкою */
+  --lh-h1: 1.02;
+  --lh-h2: 1.1;
+  --lh-h3: 1.25;
+  --lh-body: 1.55;
+  --lh-long: 1.7;                                        /* оферта, політика */
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.12em;
+  --measure: 68ch;                                       /* ширина рядка довгого тексту */
+
+  /* ---------------------------------------------------------------- відступи й сітка */
+  --gutter: clamp(1.25rem, 5.71vw - 0.14rem, 5rem);      /* 20 → 80 */
+  --container: 90rem;                                    /* 1440 разом із полями */
+  --sec-pad: clamp(3rem, 1.7rem + 5.33vw, 6.5rem);       /* 48 → 104 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --header-h: 72px;
+  --tap: 44px;                                           /* мінімальна ціль дотику */
+  --btn-h: 56px;
+  --btn-h-sm: 44px;
+
+  /* ---------------------------------------------------------------- форма */
+  --radius: 0;            /* макет: прямі кути скрізь */
+  --radius-round: 999px;  /* лише крапки, повзунок */
+  --border: 1px;
+  --shadow: none;
+
+  /* ---------------------------------------------------------------- рух (лише transform і opacity) */
+  --dur-fast: 150ms;
+  --dur: 200ms;
+  --dur-step: 320ms;      /* засвічення кроку «Шляху зірки» */
+  --dur-slow: 420ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-spring: cubic-bezier(0.3, 1.35, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Плитки на світлому тлі: чіткий контур і «дно» */
-  --tile-face: var(--white);
-  --tile-ink: var(--forest);
-  --tile-line: var(--forest);
-  --tile-edge: var(--forest);
+  color-scheme: dark;
+}
 
-  --focus: var(--green);
+@media (min-width: 980px) {
+  :root {
+    --header-h: 96px;
+  }
+}
+
+/* ---------------------------------------------------------------- тони секцій */
+.tone-layer {
+  --bg: var(--layer);
+}
+
+.tone-light {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-muted);
+  --fg-muted: var(--ink-muted);
+  --accent: var(--coral-text);
+  --line: var(--line-light);
+  --ui-line: var(--ui-line-light);
+  --focus: var(--coral-text);
+  --ghost-fg: var(--ink);
+  --ghost-line: var(--ink);
+  --ghost-hover: rgb(14 23 20 / 0.06);
+  --star: var(--star-on-light);
+  --logo-ring: var(--ink);
+  --logo-a: var(--coral-text);
+  --logo-b: var(--ink-muted);
   color-scheme: light;
 }
 
-@media (min-width: 760px) {
-  :root {
-    --gutter: 40px;
-    --sec-pad: 144px;
-    --sheet-r: 32px;
-  }
+.tone-coral {
+  --bg: var(--coral);
+  --fg: var(--ink);
+  --fg-soft: var(--ink);
+  --fg-muted: var(--ink);
+  --accent: var(--ink);
+  --line: rgb(14 23 20 / 0.25);
+  --ui-line: var(--ink);
+  --focus: var(--ink);
+  --btn-bg: var(--ink);
+  --btn-bg-hover: #233029;
+  --btn-fg: var(--ivory);
+  --ghost-fg: var(--ink);
+  --ghost-line: var(--ink);
+  --ghost-hover: rgb(14 23 20 / 0.08);
 }

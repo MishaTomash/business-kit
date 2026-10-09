@@ -1,9 +1,9 @@
 /**
- * Плитки — головний матеріал дизайну «Плитка». Розмітка рядком (SafeHtml), тож вона
- * однаково будується в браузері й під час prerender.
+ * Числа-«фігури» (ціни, 0 %, 1 000 ★): розмітка рядком (SafeHtml), однакова в браузері й під час prerender.
+ * Назва «tiles» лишилась від старого дизайну «Плитка»; у «ДНК» це великі числа Rubik 800 (styles/tiles.css).
  *
- * Токени фігури: '★' — плитка-зірка, ' ' — вузька проставка між групами розрядів,
- * '₴' — плитка гривні, решта — літера чи цифра на білій плитці.
+ * Токени фігури: '★' — значок зірки, ' ' — вузька проставка між групами розрядів,
+ * '₴' — знак гривні, решта — звичайні символи.
  */
 
 import { html, raw, type SafeHtml } from './dom';
@@ -13,8 +13,6 @@ export const STAR_ICON: SafeHtml = raw('<svg class="i-star" aria-hidden="true" f
 export interface TilesOptions {
   /** Маленький знак перед плитками, напр. «≈». */
   readonly prefix?: string;
-  /** Цифри стають барабанами одометра (src/lib/odometer.ts). */
-  readonly odometer?: boolean;
   /** Додаткові класи контейнера: tiles--xl, tiles--lg… */
   readonly className?: string;
   /** Текст для читачів екрана. За замовчуванням береться з фігури. */
@@ -30,29 +28,18 @@ export function spokenFigure(figure: string, prefix = ''): string {
     .trim();
 }
 
-function strip(digit: string, d: number): SafeHtml {
-  const cells: SafeHtml[] = [];
-  for (let k = 0; k < 20; k++) cells.push(html`<span>${k % 10}</span>`);
-  return html`<span class="odo-strip" data-digit="${digit}" style="--d:${d}" aria-hidden="true">${cells}</span>`;
-}
-
 export function tiles(figure: string, opts: TilesOptions = {}): SafeHtml {
   const parts: SafeHtml[] = [];
-  let t = 0;
-  let d = 0;
   for (const ch of figure) {
     if (ch === ' ') {
       parts.push(html`<span class="tiles__gap"></span>`);
       continue;
     }
-    const i = t++;
-    if (ch === '★') parts.push(html`<span class="tile tile--star" style="--t:${i}">${STAR_ICON}</span>`);
-    else if (ch === '₴') parts.push(html`<span class="tile tile--cur" style="--t:${i}">₴</span>`);
-    else if (opts.odometer && /\d/.test(ch)) {
-      parts.push(html`<span class="tile tile--odo" style="--t:${i}"><span class="odo-still">${ch}</span>${strip(ch, d++)}</span>`);
-    } else parts.push(html`<span class="tile" style="--t:${i}">${ch}</span>`);
+    if (ch === '★') parts.push(html`<span class="tile tile--star">${STAR_ICON}</span>`);
+    else if (ch === '₴') parts.push(html`<span class="tile tile--cur">₴</span>`);
+    else parts.push(html`<span class="tile">${ch}</span>`);
   }
-  const cls = `tiles${opts.odometer ? ' tiles--odo' : ''}${opts.className ? ` ${opts.className}` : ''}`;
+  const cls = `tiles${opts.className ? ` ${opts.className}` : ''}`;
   const a11y = opts.decorative
     ? raw('aria-hidden="true"')
     : html`role="img" aria-label="${opts.label ?? spokenFigure(figure, opts.prefix)}"`;

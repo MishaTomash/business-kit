@@ -1,9 +1,11 @@
-/* Порядок: шрифти → токени → база → плитки → каркас → сторінки → рух. */
+/* Порядок: шрифти → токени → база → компоненти → каркас → (тимчасово) старі сторінки → рух. */
 @import './fonts.css';
 @import './tokens.css';
 @import './base.css';
-@import './tiles.css';
+@import './components.css';
 @import './layout.css';
+@import './legacy.css';
+@import './tiles.css';
 @import './home.css';
 @import './games.css';
 @import './game.css';
