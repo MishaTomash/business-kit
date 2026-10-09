@@ -17,6 +17,7 @@ npm install
 npm run dev        # http://localhost:5173
 npm run build      # перевірка типів + збірка + prerender у dist/
 npm run preview    # перегляд готової збірки
+npm test           # тести генетичного відбитка (порівняння з design/ka-lib.cjs), Node 22.6+
 ```
 
 Потрібен Node.js 20.19+. На хостинг завантажується вміст папки `dist/`.
@@ -129,7 +130,8 @@ sudo certbot --nginx -d klitynka.online
 | Кольори, шрифти, шкала тексту, відступи, рух | `src/styles/tokens.css` |
 | Шрифти (лише latin і cyrillic; cyrillic-ext лише заради ₴) | `src/styles/fonts.css` |
 | Колірний світ гри | `theme` у грі (`src/data/games.ts`) |
-| Огляд дизайн-системи | `npm run dev` → `/lab/system.html` |
+| Огляд дизайн-системи й відбитків усіх ігор | `npm run dev` → `/lab/system.html` |
+| Генетичний відбиток гри | `src/lib/fingerprint.ts` (правило), `src/components/fingerprint.ts` (картка й смужка), поле `dna` у `games.ts` |
 
 Рух: сцена «Шлях зірки», біжучий рядок, переходи між сторінками (View Transitions). Скрол нативний.
 З `prefers-reduced-motion` усе статичне. Спіраль ДНК і новий «Шлях зірки» додаються на етапі S4.
