@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Hero зі спіраллю й «Шлях зірки» (етап S4).
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  padding-block: var(--space-6) var(--sec-pad);
+}
+
+.hero__in {
+  display: grid;
+}
+
+.hero .h1 {
+  max-width: 13ch;
+}
+
+@media (min-width: 900px) {
+  .hero {
+    padding-block: var(--space-8) var(--sec-pad);
+  }
+  .hero__in {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-8);
+    align-items: center;
+    min-height: min(640px, calc(100svh - var(--header-h) - 64px));
+  }
+  .hero__visual {
+    order: 2;
+  }
+}
+
+/* ---------------------------------------------------------------- «Шлях зірки» */
+.path__grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.path__spiral {
+  display: none;
+}
+
+.pstep {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-5);
+  border-bottom: var(--border) solid var(--line);
+}
+
+.pstep:first-child {
+  border-top: var(--border) solid var(--line);
+}
+
+.pstep__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-strong);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  color: var(--coral);
+}
+
+.pstep__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-round);
+  background: var(--coral);
+  transition: transform var(--dur-step) var(--ease-out), opacity var(--dur-step) var(--ease-out);
+}
+
+.pstep__title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-strong);
+  line-height: 1.35;
+}
+
+.pstep__text {
+  margin-top: var(--space-1);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--fg-muted);
+  max-width: 48ch;
+}
+
+.pstep__value {
+  font: var(--fw-display) var(--fs-body) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.pstep__star .i-star {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-left: 0.15em;
+  vertical-align: -0.08em;
+}
+
+.pstep__value .i-approx {
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.1em;
+}
+
+/* Неосвітлений крок (лише коли JS «озброїв» секцію; без JS і з reduced-motion усе коралове) */
+.path.is-armed .pstep:not(.is-lit) .pstep__num {
+  color: var(--lichen);
+}
+
+.path.is-armed .pstep:not(.is-lit) .pstep__dot {
+  opacity: 0.35;
+  transform: scale(0.6);
+  background: var(--lichen);
+}
+
+/* Без JS / reduced-motion перекладини спіралі вже засвічені */
+.path:not(.is-armed) .sp-lit {
+  transform: none;
+}
+
+@media (min-width: 900px) {
+  .path__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .path__aside {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-6));
+  }
+  .path__spiral {
+    display: block;
+    max-width: 320px;
+    margin-top: var(--space-7);
+  }
+  .pstep {
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+  }
+  .pstep__value {
+    font-size: var(--fs-h3);
+  }
+}
