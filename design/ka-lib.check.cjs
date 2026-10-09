@@ -1,6 +1,6 @@
-// Запуск: node design/ka-lib.check.js  (має завершитися кодом 0 і написати "OK")
+// Запуск: node design/ka-lib.check.cjs  (має завершитися кодом 0 і написати "OK")
 const assert = require('node:assert');
-const { fingerprint } = require('./ka-lib.js');
+const { fingerprint } = require('./ka-lib.cjs');
 
 const fp = fingerprint({ name: 'Слововир', genreId: 'slova', color: '#ee8466' });
 assert.strictEqual(fp.key, 'слововир|slova|#ee8466');

@@ -4,7 +4,7 @@
 Сайт-вітрина klitynka.online: Vite + TypeScript (strict, без any) + vanilla, модульний CSS на змінних, prerender під час збірки. Статичний, nginx. Деплой робить власник сам.
 
 ## Джерела правди
-- Дизайн: design/DESIGN-SPEC.md (палітра, шрифти, анімація, правило відбитка), design/ka-lib.js + design/ka-lib.check.js (довідкова реалізація «генетичного відбитка», перевірена на контрольному прикладі), design/pages/*.png (макети 390 і 1440 px; індекс design/PAGES.md), design/Klitynka-A.pdf (оригінал із Claude Design). HTML і SVG логотипа немає.
+- Дизайн: design/DESIGN-SPEC.md (палітра, шрифти, анімація, правило відбитка), design/ka-lib.cjs + design/ka-lib.check.cjs (довідкова реалізація «генетичного відбитка», перевірена на контрольному прикладі), design/pages/*.png (макети 390 і 1440 px; індекс design/PAGES.md), design/Klitynka-A.pdf (оригінал із Claude Design). HTML і SVG логотипа немає.
 - Зміст і числа: src/data/*, content/legal/*. Якщо макет розходиться з даними, правильні ДАНІ, а макет виправляється.
 - Рішення власника: docs/DNA-PROGRESS.md. План: docs/DNA-STAGES.md.
 
