@@ -58,11 +58,6 @@ export function chip(label: string, opts: { pressed?: boolean; count?: number; v
   return html`<button type="button" class="chip" aria-pressed="${opts.pressed ? 'true' : 'false'}" ${opts.value !== undefined ? html`data-value="${opts.value}"` : ''}>${label}${opts.count !== undefined ? html`<span class="chip__count">${opts.count}</span>` : ''}</button>`;
 }
 
-export function themeVars(g: Game): string {
-  const t = g.theme;
-  return `--g-bg:${t.bg};--g-ink:${t.ink};--g-tile:${t.tile};--g-tile-ink:${t.tileInk}`;
-}
-
 /**
  * Обкладинка гри: справжня картинка або генетичний відбиток (S3).
  * У каталозі — смужка на темному тлі, у hero сторінки гри — велика картка з ключем.

@@ -1,393 +1,197 @@
 /* ==========================================================================
-   Сторінка гри /games/<id>.
+   Сторінка гри /games/<id> (макети page-33…48).
    ========================================================================== */
-.game-hero {
-  --bg: var(--g-bg);
-  --fg: var(--g-ink);
-  --tone-muted: var(--g-ink);
-}
 
-.game-hero.is-dark {
-  --focus: var(--gold);
-}
-
-.game-hero__in {
+/* ---------------------------------------------------------------- hero */
+.ghero__in {
   display: grid;
-  gap: 36px;
+  gap: var(--space-6);
 }
 
-.game-hero__back {
-  margin-bottom: -12px;
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-small);
+  color: var(--fg-muted);
+}
+
+.crumbs a {
+  color: var(--fg-soft);
+}
+
+.ghero__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-small);
+}
+
+.ghero__terms {
+  margin-top: var(--space-4);
+  max-width: 52ch;
 }
 
 .cover--hero.cover--fp {
   display: block;
   aspect-ratio: auto;
   padding: 0;
-}
-
-.game-hero__genre {
-  font-size: var(--fs-lead);
-  margin-bottom: 10px;
-}
-
-.game-hero .lead {
-  color: var(--g-ink);
-}
-
-.game-hero__soon {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  font-weight: 700;
-}
-
-.game-hero__soon::before {
-  content: '';
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 2px currentColor;
+  background: none;
 }
 
 @media (min-width: 900px) {
-  .game-hero__in {
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    column-gap: 72px;
-  }
-  .game-hero__back {
-    grid-column: 1 / -1;
-  }
-}
-
-.g-sub {
-  margin-top: 48px;
-  margin-bottom: 18px;
-}
-
-/* Як гра заробляє */
-.g-earn__in,
-.g-soon__in,
-.g-plan__in {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 56px;
-}
-
-@media (min-width: 900px) {
-  .g-earn__in,
-  .g-soon__in,
-  .g-plan__in {
+  .ghero__in {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 72px;
+    gap: var(--space-8);
+    align-items: center;
   }
 }
 
-.pricelist {
-  display: grid;
-  max-width: 480px;
-  border-top: 2px solid var(--forest);
+/* ---------------------------------------------------------------- ціни для гравців */
+.ptable {
+  margin: 0;
+  border-top: var(--border) solid var(--line);
 }
 
-.pricelist div {
+.ptable > div {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding-block: 14px;
-  border-bottom: 2px solid var(--forest);
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: var(--border) solid var(--line);
 }
 
-.pricelist dd {
-  font-weight: 700;
+.ptable dd {
+  margin: 0;
+  font: var(--fw-display) var(--fs-body) / 1.2 var(--font-display);
   text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 
-/* Демо-гра */
-.demo {
-  padding: 18px;
-  border-radius: 24px;
-  background: var(--mint);
-  box-shadow: inset 0 0 0 2px var(--forest);
+.gp-star .i-star,
+.calc__star .i-star {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: -0.08em;
 }
 
-.demo__score {
-  font: 800 var(--fs-lead) / 1.2 var(--f-display);
+/* ---------------------------------------------------------------- що входить, тема, механіки */
+.ilist {
+  border-top: var(--border) solid var(--line);
 }
 
-.demo__list {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 26px;
-  margin-top: 20px;
-}
-
-.demo__clue {
-  display: block;
-  font-weight: 600;
-}
-
-.demo__tiles {
+.ilist li {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 12px;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-4);
+  border-bottom: var(--border) solid var(--line);
 }
 
-.dtile {
+.ilist .dna-mark {
+  transform: translateY(-2px);
+}
+
+.gsoon .ilist {
+  margin-top: var(--space-6);
+}
+
+.gsoon__side {
   display: grid;
-  place-items: center;
-  width: 34px;
-  height: 40px;
-  border-radius: 9px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
-  font: 800 1.375rem/1 var(--f-display);
+  gap: var(--space-3);
+  align-content: start;
 }
 
-.dtile.filled {
-  animation: tile-pop 0.22s var(--ease-spring);
+.gsoon__side .h3 + p {
+  margin-bottom: var(--space-4);
 }
 
-.solved .dtile {
-  background: var(--gold);
-}
-
-@keyframes tile-pop {
-  from { transform: scale(0.86); }
-}
-
-.demo__input {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.demo__input input {
-  flex: 1;
-  min-width: 0;
-  max-width: 260px;
-  min-height: 48px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 2px var(--forest);
-  font: 700 1.125rem/1 var(--f-display);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.demo__input input[aria-invalid='true'] {
-  box-shadow: inset 0 0 0 3px #b42318;
-}
-
-.demo__hint {
-  min-height: 48px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--gold);
-  color: var(--forest);
-  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.demo__hint:active {
-  transform: translate3d(0, 2px, 0);
-}
-
-.demo__hint:disabled {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.demo__ok {
-  margin-top: 8px;
-  font-weight: 700;
-  color: var(--green);
-}
-
-@media (min-width: 600px) {
-  .demo {
-    padding: 28px;
-  }
-}
-
-.demo__note {
-  margin-top: 24px;
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-
-.gallery {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-}
-
-.gallery img {
-  width: 240px;
-  height: auto;
-  border-radius: 20px;
-  scroll-snap-align: start;
-  box-shadow: inset 0 0 0 2px var(--forest);
-}
-
-/* Механіки */
-.g-mech__in {
-  display: grid;
-  gap: 40px;
-}
-
-.mech {
-  display: grid;
-  gap: 18px;
-  max-width: 760px;
-}
-
-.mech li {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: var(--fs-lead);
-}
-
-.mech__tile {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--gold);
-  box-shadow: inset 0 0 0 2px var(--forest), 0 3px 0 var(--forest);
-}
-
-.mech__tile .i-star {
-  width: 56%;
-  height: 56%;
-}
-
-@media (min-width: 900px) {
-  .g-mech__in {
-    grid-template-columns: 4fr 7fr;
-  }
-}
-
-/* Що входить і план */
-.includes {
-  display: grid;
-  gap: 14px;
-  margin-top: 32px;
-}
-
-.includes li {
-  position: relative;
-  padding-left: 40px;
-  font-size: var(--fs-lead);
-}
-
-.includes li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.15em;
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
-  background: var(--green);
-  box-shadow: inset 0 0 0 2px var(--forest);
-}
-
+/* ---------------------------------------------------------------- план просування */
 .phases {
   display: grid;
-  gap: 16px;
-}
-
-.phase {
-  padding: 22px 24px;
-  border-radius: 20px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 2px var(--forest), 0 5px 0 var(--forest);
-}
-
-.phase__when {
-  color: var(--muted);
-  font-weight: 650;
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+  border-top: var(--border) solid var(--line);
+  padding-top: var(--space-5);
 }
 
 .phase__title {
-  font: 800 1.375rem/1.2 var(--f-display);
-  letter-spacing: -0.02em;
-  margin-top: 2px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-strong);
 }
 
-.phase ul {
-  margin-top: 10px;
-  display: grid;
-  gap: 6px;
-  padding-left: 20px;
-  list-style: disc;
+.phase__tasks {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  color: var(--fg-soft);
 }
 
-.channels {
-  display: grid;
-  gap: 18px;
+.phase__tasks li {
+  position: relative;
+  padding-left: 14px;
 }
 
-.channels__title {
-  font-weight: 700;
+.phase__tasks li + li {
+  margin-top: var(--space-1);
 }
 
-.channels__cost {
-  margin-left: 6px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.channels li p + p {
-  color: var(--muted);
-  max-width: 50ch;
-}
-
-/* Покупка */
-.g-buy__in {
-  display: grid;
-  gap: 32px;
-}
-
-.buy {
-  display: grid;
-  gap: 28px;
-  margin-top: 16px;
-}
-
-.buy__row {
-  display: grid;
-  gap: 12px;
-}
-
-.buy__row p {
-  font-size: var(--fs-lead);
-  color: var(--on-dark);
-  max-width: 34ch;
+.phase__tasks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-round);
+  background: var(--accent);
 }
 
 @media (min-width: 900px) {
-  .buy {
-    grid-template-columns: repeat(3, auto);
-    justify-content: start;
-    gap: 56px;
+  .phases {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
   }
 }
 
-.g-soon__note {
-  margin-top: 24px;
-  max-width: 48ch;
-  font-weight: 600;
+/* ---------------------------------------------------------------- коралова картка запуску */
+.gbuy__in {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.gbuy__rows {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 0;
+}
+
+.gbuy__rows > div {
+  display: grid;
+  grid-template-columns: minmax(5.5em, auto) 1fr;
+  gap: var(--space-4);
+  align-items: baseline;
+}
+
+.gbuy__rows dt {
+  font-size: var(--fs-num-sm);
+  white-space: nowrap;
+}
+
+.gbuy__rows dd {
+  margin: 0;
+}
+
+.gbuy__note {
+  margin-top: var(--space-5);
+  font-weight: var(--fw-strong);
+}
+
+@media (min-width: 900px) {
+  .gbuy__in {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
 }

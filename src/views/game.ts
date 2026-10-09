@@ -1,150 +1,148 @@
 /**
- * Сторінка гри /games/<id> у колірному світі гри.
- * available: «Пограти», демо, механіки, ціни для гравців, калькулятор, що входить, план, покупка.
- * soon або mock: опис, механіки, «У розробці», «Повідомити про запуск». Без покупки й калькулятора.
+ * Сторінка гри /games/<id> за макетами «ДНК».
+ * - Працює (макет page-33…44): крихти, бейдж «працює», «Хочу таку гру» й «Пограти», великий відбиток,
+ *   ціни для гравців, калькулятор, що входить, план просування, коралова картка запуску.
+ * - У розробці або заглушка (page-45…48): бейдж «у розробці», «Повідомити про запуск» з чесною фразою
+ *   власника, відбиток, як гра працюватиме, тема під вас, за що гравці платитимуть. Без цін, калькулятора
+ *   й «Пограти». Заглушки (mock) не індексуються й не потрапляють у sitemap.xml.
+ * Тексти — з src/data (pages.ts, games.ts, business.ts).
  */
 
 import type { View } from './view';
 import type { Game } from '@/types';
-import { BRAND, DEPLOY_TIME, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
-import { textNumber, tileNumber } from '@/data/business';
+import { BRAND, TELEGRAM_URL } from '@/data/site';
+import { GAME_PAGE } from '@/data/pages';
+import { OFFERINGS } from '@/data/business';
+import { GENRE_LABELS } from '@/data/genres';
 import { isPlayable } from '@/data';
-import { html, raw, type SafeHtml } from '@/lib/dom';
-import { STAR_ICON, starText, tiles } from '@/lib/tiles';
-import { luminance } from '@/lib/theme';
-import { formatDaysRange, formatMinutesRange } from '@/lib/format';
+import { html, type SafeHtml } from '@/lib/dom';
+import { STAR_ICON } from '@/lib/icons';
 import { href } from '@/router';
-import { cover, key, themeVars, tlink } from '@/components/ui';
+import { badge, button, cover } from '@/components/ui';
 import { calculatorMarkup, mountCalculator } from '@/components/calculator';
-import { demoMarkup, mountDemo } from '@/components/demoGame';
 import { mountCommon } from './common';
 
-const dark = (g: Game): boolean => luminance(g.theme.bg) < 0.2;
+const dnaMark = html`<span class="dna-mark" aria-hidden="true"><span></span></span>`;
 
-function heroBlock(g: Game, live: boolean): SafeHtml {
-  const tone = dark(g) ? 'gold' : 'forest';
+/** Ціна для гравців: «10 ★» → золоте число зі значком зірки; інший текст — як є. */
+function playerPrice(price: string): SafeHtml {
+  const m = /^(\d[\d\s ]*)\s*[★⭐]$/.exec(price.trim());
+  if (!m?.[1]) return html`<span>${price}</span>`;
+  const n = m[1].trim();
+  return html`<span class="star-sum num">${n}&nbsp;<span class="gp-star">${STAR_ICON}</span><span class="sr-only"> зірок</span></span>`;
+}
+
+function hero(g: Game, live: boolean): SafeHtml {
+  const genre = GENRE_LABELS[g.dna.genre];
   return html`
-    <section class="sec game-hero${dark(g) ? ' is-dark' : ''}" style="${themeVars(g)}" aria-labelledby="game-t">
-      <div class="wrap game-hero__in">
-        <p class="game-hero__back">${tlink(href.games(), 'До всіх ігор')}</p>
-        ${cover(g, { hero: true, morph: true })}
-        <div class="game-hero__text">
-          <p class="game-hero__genre">${g.genre}</p>
+    <section class="sec ghero" aria-labelledby="game-t">
+      <div class="wrap ghero__in">
+        <div class="ghero__text">
+          <nav class="crumbs" aria-label="Навігація"><a href="${href.games()}">${GAME_PAGE.crumbs}</a><span aria-hidden="true">/</span><span>${genre}</span></nav>
+          <p class="ghero__meta">${badge(live)}<span class="muted">${genre}</span></p>
           <h1 class="h1" id="game-t">${g.name}</h1>
           <p class="lead">${g.tagline}</p>
           ${live
-            ? html`<div class="actions">${g.botUrl ? key(g.botUrl, 'Пограти', { external: true, tone }) : ''}${tlink(TELEGRAM_URL, 'Хочу таку гру', true)}</div>`
-            : html`<p class="game-hero__soon">У розробці</p><div class="actions">${key(TELEGRAM_URL, 'Повідомити про запуск', { external: true, tone })}</div>`}
+            ? html`
+                <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.want, { external: true })}${g.botUrl ? button(g.botUrl, GAME_PAGE.play, { variant: 'ghost', external: true }) : ''}</div>
+                <p class="ghero__terms small muted">${GAME_PAGE.terms}</p>
+              `
+            : html`
+                <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.soon.notify, { external: true })}</div>
+                <p class="ghero__terms small muted">${GAME_PAGE.soon.notifyNote}.</p>
+              `}
         </div>
+        <div class="ghero__fp">${cover(g, { hero: true, morph: true })}</div>
       </div>
     </section>
   `;
 }
 
-function mechanicsList(g: Game): SafeHtml {
-  return html`<ul class="mech">${g.mechanics.map((m) => html`<li><span class="mech__tile" aria-hidden="true">${STAR_ICON}</span><span>${m}</span></li>`)}</ul>`;
-}
-
-function earnBlock(g: Game): SafeHtml {
+function prices(g: Game): SafeHtml {
   return html`
-    <section class="sec sec--white g-earn" aria-labelledby="g-earn-t">
-      <div class="wrap g-earn__in">
-        <div class="g-earn__text">
-          <h2 class="h2" id="g-earn-t">Як гра заробляє</h2>
+    <section class="sec gprices" aria-labelledby="gp-t">
+      <div class="wrap split">
+        <div>
+          <h2 class="h2" id="gp-t">${GAME_PAGE.prices.title}</h2>
           <p class="lead">${g.howItEarns}</p>
-          <h3 class="h3 g-sub">Ціни для гравців</h3>
-          <dl class="pricelist">
-            ${g.customerPrices.map((p) => html`<div><dt>${p.label}</dt><dd>${starText(p.price)}</dd></div>`)}
-          </dl>
         </div>
-        ${g.demo?.length
-          ? html`<div class="g-earn__demo"><h3 class="h3 g-sub">Спробуйте прямо тут</h3>${demoMarkup(g.demo)}</div>`
-          : g.screenshots?.length
-            ? html`<div class="g-earn__demo gallery">${g.screenshots.map((s) => html`<img src="${s.src}" alt="${s.alt}" width="590" height="1280" loading="lazy" decoding="async" />`)}</div>`
-            : raw('')}
+        <dl class="ptable">
+          ${g.customerPrices.map((p) => html`<div><dt>${p.label}</dt><dd>${playerPrice(p.price)}</dd></div>`)}
+        </dl>
       </div>
     </section>
   `;
 }
 
-function mechanicsBlock(g: Game): SafeHtml {
+function calc(g: Game): SafeHtml {
   return html`
-    <section class="sec sec--mint g-mech" aria-labelledby="g-mech-t">
-      <div class="wrap g-mech__in">
-        <h2 class="h2" id="g-mech-t">Механіки</h2>
-        ${mechanicsList(g)}
-      </div>
-    </section>
-  `;
-}
-
-function calcBlock(g: Game): SafeHtml {
-  return html`
-    <section class="sec sec--white g-calc" id="calc" aria-labelledby="g-calc-t">
+    <section class="sec tone-layer gcalc" id="calc" aria-labelledby="gc-t">
       <div class="wrap">
-        <h2 class="h2" id="g-calc-t">Скільки може приносити гра</h2>
-        <p class="lead">Орієнтир за планом: перший платник через ${formatDaysRange(g.firstClientDays)}, ${formatMinutesRange(g.dailyMinutes)} на день на просування.</p>
+        <h2 class="h2" id="gc-t">${GAME_PAGE.calc.title}</h2>
         ${calculatorMarkup(g)}
       </div>
     </section>
   `;
 }
 
-function planBlock(g: Game): SafeHtml {
+function includes(g: Game): SafeHtml {
   return html`
-    <section class="sec sec--mint g-plan" aria-labelledby="g-plan-t">
-      <div class="wrap g-plan__in">
-        <div>
-          <h2 class="h2" id="g-plan-t">Що входить</h2>
-          <ul class="includes">${g.includes.map((i) => html`<li>${i}</li>`)}</ul>
-        </div>
-        <div>
-          <h3 class="h3 g-sub">План просування</h3>
-          <ol class="phases">
-            ${g.plan.map(
-              (p) => html`<li class="phase"><p class="phase__when">${p.period}</p><h4 class="phase__title">${p.title}</h4><ul>${p.tasks.map((t) => html`<li>${t}</li>`)}</ul></li>`,
-            )}
-          </ol>
-          <h3 class="h3 g-sub">Де шукати гравців</h3>
-          <ul class="channels">
-            ${g.channels.map((c) => html`<li><p class="channels__title">${c.title} <span class="channels__cost">${c.cost === 'free' ? 'безкоштовно' : 'платно'}</span></p><p>${c.description}</p></li>`)}
-          </ul>
-        </div>
+    <section class="sec tone-light gincl" aria-labelledby="gi-t">
+      <div class="wrap split">
+        <h2 class="h2" id="gi-t">${GAME_PAGE.includes.title}</h2>
+        <ul class="ilist">${g.includes.map((i) => html`<li>${dnaMark}<p>${i}</p></li>`)}</ul>
       </div>
     </section>
   `;
 }
 
-function buyBlock(g: Game): SafeHtml {
+function plan(g: Game): SafeHtml {
   return html`
-    <section class="sec sec--forest g-buy" aria-labelledby="g-buy-t">
-      <div class="wrap g-buy__in">
-        <h2 class="h2" id="g-buy-t">Запуск гри «${g.name}» для вашого каналу</h2>
-        <ul class="buy">
-          <li class="buy__row">${tiles(`${tileNumber(g.priceUah)}₴`, { className: 'tiles--md' })}<p>один раз за запуск</p></li>
-          <li class="buy__row">${tiles(`${tileNumber(g.monthlyUah)}₴`, { className: 'tiles--md' })}<p>щомісяця: сервер, домен, оновлення й підтримка</p></li>
-          <li class="buy__row">${tiles(`${STARS_COMMISSION}%`, { className: 'tiles--md tiles--gold' })}<p>наша частка зі зірок: усі зірки йдуть на баланс вашого бота</p></li>
-        </ul>
-        <p class="lead">Гра запрацює ${DEPLOY_TIME} після оплати.</p>
-        <div class="actions">${key(TELEGRAM_URL, 'Хочу таку гру', { external: true, tone: 'gold' })}</div>
+    <section class="sec gplan" aria-labelledby="gpl-t">
+      <div class="wrap">
+        <h2 class="h2" id="gpl-t">${GAME_PAGE.plan.title}</h2>
+        <p class="lead">${GAME_PAGE.plan.lead(g.firstClientDays, g.dailyMinutes)}</p>
+        <ol class="phases">
+          ${g.plan.map(
+            (p) => html`<li class="phase"><p class="eyebrow">${p.period}</p><h3 class="phase__title">${p.title}</h3><ul class="phase__tasks">${p.tasks.map((t) => html`<li>${t}</li>`)}</ul></li>`,
+          )}
+        </ol>
       </div>
     </section>
   `;
 }
 
-function soonBlock(g: Game): SafeHtml {
+function buy(g: Game): SafeHtml {
+  const b = GAME_PAGE.buy;
   return html`
-    <section class="sec sec--white g-soon" aria-labelledby="g-soon-t">
-      <div class="wrap g-soon__in">
+    <section class="sec tone-coral gbuy" aria-labelledby="gb-t">
+      <div class="wrap gbuy__in">
         <div>
-          <h2 class="h2" id="g-soon-t">Як гра працюватиме</h2>
-          <p class="lead">${g.howItEarns}</p>
-          <p class="g-soon__note">Ціни для гравців, калькулятор і запуск з'являться, коли гра буде готова. Натисніть «Повідомити про запуск», і ми напишемо вам першими.</p>
-          <div class="actions">${tlink(href.games(), 'Подивитися інші ігри')}</div>
+          <h2 class="h2" id="gb-t">${b.title(g.name)}</h2>
+          <dl class="gbuy__rows">${b.rows.map((r) => html`<div><dt class="num">${r.value}</dt><dd>${r.text}</dd></div>`)}</dl>
+          <p class="gbuy__note">${b.note}</p>
         </div>
+        <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.want, { external: true })}</div>
+      </div>
+    </section>
+  `;
+}
+
+function soon(g: Game): SafeHtml {
+  const s = GAME_PAGE.soon;
+  const [name, content] = OFFERINGS;
+  return html`
+    <section class="sec gsoon" aria-labelledby="gs-t">
+      <div class="wrap split">
         <div>
-          <h3 class="h3 g-sub">Механіки</h3>
-          ${mechanicsList(g)}
+          <h2 class="h2" id="gs-t">${s.how}</h2>
+          <ul class="ilist">${g.mechanics.map((m) => html`<li>${dnaMark}<p>${m}</p></li>`)}</ul>
+        </div>
+        <div class="gsoon__side">
+          <h3 class="h3">${s.pay}</h3>
+          <p class="muted">${g.howItEarns}</p>
+          <h3 class="h3">${s.theme}</h3>
+          <p class="muted">${name?.text} ${content?.text}</p>
         </div>
       </div>
     </section>
@@ -153,32 +151,27 @@ function soonBlock(g: Game): SafeHtml {
 
 export function gameView(g: Game): View {
   const live = isPlayable(g);
+  const m = GAME_PAGE.meta;
   return {
     key: `game:${g.id}`,
-    navTone: dark(g) ? 'dark' : 'light',
+    navTone: 'dark',
     meta: {
-      title: live ? `${g.name}: ${g.genre.toLowerCase()} у Telegram для вашого каналу — ${BRAND}` : `${g.name} (у розробці) — ${BRAND}`,
-      ogTitle: live ? `${g.name} — гра для вашого Telegram-каналу` : `${g.name} — скоро в каталозі ${BRAND}`,
-      description: live
-        ? `${g.tagline} Запуск під назвою вашого каналу за ${textNumber(g.priceUah)}\u00A0₴, підтримка ${textNumber(g.monthlyUah)}\u00A0₴ на місяць, зірки повністю ваші.`
-        : `${g.tagline} Гра в розробці: залиште заявку, і ми повідомимо про запуск.`,
+      title: `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND}`,
+      ogTitle: live ? m.liveOg(g.name) : m.soonOg(g.name),
+      description: live ? m.liveDescription(g.tagline) : m.soonDescription(g.tagline),
       ogImage: g.ogImage ?? `/og/${g.id}.png`,
       path: href.game(g.id),
+      ...(g.mock ? { noindex: true } : {}),
     },
-    markup: live
-      ? html`${heroBlock(g, true)}${earnBlock(g)}${mechanicsBlock(g)}${calcBlock(g)}${planBlock(g)}${buyBlock(g)}`
-      : html`${heroBlock(g, false)}${soonBlock(g)}`,
+    markup: live ? html`${hero(g, true)}${prices(g)}${calc(g)}${includes(g)}${plan(g)}${buy(g)}` : html`${hero(g, false)}${soon(g)}`,
     mount(root, ctx) {
       const off = mountCommon(root, ctx);
-      if (live) {
-        mountDemo(root);
-        const offCalc = mountCalculator(root, g);
-        return () => {
-          off();
-          offCalc();
-        };
-      }
-      return off;
+      if (!live) return off;
+      const offCalc = mountCalculator(root, g);
+      return () => {
+        off();
+        offCalc();
+      };
     },
   };
 }

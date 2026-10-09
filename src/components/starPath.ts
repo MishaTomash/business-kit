@@ -11,7 +11,7 @@
 import { STAR_PATH } from '@/data/business';
 import { HOME } from '@/data/home';
 import { html, type SafeHtml } from '@/lib/dom';
-import { STAR_ICON, pluralStars } from '@/lib/tiles';
+import { STAR_ICON, pluralStars } from '@/lib/icons';
 import { spiralMarkup } from './spiral';
 
 export const RUNGS_PER_STEP = 3;

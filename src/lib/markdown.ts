@@ -15,6 +15,8 @@ export interface MarkdownResult {
   readonly edition: string | null;
   /** HTML без заголовка першого рівня й рядка редакції. */
   readonly body: string;
+  /** Розділи (заголовки другого рівня з номером «1. …») для змісту документа. */
+  readonly sections: readonly { readonly id: string; readonly text: string }[];
 }
 
 export interface MarkdownOptions {
@@ -58,6 +60,7 @@ export function markdownToHtml(src: string, opts: MarkdownOptions): MarkdownResu
   let title = '';
   let edition: string | null = null;
   let lastHeading = '';
+  const sections: { id: string; text: string }[] = [];
   let i = 0;
 
   const siteUrl = opts.siteUrl.replace(/\/+$/, '');
@@ -105,6 +108,7 @@ export function markdownToHtml(src: string, opts: MarkdownOptions): MarkdownResu
       } else {
         const num = /^(\d+)\./.exec(text);
         const id = num?.[1] ? ` id="p${num[1]}"` : '';
+        if (level === 2 && num?.[1]) sections.push({ id: `p${num[1]}`, text: text.replace(/\*\*/g, '') });
         out.push(`<h${level}${id}>${inline(text)}</h${level}>`);
         lastHeading = text.replace(/\*\*/g, '');
       }
@@ -158,5 +162,5 @@ export function markdownToHtml(src: string, opts: MarkdownOptions): MarkdownResu
   }
 
   if (!title) throw new Error('Markdown: немає заголовка першого рівня (# …)');
-  return { title, edition, body: out.join('\n') };
+  return { title, edition, body: out.join('\n'), sections };
 }

@@ -1,50 +1,74 @@
-/** Каталог ігор /games. Гарно виглядає з 1, 3, 5, 12 і 20 іграми; фільтр жанрів — коли ігор більше шести. */
+/**
+ * Каталог /games за макетом «ДНК» (design/pages/page-25…32): чіпи жанрів із кількістю, рядки ігор
+ * з генетичним відбитком, наприкінці картка «Немає потрібної гри?».
+ * Фільтр — посилання /games?genre=<жанр>: без JS видно всі ігри, з JS список фільтрується на місці.
+ * Порядок: спершу ігри, що працюють, далі «у розробці» (src/data/index.ts → catalog()).
+ */
 
 import type { View } from './view';
-import type { Game } from '@/types';
-import { BRAND } from '@/data/site';
-import { FILTER_FROM, catalog, genres, isPlayable, liveCount, soonCount } from '@/data';
-import { html, raw, type SafeHtml } from '@/lib/dom';
+import type { Game, GenreId } from '@/types';
+import { BRAND, TELEGRAM_URL } from '@/data/site';
+import { CATALOG } from '@/data/pages';
+import { HOME } from '@/data/home';
+import { GENRE_LABELS } from '@/data/genres';
+import { catalog, isPlayable, liveCount, soonCount } from '@/data';
+import { GENRE_IDS } from '@/lib/fingerprint';
+import { html, type SafeHtml } from '@/lib/dom';
 import { href } from '@/router';
-import { cover } from '@/components/ui';
+import { badge, button, tlink } from '@/components/ui';
+import { fingerprintStrip } from '@/components/fingerprint';
 import { mountCommon } from './common';
 
-function card(g: Game, morphId?: string): SafeHtml {
+function row(g: Game, morphId?: string): SafeHtml {
   const live = isPlayable(g);
   return html`
-    <li class="cards__item" data-genre="${g.genre}">
-      <a class="card" href="${href.game(g.id)}" data-game-link="${g.id}">
-        ${cover(g, { morph: morphId === g.id })}
-        <div class="card__body">
-          <h2 class="card__name">${g.name}</h2>
-          <p class="card__genre">${g.genre}</p>
-          <p class="card__line">${g.tagline}</p>
-          <p class="card__status${live ? ' is-live' : ''}">${live ? 'Доступна' : 'У розробці'}</p>
-        </div>
-      </a>
+    <li class="crow" data-genre="${g.dna.genre}">
+      <div class="crow__fp" ${morphId === g.id ? html`style="view-transition-name:game-cover"` : ''} data-cover="${g.id}">${fingerprintStrip(g, 'row')}</div>
+      <div class="crow__name">
+        <h2 class="crow__title"><a href="${href.game(g.id)}">${g.name}</a></h2>
+        <p class="crow__genre">${GENRE_LABELS[g.dna.genre]}</p>
+      </div>
+      <p class="crow__line">${g.tagline}</p>
+      <div class="crow__act">
+        ${badge(live)}
+        ${live && g.botUrl ? button(g.botUrl, CATALOG.play, { variant: 'ghost', small: true, external: true }) : ''}
+        ${live ? '' : tlink(TELEGRAM_URL, CATALOG.notify, true)}
+      </div>
     </li>
   `;
 }
 
-function filter(): SafeHtml {
+function filter(list: readonly Game[]): SafeHtml {
+  const counts = new Map<GenreId, number>();
+  for (const g of list) counts.set(g.dna.genre, (counts.get(g.dna.genre) ?? 0) + 1);
+  const present = GENRE_IDS.filter((id) => counts.has(id));
   return html`
-    <div class="filter" role="group" aria-label="Жанр" data-filter>
-      <button type="button" class="chip" aria-pressed="true" data-genre="">Усі</button>
-      ${genres().map((g) => html`<button type="button" class="chip" aria-pressed="false" data-genre="${g}">${g}</button>`)}
-    </div>
+    <nav class="chips cfilter" aria-label="${CATALOG.filterLabel}" data-filter>
+      <a class="chip" href="${href.games()}" data-genre="" aria-current="true">${CATALOG.allLabel}<span class="chip__count">${list.length}</span></a>
+      ${present.map((id) => html`<a class="chip" href="${href.games()}?genre=${id}" data-genre="${id}" aria-current="false">${GENRE_LABELS[id]}<span class="chip__count">${counts.get(id) ?? 0}</span></a>`)}
+    </nav>
   `;
 }
 
+/** Фільтр жанру: читає ?genre= з адреси, перемикає чіпи й рядки, оновлює адресу без перезавантаження. */
 function mountFilter(root: ParentNode): void {
   const box = root.querySelector<HTMLElement>('[data-filter]');
   if (!box) return;
-  const items = [...root.querySelectorAll<HTMLElement>('.cards__item')];
+  const rows = [...root.querySelectorAll<HTMLElement>('.crow')];
+  const known = new Set<string>(GENRE_IDS);
+  const apply = (genre: string): void => {
+    const g = known.has(genre) ? genre : '';
+    box.querySelectorAll<HTMLElement>('[data-genre]').forEach((c) => c.setAttribute('aria-current', String(c.dataset['genre'] === g)));
+    rows.forEach((r) => (r.hidden = g !== '' && r.dataset['genre'] !== g));
+  };
+  apply(new URLSearchParams(location.search).get('genre') ?? '');
   box.addEventListener('click', (e) => {
-    const btn = (e.target as Element | null)?.closest<HTMLButtonElement>('button[data-genre]');
-    if (!btn) return;
-    const genre = btn.dataset['genre'] ?? '';
-    box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-    items.forEach((it) => (it.hidden = genre !== '' && it.dataset['genre'] !== genre));
+    const chip = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[data-genre]');
+    if (!chip || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    const genre = chip.dataset['genre'] ?? '';
+    apply(genre);
+    history.replaceState(history.state, '', genre ? `${href.games()}?genre=${genre}` : href.games());
   });
 }
 
@@ -52,20 +76,28 @@ export function gamesView(morphId?: string): View {
   const list = catalog();
   return {
     key: 'games',
+    navTone: 'dark',
     meta: {
-      title: `Ігри для вашого Telegram-каналу — ${BRAND}`,
-      ogTitle: `Ігри для вашого Telegram-каналу`,
-      description: `Каталог ігор у Telegram під ключ. Доступно зараз: ${liveCount()}, у розробці: ${soonCount()}. Кожна гра запускається під назвою й кольорами вашого каналу.`,
+      title: `${CATALOG.meta.title} — ${BRAND}`,
+      ogTitle: CATALOG.meta.title,
+      description: CATALOG.meta.description(liveCount(), soonCount()),
       ogImage: '/og/default.png',
       path: href.games(),
     },
     markup: html`
-      <section class="sec sec--white catalog" aria-labelledby="games-t">
+      <section class="sec catalog" aria-labelledby="games-t">
         <div class="wrap">
-          <h1 class="h1" id="games-t">Ігри для вашого каналу</h1>
-          <p class="lead">Доступно зараз: ${liveCount()}. У розробці: ${soonCount()}. Кожна гра запускається під назвою й кольорами вашого каналу.</p>
-          ${list.length >= FILTER_FROM ? filter() : raw('')}
-          <ul class="cards" data-count="${list.length > 3 ? 'many' : list.length}">${list.map((g) => card(g, morphId))}</ul>
+          <h1 class="h1 catalog__title" id="games-t">${CATALOG.title}</h1>
+          <p class="lead">${CATALOG.lead} ${HOME.catalog.status(liveCount(), soonCount())}.</p>
+          ${filter(list)}
+          <ul class="crows">${list.map((g) => row(g, morphId))}</ul>
+          <aside class="cwish" aria-labelledby="wish-t">
+            <div>
+              <h2 class="cwish__title" id="wish-t">${CATALOG.wish.title}</h2>
+              <p class="muted">${CATALOG.wish.text}</p>
+            </div>
+            ${button(TELEGRAM_URL, CATALOG.wish.cta, { variant: 'ghost', external: true })}
+          </aside>
         </div>
       </section>
     `,
