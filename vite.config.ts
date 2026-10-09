@@ -144,11 +144,12 @@ function prerender(): Plugin {
             .join('\n    ');
           const active = page.key === 'home' ? 'home' : page.key.startsWith('game') ? 'games' : '';
           let out = template
-            .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(m.title)}</title>`)
+            // Заміни через функцію: інакше «$&», «$'» у тексті сторінки (напр. «0,013 $&nbsp;/ ★») String.replace сприйме як шаблони.
+            .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(m.title)}</title>`)
             .replace(/\s*<meta name="description"[^>]*>/, '')
             .replace(/\s*<link rel="canonical"[^>]*>/, '')
-            .replace('<!--page-meta-->', metaTags)
-            .replace('<main id="app" tabindex="-1"><!--app--></main>', `<main id="app" tabindex="-1" data-route="${esc(page.key)}">${page.markup}</main>`);
+            .replace('<!--page-meta-->', () => metaTags)
+            .replace('<main id="app" tabindex="-1"><!--app--></main>', () => `<main id="app" tabindex="-1" data-route="${esc(page.key)}">${page.markup}</main>`);
           out = out.replace('<html lang="uk">', `<html lang="uk" data-nav-tone="${page.navTone}">`);
           if (active) out = out.replaceAll(`data-nav="${active}"`, `data-nav="${active}" aria-current="page"`);
           const target = path.join(outDir, page.file);

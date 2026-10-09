@@ -112,7 +112,7 @@ document.addEventListener('click', (e) => {
     return;
   }
   history.replaceState({ y: window.scrollY }, '');
-  history.pushState({ y: 0 }, '', url.pathname + url.hash);
+  history.pushState({ y: 0 }, '', url.pathname + url.search + url.hash);
   go(url.pathname, url.hash ? { hash: url.hash } : {});
 });
 
