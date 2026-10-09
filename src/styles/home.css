@@ -3,52 +3,9 @@
    ========================================================================== */
 
 /* ---------------------------------------------------------------- HERO */
-.hero {
-  padding-top: 92px;
-}
-
 .hero__in {
   display: grid;
   gap: 48px;
-}
-
-.cross {
-  --ts: clamp(32px, 9.4vw, 88px);
-  display: grid;
-  grid-template-columns: repeat(6, var(--ts));
-  grid-auto-rows: var(--ts);
-  gap: calc(var(--ts) * 0.12);
-  padding-bottom: calc(var(--ts) * 0.08);
-}
-
-.t {
-  grid-column: var(--c);
-  grid-row: var(--r);
-  position: relative;
-  display: grid;
-  place-items: center;
-  border-radius: calc(var(--ts) * 0.18);
-  background: var(--white);
-  color: var(--forest);
-  box-shadow: inset 0 0 0 max(2px, calc(var(--ts) * 0.03)) var(--forest), 0 calc(var(--ts) * 0.075) 0 var(--forest);
-  font: 800 calc(var(--ts) * 0.5) / 1 var(--f-display);
-}
-
-.t--gold { background: var(--gold); }
-.t--green { background: var(--green); color: var(--white); }
-
-.t__mark {
-  position: absolute;
-  top: 10%;
-  left: 11%;
-  width: 22%;
-  height: 22%;
-  display: grid;
-}
-
-.t__mark .i-star {
-  width: 100%;
-  height: 100%;
 }
 
 @media (min-width: 900px) {
@@ -61,10 +18,6 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
     padding-block: 120px 96px;
-  }
-  .cross {
-    justify-content: end;
-    --ts: clamp(60px, 5.9vw, 88px);
   }
 }
 

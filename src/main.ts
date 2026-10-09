@@ -6,13 +6,10 @@
  * перезавантаження: History API + View Transitions (обкладинка картки «перетікає» в hero гри).
  */
 
-import 'lenis/dist/lenis.css';
 import './styles/index.css';
 
-import Lenis from 'lenis';
 import { qs } from '@/lib/dom';
 import { hasFinePointer, motionLevel, prefersReducedMotion } from '@/lib/env';
-import { requestFrame } from '@/lib/scroll';
 import { legacyRedirect, parsePath } from '@/router';
 import { resolveView } from '@/pages';
 import { SITE_URL } from '@/data/site';
@@ -23,11 +20,6 @@ const html = document.documentElement;
 const ctx: MountContext = { motion: motionLevel(), finePointer: hasFinePointer() };
 html.classList.add('js', `motion-${ctx.motion}`);
 history.scrollRestoration = 'manual';
-
-// Плавний скрол лише для миші й тачпада; на телефоні нативний. Lenis не перехоплює
-// клавіатуру й історію, тож PageDown, якорі й «Назад» працюють як звичайно.
-const lenis = ctx.finePointer && ctx.motion === 'full' ? new Lenis({ autoRaf: true, smoothWheel: true, syncTouch: false }) : null;
-lenis?.on('scroll', requestFrame);
 
 let current: View | null = null;
 let cleanup: Cleanup | null = null;
@@ -56,31 +48,18 @@ function mount(view: View): void {
   cleanup = view.mount?.(app, ctx) ?? null;
 }
 
-/** Відстань від верху документа до секції (секції липкі й заходять одна на одну, тож offsetTop не годиться). */
-function sectionY(el: HTMLElement): number {
-  const sec = el.closest<HTMLElement>('.sec') ?? el;
-  const margin = (n: HTMLElement): number => parseFloat(getComputedStyle(n).marginTop) || 0;
-  let y = app.offsetTop + margin(sec);
-  let prev = sec.previousElementSibling as HTMLElement | null;
-  while (prev) {
-    y += prev.offsetHeight + margin(prev);
-    prev = prev.previousElementSibling as HTMLElement | null;
-  }
-  return y + (sec === el ? 0 : el.offsetTop);
-}
+/** Висота липкої шапки: щоб заголовок секції не ховався під нею. */
+const headerOffset = (): number => (document.querySelector<HTMLElement>('.nav')?.offsetHeight ?? 0) + 16;
 
+/** Скрол нативний: колесо, PageDown, якорі й «Назад» працюють як звичайно. */
 function scrollToY(y: number, smooth: boolean): void {
-  if (lenis) {
-    lenis.resize(); // після зміни сторінки Lenis ще пам'ятає стару висоту документа
-    lenis.scrollTo(y, smooth ? {} : { immediate: true, force: true });
-  }
-  else window.scrollTo({ top: y, behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto' });
+  window.scrollTo({ top: y, behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto' });
 }
 
 function scrollToHash(hash: string, smooth: boolean): boolean {
   const el = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
   if (!el) return false;
-  scrollToY(sectionY(el), smooth);
+  scrollToY(el.getBoundingClientRect().top + window.scrollY - headerOffset(), smooth);
   return true;
 }
 
@@ -148,6 +127,20 @@ window.addEventListener('popstate', (e) => {
   const state = e.state as { y?: number } | null;
   go(location.pathname, typeof state?.y === 'number' ? { y: state.y } : location.hash ? { hash: location.hash } : {});
 });
+
+/* ---------------------------------------------------------------- мобільне меню */
+// <details> відкривається й закривається без JS; тут лише зручності: Escape і клік поза меню.
+const menu = document.querySelector<HTMLDetailsElement>('.menu');
+if (menu) {
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !menu.open) return;
+    menu.open = false;
+    menu.querySelector<HTMLElement>('summary')?.focus();
+  });
+  document.addEventListener('click', (e) => {
+    if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+  });
+}
 
 /* ---------------------------------------------------------------- старт */
 const legacy = legacyRedirect(location.hash);

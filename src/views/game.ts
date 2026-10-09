@@ -30,7 +30,7 @@ function heroBlock(g: Game, live: boolean): SafeHtml {
         ${cover(g, { hero: true, morph: true })}
         <div class="game-hero__text">
           <p class="game-hero__genre">${g.genre}</p>
-          <h1 class="h1 kinetic" id="game-t" data-kinetic="now">${g.name}</h1>
+          <h1 class="h1" id="game-t">${g.name}</h1>
           <p class="lead">${g.tagline}</p>
           ${live
             ? html`<div class="actions">${g.botUrl ? key(g.botUrl, 'Пограти', { external: true, tone }) : ''}${tlink(TELEGRAM_URL, 'Хочу таку гру', true)}</div>`
@@ -50,7 +50,7 @@ function earnBlock(g: Game): SafeHtml {
     <section class="sec sec--white g-earn" aria-labelledby="g-earn-t">
       <div class="wrap g-earn__in">
         <div class="g-earn__text">
-          <h2 class="h2 kinetic" id="g-earn-t">Як гра заробляє</h2>
+          <h2 class="h2" id="g-earn-t">Як гра заробляє</h2>
           <p class="lead">${g.howItEarns}</p>
           <h3 class="h3 g-sub">Ціни для гравців</h3>
           <dl class="pricelist">
@@ -71,7 +71,7 @@ function mechanicsBlock(g: Game): SafeHtml {
   return html`
     <section class="sec sec--mint g-mech" aria-labelledby="g-mech-t">
       <div class="wrap g-mech__in">
-        <h2 class="h2 kinetic" id="g-mech-t">Механіки</h2>
+        <h2 class="h2" id="g-mech-t">Механіки</h2>
         ${mechanicsList(g)}
       </div>
     </section>
@@ -82,7 +82,7 @@ function calcBlock(g: Game): SafeHtml {
   return html`
     <section class="sec sec--white g-calc" id="calc" aria-labelledby="g-calc-t">
       <div class="wrap">
-        <h2 class="h2 kinetic" id="g-calc-t">Скільки може приносити гра</h2>
+        <h2 class="h2" id="g-calc-t">Скільки може приносити гра</h2>
         <p class="lead">Орієнтир за планом: перший платник через ${formatDaysRange(g.firstClientDays)}, ${formatMinutesRange(g.dailyMinutes)} на день на просування.</p>
         ${calculatorMarkup(g)}
       </div>
@@ -95,7 +95,7 @@ function planBlock(g: Game): SafeHtml {
     <section class="sec sec--mint g-plan" aria-labelledby="g-plan-t">
       <div class="wrap g-plan__in">
         <div>
-          <h2 class="h2 kinetic" id="g-plan-t">Що входить</h2>
+          <h2 class="h2" id="g-plan-t">Що входить</h2>
           <ul class="includes">${g.includes.map((i) => html`<li>${i}</li>`)}</ul>
         </div>
         <div>
@@ -119,11 +119,11 @@ function buyBlock(g: Game): SafeHtml {
   return html`
     <section class="sec sec--forest g-buy" aria-labelledby="g-buy-t">
       <div class="wrap g-buy__in">
-        <h2 class="h2 kinetic" id="g-buy-t">Запуск гри «${g.name}» для вашого каналу</h2>
+        <h2 class="h2" id="g-buy-t">Запуск гри «${g.name}» для вашого каналу</h2>
         <ul class="buy">
-          <li class="buy__row">${tiles(`${tileNumber(g.priceUah)}₴`, { odometer: true, className: 'tiles--md' })}<p>один раз за запуск</p></li>
-          <li class="buy__row">${tiles(`${tileNumber(g.monthlyUah)}₴`, { odometer: true, className: 'tiles--md' })}<p>щомісяця: сервер, домен, оновлення й підтримка</p></li>
-          <li class="buy__row">${tiles(`${STARS_COMMISSION}%`, { odometer: true, className: 'tiles--md tiles--gold' })}<p>наша частка зі зірок: усі зірки йдуть на баланс вашого бота</p></li>
+          <li class="buy__row">${tiles(`${tileNumber(g.priceUah)}₴`, { className: 'tiles--md' })}<p>один раз за запуск</p></li>
+          <li class="buy__row">${tiles(`${tileNumber(g.monthlyUah)}₴`, { className: 'tiles--md' })}<p>щомісяця: сервер, домен, оновлення й підтримка</p></li>
+          <li class="buy__row">${tiles(`${STARS_COMMISSION}%`, { className: 'tiles--md tiles--gold' })}<p>наша частка зі зірок: усі зірки йдуть на баланс вашого бота</p></li>
         </ul>
         <p class="lead">Гра запрацює ${DEPLOY_TIME} після оплати.</p>
         <div class="actions">${key(TELEGRAM_URL, 'Хочу таку гру', { external: true, tone: 'gold' })}</div>
@@ -137,7 +137,7 @@ function soonBlock(g: Game): SafeHtml {
     <section class="sec sec--white g-soon" aria-labelledby="g-soon-t">
       <div class="wrap g-soon__in">
         <div>
-          <h2 class="h2 kinetic" id="g-soon-t">Як гра працюватиме</h2>
+          <h2 class="h2" id="g-soon-t">Як гра працюватиме</h2>
           <p class="lead">${g.howItEarns}</p>
           <p class="g-soon__note">Ціни для гравців, калькулятор і запуск з'являться, коли гра буде готова. Натисніть «Повідомити про запуск», і ми напишемо вам першими.</p>
           <div class="actions">${tlink(href.games(), 'Подивитися інші ігри')}</div>

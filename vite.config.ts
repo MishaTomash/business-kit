@@ -2,11 +2,11 @@ import { defineConfig, createServer, loadEnv, type Plugin, type ResolvedConfig }
 import { fileURLToPath, URL } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { BRAND, DEFAULT_SITE_URL } from './src/data/brand.ts';
+import { BRAND, BRAND_LINE, DEFAULT_SITE_URL } from './src/data/brand.ts';
 
 const SRC = fileURLToPath(new URL('./src', import.meta.url));
 
-/** Назва бренду й адреса сайту в index.html (шапка, футер, canonical). */
+/** Назва бренду, рядок суті й адреса сайту в index.html (шапка, футер, canonical). */
 function brandHtml(): Plugin {
   let siteUrl = DEFAULT_SITE_URL;
   return {
@@ -17,14 +17,19 @@ function brandHtml(): Plugin {
     },
     transformIndexHtml: {
       order: 'pre',
-      handler: (html) => html.replaceAll('%BRAND%', BRAND).replaceAll('%VITE_SITE_URL%', siteUrl),
+      handler: (html) =>
+        html
+          .replaceAll('%BRAND_LINE%', BRAND_LINE)
+          .replaceAll('%BRAND%', BRAND)
+          .replaceAll('%SITE_HOST%', new URL(siteUrl).host)
+          .replaceAll('%VITE_SITE_URL%', siteUrl),
     },
   };
 }
 
 /**
- * Кириличні файли заголовкового шрифту й тексту вантажаться разом з HTML,
- * щоб заголовки не «стрибали» при підміні шрифту (CLS).
+ * Шрифти першого екрана вантажаться разом з HTML, щоб заголовки не «стрибали» при підміні (CLS):
+ * Rubik 800 (кирилиця й латиниця: цифри й пробіли теж із латинської підмножини) і кирилиця Golos Text 400.
  */
 function preloadFonts(): Plugin {
   return {
@@ -34,7 +39,7 @@ function preloadFonts(): Plugin {
       order: 'post',
       handler(_html, ctx) {
         const files = Object.keys(ctx.bundle ?? {}).filter((f) =>
-          /(geologica-(cyrillic|latin)|golos-text-cyrillic)-wght-normal-[\w-]+\.woff2$/.test(f),
+          /(rubik-(cyrillic|latin)-800|golos-text-cyrillic-400)-normal-[\w-]+\.woff2$/.test(f),
         );
         return files.map((f) => ({
           tag: 'link',

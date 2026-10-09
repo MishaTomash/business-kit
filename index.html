@@ -3,13 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#d5eedc" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e1714" />
     <title>%BRAND%</title>
     <meta name="description" content="" />
     <link rel="canonical" href="%VITE_SITE_URL%/" />
     <!--page-meta-->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
 
   <body>
@@ -17,10 +19,17 @@
       <symbol id="i-star" viewBox="0 0 100 100">
         <polygon points="50.00,2.00 61.76,33.82 95.65,35.17 69.02,56.18 78.21,88.83 50.00,70.00 21.79,88.83 30.98,56.18 4.35,35.17 38.24,33.82" fill="currentColor" stroke="currentColor" stroke-width="6" stroke-linejoin="round" />
       </symbol>
-      <symbol id="i-logo" viewBox="0 0 48 48">
-        <rect x="4" y="9" width="40" height="35" rx="9" style="fill: var(--logo-edge, #1f7a47)" />
-        <rect x="4" y="4" width="40" height="35" rx="9" style="fill: var(--logo-face, #0d2a1c)" />
-        <polygon points="24.00,10.00 26.94,17.45 34.94,17.95 28.76,23.05 30.76,30.80 24.00,26.50 17.24,30.80 19.24,23.05 13.06,17.95 21.06,17.45" fill="#ffb81c" stroke="#ffb81c" stroke-width="2.2" stroke-linejoin="round" />
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" />
+      </symbol>
+      <symbol id="i-approx" viewBox="0 0 24 24">
+        <path d="M5 9.5c2.3-1.9 4.7-1.9 7 0s4.7 1.9 7 0M5 15.5c2.3-1.9 4.7-1.9 7 0s4.7 1.9 7 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <!-- Логотип: мембрана-кільце й два ланцюги ДНК. Кольори з CSS (--logo-ring, --logo-a, --logo-b): на світлому тлі темна версія. -->
+      <symbol id="i-logo" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10.1" fill="none" style="stroke: var(--logo-ring, #f1ece1)" stroke-width="1.8" />
+        <path d="M8.7 6.4C13.2 9.2 10.8 14.8 15.3 17.6" fill="none" style="stroke: var(--logo-a, #ee8466)" stroke-width="2.4" stroke-linecap="round" />
+        <path d="M15.3 6.4C10.8 9.2 13.2 14.8 8.7 17.6" fill="none" style="stroke: var(--logo-b, #a9b3aa)" stroke-width="2.4" stroke-linecap="round" />
       </symbol>
     </svg>
 
@@ -29,28 +38,26 @@
     <header class="nav">
       <div class="wrap nav__in">
         <a class="logo" href="/" aria-label="%BRAND%, на головну">
-          <svg width="34" height="34" aria-hidden="true" focusable="false"><use href="#i-logo"></use></svg>
+          <svg width="30" height="30" aria-hidden="true" focusable="false"><use href="#i-logo"></use></svg>
           <span>%BRAND%</span>
         </a>
         <nav class="nav__links" aria-label="Основна навігація">
-          <a href="/" data-nav="home">Головна</a>
-          <a href="/games" data-nav="games">Ігри</a>
-          <a href="/#how">Як це працює</a>
+          <a href="/games" data-nav="games">Каталог</a>
+          <a href="/#how">Шлях зірки</a>
           <a href="/#prices">Ціни</a>
           <a href="/#faq">Питання</a>
         </nav>
         <div class="nav__end">
+          <a class="btn btn--primary btn--sm" href="%VITE_TELEGRAM_URL%" target="_blank" rel="noopener"><span>Написати</span></a>
           <details class="menu">
-            <summary class="menu__btn">Меню</summary>
+            <summary class="menu__btn" aria-label="Меню"><span class="menu__icon" aria-hidden="true"></span></summary>
             <nav class="menu__panel" aria-label="Меню">
-              <a href="/" data-nav="home">Головна</a>
-              <a href="/games" data-nav="games">Ігри</a>
-              <a href="/#how">Як це працює</a>
+              <a href="/games" data-nav="games">Каталог ігор</a>
+              <a href="/#how">Шлях зірки</a>
               <a href="/#prices">Ціни</a>
               <a href="/#faq">Питання</a>
             </nav>
           </details>
-          <a class="key key--sm" href="%VITE_TELEGRAM_URL%" target="_blank" rel="noopener" data-magnetic><span class="key__face">Написати</span></a>
         </div>
       </div>
     </header>
@@ -59,13 +66,31 @@
 
     <footer class="foot">
       <div class="wrap foot__in">
-        <a class="logo" href="/"><svg width="30" height="30" aria-hidden="true" focusable="false"><use href="#i-logo"></use></svg><span>%BRAND%</span></a>
-        <p class="foot__note">Прогнози на сайті — модель, а не гарантія доходу.</p>
-        <nav class="foot__legal" aria-label="Юридичні документи">
-          <a href="/offer">Публічна оферта</a>
-          <a href="/privacy">Політика конфіденційності</a>
-        </nav>
-        <p class="foot__copy">© <span>2026</span> %BRAND%</p>
+        <div>
+          <a class="logo" href="/"><svg width="28" height="28" aria-hidden="true" focusable="false"><use href="#i-logo"></use></svg><span>%BRAND%</span></a>
+          <p class="foot__about">%BRAND_LINE%. %SITE_HOST%</p>
+        </div>
+        <div class="foot__cols">
+          <nav class="foot__col" aria-labelledby="foot-site">
+            <h2 id="foot-site">Сайт</h2>
+            <a href="/games">Каталог ігор</a>
+            <a href="/#how">Шлях зірки</a>
+            <a href="/#faq">Питання</a>
+          </nav>
+          <nav class="foot__col" aria-labelledby="foot-docs">
+            <h2 id="foot-docs">Документи</h2>
+            <a href="/offer">Оферта</a>
+            <a href="/privacy">Політика конфіденційності</a>
+          </nav>
+          <div class="foot__col">
+            <h2>Зв’язок</h2>
+            <a class="foot__tg" href="%VITE_TELEGRAM_URL%" target="_blank" rel="noopener">Написати в Telegram</a>
+          </div>
+        </div>
+        <div class="foot__bottom">
+          <p>Прогнози на сайті — модель, а не гарантія доходу.</p>
+          <p>© <span>2026</span> %BRAND%</p>
+        </div>
       </div>
     </footer>
 

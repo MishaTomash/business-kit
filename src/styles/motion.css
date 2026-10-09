@@ -1,67 +1,15 @@
 /* ==========================================================================
-   Рух: кінетичні заголовки, падіння плиток, переходи між сторінками.
-   Анімуються лише transform і opacity.
+   Рух: переходи між сторінками і повне вимкнення анімацій для prefers-reduced-motion.
+   Анімуються лише transform і opacity. Спіраль і «Шлях зірки» додаються на S4.
    ========================================================================== */
-
-/* Кінетичні заголовки. Без JS текст просто видно; з JS — ховаємо до поділу на слова,
-   а failsafe показує його не пізніше ніж за 1 с, навіть якщо скрипт не спрацював. */
-@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .kinetic:not(.is-split):not(.is-static) {
-    opacity: 0;
-    animation: failsafe 0s linear 0.9s forwards;
-  }
-  [data-drop]:not(.drop-ready):not(.drop-still) .t,
-  [data-drop]:not(.drop-ready):not(.drop-still) .tile {
-    opacity: 0;
-    animation: failsafe 0s linear 0.9s forwards;
-  }
-}
-
-@keyframes failsafe {
-  to { opacity: 1; }
-}
-
-.kinetic.is-split .w {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding: 0.12em 0 0.16em;
-  margin: -0.12em 0 -0.16em;
-}
-
-.kinetic.is-split .wi {
-  display: inline-block;
-  transform: translate3d(0, 112%, 0);
-  transition: transform 0.7s var(--ease-out);
-  transition-delay: calc(var(--i) * 38ms);
-}
-
-.kinetic.is-in .wi {
-  transform: none;
-}
-
-/* Плитки падають на місце один раз; на слабких пристроях — одразу на місці. */
-.drop-ready .t,
-.drop-ready .tile {
-  opacity: 0;
-  transform: translate3d(0, -28px, 0);
-}
-
-.drop-go .t,
-.drop-go .tile {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.25s, transform 0.45s var(--ease-spring);
-  transition-delay: calc(80ms + var(--i, var(--t, 0)) * 35ms);
-}
 
 /* Переходи між сторінками (View Transitions API) */
 ::view-transition-old(root) {
-  animation: vt-out 0.2s ease both;
+  animation: vt-out var(--dur) ease both;
 }
 
 ::view-transition-new(root) {
-  animation: vt-in 0.42s var(--ease-out) both;
+  animation: vt-in var(--dur-slow) var(--ease-out) both;
 }
 
 ::view-transition-group(game-cover) {

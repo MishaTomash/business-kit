@@ -8,7 +8,7 @@ import { BRAND, BRAND_LINE, DEPLOY_TIME, PRICING, STARS_COMMISSION, TELEGRAM_URL
 import { AUDIENCES, LAUNCH, OUR_PRICES, REASONS, textNumber } from '@/data/business';
 import { liveCount, soonCount } from '@/data';
 import { html, type SafeHtml } from '@/lib/dom';
-import { STAR_ICON, tiles, wordTiles } from '@/lib/tiles';
+import { tiles, wordTiles } from '@/lib/tiles';
 import { pluralGames } from '@/lib/format';
 import { href } from '@/router';
 import { key, tlink } from '@/components/ui';
@@ -21,39 +21,17 @@ import { mountCommon } from './common';
 import { initStarPath } from '@/lib/star-path';
 import { initStrip, initTimeline } from '@/lib/strip';
 
-/** Плитки hero: лише слова про бізнес (гра, зірки, гривні), без екранів конкретної гри. */
-const CROSS: readonly { ch: string; c: number; r: number; tone?: 'gold' | 'green'; mark?: true }[] = [
-  { ch: 'З', c: 3, r: 1, tone: 'gold', mark: true },
-  { ch: 'І', c: 3, r: 2, tone: 'gold' },
-  { ch: 'Г', c: 2, r: 3 },
-  { ch: 'Р', c: 3, r: 3, tone: 'gold' },
-  { ch: 'А', c: 4, r: 3 },
-  { ch: 'К', c: 3, r: 4, tone: 'gold' },
-  { ch: 'Г', c: 1, r: 5, tone: 'green' },
-  { ch: 'Р', c: 2, r: 5, tone: 'green' },
-  { ch: 'И', c: 3, r: 5, tone: 'gold' },
-  { ch: 'В', c: 4, r: 5, tone: 'green' },
-  { ch: 'Н', c: 5, r: 5, tone: 'green' },
-  { ch: 'І', c: 6, r: 5, tone: 'green' },
-];
-
 function hero(): SafeHtml {
   return html`
     <section class="sec sec--mint hero" aria-labelledby="hero-t">
       <div class="wrap hero__in">
         <div class="hero__text">
-          <h1 class="h1 kinetic" id="hero-t" data-kinetic="now">Гра у вашому Telegram. Зірки — на вашому рахунку.</h1>
+          <h1 class="h1" id="hero-t">Гра у вашому Telegram. Зірки — на вашому рахунку.</h1>
           <p class="lead">
             Запускаємо словесну гру під назвою вашого каналу. Гравці купують підказки за Telegram Stars, а зірки йдуть на баланс
             вашого бота.
           </p>
           <div class="actions">${key(TELEGRAM_URL, 'Обговорити гру', { external: true })}${tlink(href.games(), 'Переглянути ігри')}</div>
-        </div>
-        <div class="cross" data-drop role="img" aria-label="Плитки зі словами: гра, зірки, гривні">
-          ${CROSS.map(
-            (t, i) =>
-              html`<span class="t${t.tone ? ` t--${t.tone}` : ''}" style="--c:${t.c};--r:${t.r};--i:${i}">${t.mark ? html`<span class="t__mark">${STAR_ICON}</span>` : ''}${t.ch}</span>`,
-          )}
         </div>
       </div>
     </section>
@@ -64,13 +42,13 @@ function prices(): SafeHtml {
   return html`
     <section class="sec sec--white prices" id="prices" aria-labelledby="prices-t">
       <div class="wrap">
-        <h2 class="h2 kinetic" id="prices-t">Як заробляємо ми</h2>
+        <h2 class="h2" id="prices-t">Як заробляємо ми</h2>
         <p class="lead">Дві фіксовані суми й жодного відсотка з ваших зірок.</p>
         <div class="prices__rows">
           ${OUR_PRICES.map(
             (p, i) => html`
               <div class="price-row${i === 2 ? ' price-row--zero' : ''}">
-                ${tiles(p.figure, { odometer: true, className: `tiles--lg${i === 2 ? ' tiles--gold' : ''}` })}
+                ${tiles(p.figure, { className: `tiles--lg${i === 2 ? ' tiles--gold' : ''}` })}
                 <div class="price-row__text">
                   <h3 class="h3">${p.title}</h3>
                   <p>${p.text}</p>
@@ -88,12 +66,12 @@ function reasons(): SafeHtml {
   return html`
     <section class="sec sec--mint reasons" aria-labelledby="reasons-t">
       <div class="wrap">
-        <h2 class="h2 kinetic" id="reasons-t">Чому це вигідно власнику каналу</h2>
+        <h2 class="h2" id="reasons-t">Чому це вигідно власнику каналу</h2>
         <div class="reasons__grid">
           ${REASONS.map(
             (r, i) => html`
               <article class="reason reason--${i}">
-                ${tiles(r.figure, { odometer: /^\d/.test(r.figure), className: i === 0 ? 'tiles--lg tiles--gold' : 'tiles--md' })}
+                ${tiles(r.figure, { className: i === 0 ? 'tiles--lg tiles--gold' : 'tiles--md' })}
                 <h3 class="h3">${r.title}</h3>
                 <p>${r.text}</p>
               </article>
@@ -110,7 +88,7 @@ function offer(): SafeHtml {
   return html`
     <section class="sec sec--forest offer" aria-labelledby="offer-t">
       <div class="wrap offer__head">
-        <h2 class="h2 kinetic" id="offer-t">Що ми надаємо</h2>
+        <h2 class="h2" id="offer-t">Що ми надаємо</h2>
         <p class="lead">Усе, щоб гра працювала під вашою назвою. Спробуйте змінити назву, кольори й знак.</p>
       </div>
       <div class="wrap">${customizerMarkup()}</div>
@@ -123,7 +101,7 @@ function audience(): SafeHtml {
   return html`
     <section class="sec sec--white audience" aria-labelledby="aud-t">
       <div class="wrap">
-        <h2 class="h2 kinetic" id="aud-t">Для кого</h2>
+        <h2 class="h2" id="aud-t">Для кого</h2>
         <ul class="aud">
           ${AUDIENCES.map((a) => html`<li class="aud__item"><h3 class="aud__title">${a.title}</h3><p class="aud__text">${a.situation}</p></li>`)}
         </ul>
@@ -137,7 +115,7 @@ function launch(): SafeHtml {
     <section class="sec sec--mint launch" aria-labelledby="launch-t">
       <div class="wrap launch__in">
         <div class="launch__head">
-          <h2 class="h2 kinetic" id="launch-t">Як проходить запуск</h2>
+          <h2 class="h2" id="launch-t">Як проходить запуск</h2>
           <p class="lead">Від першого повідомлення до гри у вашому каналі — ${DEPLOY_TIME}.</p>
         </div>
         <div class="timeline" data-timeline>
@@ -171,9 +149,9 @@ function invite(): SafeHtml {
   return html`
     <section class="sec sec--forest invite" aria-labelledby="inv-t">
       <div class="wrap invite__in">
-        ${live > 0 ? tiles(String(live), { odometer: true, className: 'tiles--xl tiles--gold', label: String(live) }) : ''}
+        ${live > 0 ? tiles(String(live), { className: 'tiles--xl tiles--gold', label: String(live) }) : ''}
         <div class="invite__text">
-          <h2 class="h2 kinetic" id="inv-t">${head}</h2>
+          <h2 class="h2" id="inv-t">${head}</h2>
           ${live > 0 && soon > 0 ? html`<p class="invite__more">ще ${soon} у розробці</p>` : ''}
           <p class="lead">Кожна гра запускається під назвою й кольорами вашого каналу. У каталозі видно, яка вже працює, а яка ще в розробці.</p>
           <div class="actions">${key(href.games(), 'Переглянути ігри', { tone: 'gold' })}</div>
@@ -187,7 +165,7 @@ function faq(): SafeHtml {
   return html`
     <section class="sec sec--white faqs" id="faq" aria-labelledby="faq-t">
       <div class="wrap faqs__in">
-        <h2 class="h2 kinetic" id="faq-t">Питання</h2>
+        <h2 class="h2" id="faq-t">Питання</h2>
         ${faqMarkup()}
       </div>
     </section>
@@ -198,8 +176,8 @@ function final(): SafeHtml {
   return html`
     <section class="sec sec--gold final" aria-labelledby="final-t">
       <div class="wrap final__in">
-        <div class="final__tiles" data-drop>${wordTiles('ВАШ', 'tiles--final')}${wordTiles('КАНАЛ', 'tiles--final')}</div>
-        <h2 class="h1 kinetic" id="final-t">Обговоримо гру для вашого каналу</h2>
+        <div class="final__tiles">${wordTiles('ВАШ', 'tiles--final')}${wordTiles('КАНАЛ', 'tiles--final')}</div>
+        <h2 class="h1" id="final-t">Обговоримо гру для вашого каналу</h2>
         <div class="actions">${key(TELEGRAM_URL, 'Написати в Telegram', { external: true })}</div>
       </div>
     </section>

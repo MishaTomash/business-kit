@@ -62,7 +62,7 @@ export function gamesView(morphId?: string): View {
     markup: html`
       <section class="sec sec--white catalog" aria-labelledby="games-t">
         <div class="wrap">
-          <h1 class="h1 kinetic" id="games-t" data-kinetic="now">Ігри для вашого каналу</h1>
+          <h1 class="h1" id="games-t">Ігри для вашого каналу</h1>
           <p class="lead">Доступно зараз: ${liveCount()}. У розробці: ${soonCount()}. Кожна гра запускається під назвою й кольорами вашого каналу.</p>
           ${list.length >= FILTER_FROM ? filter() : raw('')}
           <ul class="cards" data-count="${list.length > 3 ? 'many' : list.length}">${list.map((g) => card(g, morphId))}</ul>

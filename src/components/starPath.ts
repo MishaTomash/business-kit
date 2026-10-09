@@ -17,7 +17,7 @@ export function starPathMarkup(): SafeHtml {
   return html`
     <section class="sec sec--forest path" id="how" aria-labelledby="how-t">
       <div class="wrap path__head">
-        <h2 class="h2 kinetic" id="how-t">Шлях однієї зірки від гравця до вашої картки</h2>
+        <h2 class="h2" id="how-t">Шлях однієї зірки від гравця до вашої картки</h2>
       </div>
       <div class="path__track" data-path style="--n:${n}">
         <div class="path__stage">

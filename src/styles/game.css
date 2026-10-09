@@ -2,10 +2,9 @@
    Сторінка гри /games/<id>.
    ========================================================================== */
 .game-hero {
-  --sec-bg: var(--g-bg);
-  --sec-ink: var(--g-ink);
+  --bg: var(--g-bg);
+  --fg: var(--g-ink);
   --tone-muted: var(--g-ink);
-  padding-top: 104px;
 }
 
 .game-hero.is-dark {

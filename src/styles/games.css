@@ -3,7 +3,6 @@
    ========================================================================== */
 .catalog {
   min-height: 100vh;
-  padding-top: 120px;
 }
 
 .filter {
@@ -11,23 +10,6 @@
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 40px;
-}
-
-.chip {
-  min-height: 44px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--white);
-  color: var(--forest);
-  box-shadow: inset 0 0 0 2px var(--forest);
-  font-weight: 650;
-  cursor: pointer;
-}
-
-.chip[aria-pressed='true'] {
-  background: var(--forest);
-  color: var(--white);
 }
 
 .cards {
@@ -47,18 +29,12 @@
 }
 
 .cover {
-  --tile-face: var(--g-tile);
-  --tile-ink: var(--g-tile-ink);
-  --tile-line: transparent;
-  --tile-edge: rgb(0 0 0 / 0.3);
-  --tile-edge-gold: rgb(0 0 0 / 0.3);
   position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
-  border-radius: 22px;
   background: var(--g-bg);
-  box-shadow: inset 0 0 0 2px var(--forest);
+  color: var(--g-ink);
   overflow: hidden;
   container-type: inline-size;
 }
@@ -69,24 +45,9 @@
   object-fit: cover;
 }
 
-/* Слово займає ~76% ширини поля: n плиток шириною 0.8·ts з проміжками 0.08·ts. --n задає cover(). */
+/* Тимчасово до відбитків (S3): назва-слово займає ~76% ширини поля. --n задає cover(). */
 .tiles--cover {
-  --ts: min(calc(76cqw / (0.88 * var(--n, 5) - 0.08)), 150px);
-}
-
-.card .tile {
-  transition: transform 0.35s var(--ease-spring);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .tile {
-    transform: translate3d(0, -6px, 0);
-  }
-  .card:hover .tile:nth-child(2) { transition-delay: 0.03s; }
-  .card:hover .tile:nth-child(3) { transition-delay: 0.06s; }
-  .card:hover .tile:nth-child(4) { transition-delay: 0.09s; }
-  .card:hover .tile:nth-child(5) { transition-delay: 0.12s; }
-  .card:hover .tile:nth-child(6) { transition-delay: 0.15s; }
+  --ts: min(calc(76cqw / (0.72 * var(--n, 5))), 120px);
 }
 
 .card:active .cover {
@@ -160,7 +121,6 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding-top: 120px;
 }
 
 .nf__in {
