@@ -13,18 +13,21 @@ import { pluralGames } from '@/lib/format';
 import { href } from '@/router';
 import { key, tlink } from '@/components/ui';
 import { starPathMarkup } from '@/components/starPath';
+import { spiralMarkup } from '@/components/spiral';
 import { marqueeMarkup } from '@/components/marquee';
 import { customizerMarkup, mountCustomizer } from '@/components/customizer';
 import { offeringsStrip } from '@/components/offerings';
 import { faqMarkup } from '@/components/faq';
 import { mountCommon } from './common';
 import { initStarPath } from '@/lib/star-path';
+import { initSpiral } from '@/lib/spiral';
 import { initStrip, initTimeline } from '@/lib/strip';
 
 function hero(): SafeHtml {
   return html`
-    <section class="sec sec--mint hero" aria-labelledby="hero-t">
+    <section class="sec hero" aria-labelledby="hero-t">
       <div class="wrap hero__in">
+        <div class="hero__visual">${spiralMarkup({ rungs: 22, name: 'hero', className: 'spiral--hero spiral--h' })}</div>
         <div class="hero__text">
           <h1 class="h1" id="hero-t">Гра у вашому Telegram. Зірки — на вашому рахунку.</h1>
           <p class="lead">
@@ -196,7 +199,13 @@ export function homeView(): View {
     },
     markup: html`${hero()}${starPathMarkup()}${prices()}${reasons()}${offer()}${audience()}${launch()}${invite()}${faq()}${final()}`,
     mount(root, ctx) {
-      const offs = [mountCommon(root, ctx), initStarPath(root, ctx.motion), initStrip(root, ctx.motion), initTimeline(root, ctx.motion)];
+      const offs = [
+        mountCommon(root, ctx),
+        initSpiral(root.querySelector<HTMLElement>('[data-spiral="hero"]'), ctx.motion),
+        initStarPath(root, ctx.motion),
+        initStrip(root, ctx.motion),
+        initTimeline(root, ctx.motion),
+      ];
       mountCustomizer(root);
       return () => offs.forEach((off) => off());
     },
