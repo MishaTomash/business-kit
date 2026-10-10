@@ -9,7 +9,7 @@ server {
     index index.html;
 
     gzip on;
-    gzip_types text/css application/javascript image/svg+xml application/json;
+    gzip_types text/css application/javascript image/svg+xml application/json application/xml text/plain;
 
     # Файли з хешем у назві (/assets/index-AbC123.js) не змінюються: кеш на рік
     location /assets/ {
@@ -18,9 +18,19 @@ server {
         include /etc/nginx/snippets/business-kit-security.conf;
     }
 
-    # HTML і решта: браузер щоразу перевіряє свіжість, оновлення видно одразу
+    # HTML і решта: браузер щоразу перевіряє свіжість, оновлення видно одразу.
+    # Одна адреса на сторінку (docs/SEO-PLAN.md): /games віддається з games/index.html зі статусом 200 без редиректу,
+    # /games/ веде на /games (301), невідома адреса отримує 404.html зі статусом 404, а не головну.
     location / {
-        try_files $uri $uri/ /index.html;
+        rewrite ^/(.+)/$ /$1 permanent;
+        try_files $uri $uri/index.html =404;
+        add_header Cache-Control "no-cache" always;
+        include /etc/nginx/snippets/business-kit-security.conf;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
         add_header Cache-Control "no-cache" always;
         include /etc/nginx/snippets/business-kit-security.conf;
     }
@@ -30,6 +40,7 @@ server {
 # Окремий файл, бо add_header усередині location скасовує заголовки рівня server.
 # Сайт не вантажить нічого стороннього (шрифти в збірці), тому політика сувора.
 #
+# add_header Strict-Transport-Security "max-age=31536000" always;
 # add_header X-Content-Type-Options "nosniff" always;
 # add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 # add_header X-Frame-Options "DENY" always;
