@@ -14,6 +14,7 @@ import { HOME } from '@/data/home';
 import { GENRE_LABELS } from '@/data/genres';
 import { GAMES, isPlayable, liveCount, soonCount } from '@/data';
 import { LASTMOD } from '@/data/seo';
+import { organization, website } from '@/lib/schema';
 import { GENRE_IDS } from '@/lib/fingerprint';
 import { html, type SafeHtml } from '@/lib/dom';
 import { href } from '@/router';
@@ -187,6 +188,7 @@ export function homeView(): View {
       ogImage: '/og/default.png',
       path: href.home(),
       ...(LASTMOD['/'] ? { lastmod: LASTMOD['/'] } : {}),
+      jsonLd: [organization(), website()],
     },
     markup: html`${hero()}${starPathMarkup()}${reasons()}${offer()}${audience()}${launch()}${catalog()}${faq()}${final()}`,
     mount(root, ctx) {

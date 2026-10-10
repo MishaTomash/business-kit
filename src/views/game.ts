@@ -11,7 +11,7 @@
 import type { View } from './view';
 import type { Game } from '@/types';
 import { BRAND, TELEGRAM_URL } from '@/data/site';
-import { GAME_PAGE } from '@/data/pages';
+import { CATALOG, GAME_PAGE } from '@/data/pages';
 import { OFFERINGS } from '@/data/business';
 import { GENRE_LABELS } from '@/data/genres';
 import { isPlayable } from '@/data';
@@ -21,6 +21,7 @@ import { href } from '@/router';
 import { badge, button, cover } from '@/components/ui';
 import { calculatorMarkup, mountCalculator } from '@/components/calculator';
 import { LASTMOD } from '@/data/seo';
+import { breadcrumbs } from '@/lib/schema';
 import { mountCommon } from './common';
 
 const dnaMark = html`<span class="dna-mark" aria-hidden="true"><span></span></span>`;
@@ -164,6 +165,8 @@ export function gameView(g: Game): View {
       path: href.game(g.id),
       ...(g.mock ? { noindex: true } : {}),
       ...(LASTMOD[href.game(g.id)] ? { lastmod: LASTMOD[href.game(g.id)] } : {}),
+      // Крихти лише для сторінок, які індексуються (заглушки мають noindex).
+      ...(g.mock ? {} : { jsonLd: [breadcrumbs([['Головна', href.home()], [CATALOG.title, href.games()], [g.name, href.game(g.id)]])] }),
     },
     markup: live ? html`${hero(g, true)}${prices(g)}${calc(g)}${includes(g)}${plan(g)}${buy(g)}` : html`${hero(g, false)}${soon(g)}`,
     mount(root, ctx) {

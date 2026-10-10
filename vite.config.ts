@@ -58,6 +58,7 @@ interface PrerenderModule {
     key: string;
     navTone: 'dark' | 'light';
     markup: string;
+    jsonLd: string;
     meta: {
       title: string;
       description: string;
@@ -148,6 +149,8 @@ function prerender(): Plugin {
             `<meta property="og:image:height" content="630" />`,
             `<meta property="og:image:alt" content="${esc(m.ogTitle ?? m.title)}" />`,
             `<meta name="twitter:card" content="summary_large_image" />`,
+            // Schema.org: блок даних, браузер його не виконує, CSP не порушується (src/lib/schema.ts).
+            page.jsonLd,
           ]
             .filter(Boolean)
             .join('\n    ');

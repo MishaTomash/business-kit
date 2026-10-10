@@ -10,6 +10,7 @@ import { href, parsePath } from '@/router';
 import { LEGAL_IDS } from '@/data/legal';
 import { resolveView } from '@/pages';
 import type { PageMeta } from '@/views/view';
+import { jsonLdScript } from '@/lib/schema';
 
 export interface PrerenderPage {
   /** Файл відносно dist/, напр. 'games/slovovyr/index.html'. */
@@ -18,6 +19,8 @@ export interface PrerenderPage {
   readonly navTone: 'dark' | 'light';
   readonly meta: PageMeta;
   readonly markup: string;
+  /** Готовий <script type="application/ld+json"> або порожній рядок. */
+  readonly jsonLd: string;
 }
 
 const fileFor = (path: string): string => (path === '/' ? 'index.html' : `${path.replace(/^\//, '')}/index.html`);
@@ -26,7 +29,7 @@ export function pages(): PrerenderPage[] {
   const list: PrerenderPage[] = [];
   const add = (path: string, file = fileFor(path)): void => {
     const view = resolveView(path === '/404' ? { name: 'notFound' } : parsePath(path), { path });
-    list.push({ file, key: view.key, navTone: view.navTone ?? 'light', meta: view.meta, markup: view.markup.value });
+    list.push({ file, key: view.key, navTone: view.navTone ?? 'light', meta: view.meta, markup: view.markup.value, jsonLd: view.meta.jsonLd?.length ? jsonLdScript(view.meta.jsonLd) : '' });
   };
   add(href.home());
   add(href.games());

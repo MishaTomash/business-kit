@@ -18,6 +18,7 @@ import { href } from '@/router';
 import { badge, button, tlink } from '@/components/ui';
 import { fingerprintStrip } from '@/components/fingerprint';
 import { LASTMOD } from '@/data/seo';
+import { breadcrumbs } from '@/lib/schema';
 import { mountCommon } from './common';
 
 function row(g: Game, morphId?: string): SafeHtml {
@@ -85,6 +86,7 @@ export function gamesView(morphId?: string): View {
       ogImage: '/og/default.png',
       path: href.games(),
       ...(LASTMOD['/games'] ? { lastmod: LASTMOD['/games'] } : {}),
+      jsonLd: [breadcrumbs([['Головна', href.home()], [CATALOG.title, href.games()]])],
     },
     markup: html`
       <section class="sec catalog" aria-labelledby="games-t">
