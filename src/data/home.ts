@@ -52,6 +52,8 @@ export const HOME = {
   catalog: {
     title: 'Каталог ігор',
     cta: 'Переглянути ігри',
+    /** Рядок із посиланнями на ігри, що працюють: «Уже працює: Слововир». */
+    liveLabel: 'Уже працює:',
     /** «Зараз працює 1 гра, ще 4 у розробці». */
     status: (live: number, soon: number): string =>
       live > 0
@@ -65,8 +67,10 @@ export const HOME = {
     cta: 'Написати в Telegram',
   },
   meta: {
+    /** <title> до 60 символів: основний запит «гра в Telegram під ключ» і Telegram Stars (docs/SEO-PLAN.md). */
+    title: 'Клітинка — ігри в Telegram під ключ, оплата Telegram Stars',
     ogTitle: 'Гра у вашому Telegram, зірки на вашому рахунку',
     /** До 160 символів. */
-    description: `Гра з каталогу під вашою назвою: гравці платять зірками Telegram, зірки йдуть на баланс вашого бота. Запуск ${textNumber(PRICING.launchUah)}\u00A0₴, ${textNumber(PRICING.monthlyUah)}\u00A0₴/міс, ${STARS_COMMISSION}% зі зірок.`,
+    description: `Готова гра Telegram Mini App під вашою назвою: гравці платять Telegram Stars, зірки йдуть на баланс вашого бота. Запуск ${textNumber(PRICING.launchUah)}\u00A0₴, ${textNumber(PRICING.monthlyUah)}\u00A0₴/міс, ${STARS_COMMISSION}% зі зірок.`,
   },
 } as const;

@@ -17,6 +17,7 @@ import { html, type SafeHtml } from '@/lib/dom';
 import { href } from '@/router';
 import { badge, button, tlink } from '@/components/ui';
 import { fingerprintStrip } from '@/components/fingerprint';
+import { LASTMOD } from '@/data/seo';
 import { mountCommon } from './common';
 
 function row(g: Game, morphId?: string): SafeHtml {
@@ -79,10 +80,11 @@ export function gamesView(morphId?: string): View {
     navTone: 'dark',
     meta: {
       title: `${CATALOG.meta.title} — ${BRAND}`,
-      ogTitle: CATALOG.meta.title,
+      ogTitle: CATALOG.meta.ogTitle,
       description: CATALOG.meta.description(liveCount(), soonCount()),
       ogImage: '/og/default.png',
       path: href.games(),
+      ...(LASTMOD['/games'] ? { lastmod: LASTMOD['/games'] } : {}),
     },
     markup: html`
       <section class="sec catalog" aria-labelledby="games-t">

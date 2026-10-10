@@ -17,6 +17,7 @@ export const GAMES: readonly Game[] = [
     id: 'slovovyr',
     status: 'available',
     name: 'Слововир',
+    searchTitle: 'Слововир — кросворди українською в Telegram під ключ',
     genre: 'Кросворд',
     dna: { genre: 'slova', color: '#ee8466' },
     tagline: 'Кросворди українською з рівнями, кросвордом дня й підказками за зірки.',

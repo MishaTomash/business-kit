@@ -20,6 +20,7 @@ import { STAR_ICON } from '@/lib/icons';
 import { href } from '@/router';
 import { badge, button, cover } from '@/components/ui';
 import { calculatorMarkup, mountCalculator } from '@/components/calculator';
+import { LASTMOD } from '@/data/seo';
 import { mountCommon } from './common';
 
 const dnaMark = html`<span class="dna-mark" aria-hidden="true"><span></span></span>`;
@@ -156,12 +157,13 @@ export function gameView(g: Game): View {
     key: `game:${g.id}`,
     navTone: 'dark',
     meta: {
-      title: `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND}`,
+      title: live && g.searchTitle ? g.searchTitle : `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND}`,
       ogTitle: live ? m.liveOg(g.name) : m.soonOg(g.name),
       description: live ? m.liveDescription(g.tagline) : m.soonDescription(g.tagline),
       ogImage: g.ogImage ?? `/og/${g.id}.png`,
       path: href.game(g.id),
       ...(g.mock ? { noindex: true } : {}),
+      ...(LASTMOD[href.game(g.id)] ? { lastmod: LASTMOD[href.game(g.id)] } : {}),
     },
     markup: live ? html`${hero(g, true)}${prices(g)}${calc(g)}${includes(g)}${plan(g)}${buy(g)}` : html`${hero(g, false)}${soon(g)}`,
     mount(root, ctx) {

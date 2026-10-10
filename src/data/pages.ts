@@ -22,9 +22,11 @@ export const CATALOG = {
     cta: 'Написати в Telegram',
   },
   meta: {
-    title: 'Каталог ігор у Telegram під ключ',
+    /** Основний запит сторінки: «готові ігри для Telegram» (docs/SEO-PLAN.md). */
+    title: 'Готові ігри для Telegram під ключ',
+    ogTitle: 'Каталог ігор у Telegram під ключ',
     description: (live: number, soon: number): string =>
-      `Ігри в Telegram під ключ: працює ${live}, у розробці ${soon}. Кожна гра запускається під вашою назвою й кольорами, зірки йдуть на ваш бот.`,
+      `Готові ігри Telegram Mini App під ключ: працює ${live}, у розробці ${soon}. Кожна гра запускається під вашою назвою й кольорами, зірки йдуть на ваш бот.`,
   },
 } as const;
 
