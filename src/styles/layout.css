@@ -232,7 +232,8 @@
   gap: var(--space-6) var(--space-5);
 }
 
-.foot__col h2 {
+/* Підписи колонок — не заголовки: навігація футера не розділ змісту сторінки (docs/SEO-PLAN.md). */
+.foot__col .foot__h {
   margin-bottom: var(--space-2);
   font-size: var(--fs-small);
   font-weight: var(--fw-strong);

@@ -2,16 +2,18 @@
  * Головна за макетом «ДНК» (design/pages/page-06…24): hero зі спіраллю, «Шлях зірки», чому це вигідно,
  * що ми надаємо й ціни, для кого, як проходить запуск, стислий каталог (жанри й кількість), FAQ, заклик.
  * Усі тексти й числа — з src/data (home.ts, business.ts, site.ts, games.ts); у розмітці їх немає.
- * Конкретна гра (Слововир) на головній не описується.
+ * Конкретна гра (Слововир) на головній не описується: у стислому каталозі лише посилання на назву гри, що працює
+ * (внутрішнє посилання для пошуковика, docs/SEO-PLAN.md); слово «кросворд» на головній заборонене (DNA-STAGES S5).
  */
 
 import type { View } from './view';
 import type { GenreId } from '@/types';
-import { BRAND, BRAND_LINE, PRICING, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
+import { BRAND, PRICING, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
 import { AUDIENCES, LAUNCH, OFFERINGS, OUR_PRICES, REASONS, textNumber } from '@/data/business';
 import { HOME } from '@/data/home';
 import { GENRE_LABELS } from '@/data/genres';
-import { GAMES, liveCount, soonCount } from '@/data';
+import { GAMES, isPlayable, liveCount, soonCount } from '@/data';
+import { LASTMOD } from '@/data/seo';
 import { GENRE_IDS } from '@/lib/fingerprint';
 import { html, type SafeHtml } from '@/lib/dom';
 import { href } from '@/router';
@@ -127,6 +129,7 @@ function catalog(): SafeHtml {
   const counts = new Map<GenreId, number>();
   for (const g of GAMES) counts.set(g.dna.genre, (counts.get(g.dna.genre) ?? 0) + 1);
   const present = GENRE_IDS.filter((id) => counts.has(id));
+  const live = GAMES.filter(isPlayable);
   return html`
     <section class="sec catalog-teaser" aria-labelledby="cat-t">
       <div class="wrap">
@@ -134,6 +137,9 @@ function catalog(): SafeHtml {
           <h2 class="h2" id="cat-t">${HOME.catalog.title}</h2>
           <p class="muted">${HOME.catalog.status(liveCount(), soonCount())}</p>
         </div>
+        ${live.length
+          ? html`<p class="catalog-teaser__live">${HOME.catalog.liveLabel} ${live.map((g, i) => html`${i ? ', ' : ''}<a class="link" href="${href.game(g.id)}">${g.name}</a>`)}.</p>`
+          : ''}
         <ul class="chips catalog-teaser__genres">
           ${present.map((id) => html`<li><a class="chip" href="${href.games()}?genre=${id}">${GENRE_LABELS[id]}<span class="chip__count">${counts.get(id) ?? 0}</span></a></li>`)}
         </ul>
@@ -175,11 +181,12 @@ export function homeView(): View {
     navTone: 'dark',
     meta: {
       // до 60 символів
-      title: `${BRAND} — ${BRAND_LINE.charAt(0).toLowerCase()}${BRAND_LINE.slice(1)}`,
+      title: HOME.meta.title,
       ogTitle: `${BRAND}: ${HOME.meta.ogTitle.charAt(0).toLowerCase()}${HOME.meta.ogTitle.slice(1)}`,
       description: HOME.meta.description,
       ogImage: '/og/default.png',
       path: href.home(),
+      ...(LASTMOD['/'] ? { lastmod: LASTMOD['/'] } : {}),
     },
     markup: html`${hero()}${starPathMarkup()}${reasons()}${offer()}${audience()}${launch()}${catalog()}${faq()}${final()}`,
     mount(root, ctx) {

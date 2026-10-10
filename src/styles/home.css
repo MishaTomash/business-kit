@@ -364,3 +364,7 @@
     align-items: end;
   }
 }
+
+.catalog-teaser__live {
+  margin-top: var(--space-4);
+}
