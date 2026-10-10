@@ -58,7 +58,16 @@ interface PrerenderModule {
     key: string;
     navTone: 'dark' | 'light';
     markup: string;
-    meta: { title: string; description: string; ogTitle?: string; ogImage?: string; path: string; noindex?: boolean };
+    meta: {
+      title: string;
+      description: string;
+      ogTitle?: string;
+      ogImage?: string;
+      path: string;
+      noindex?: boolean;
+      lastmod?: string;
+      jsonLd?: readonly Record<string, unknown>[];
+    };
   }>;
   site: { BRAND: string; SITE_URL: string };
 }
@@ -126,8 +135,8 @@ function prerender(): Plugin {
           const url = `${SITE_URL}${m.path}`;
           const metaTags = [
             `<meta name="description" content="${esc(m.description)}" />`,
-            `<link rel="canonical" href="${esc(url)}" />`,
-            m.noindex ? `<meta name="robots" content="noindex" />` : '',
+            // Сторінка з noindex не має канонічної адреси: canonical на неї (або на неіснуючу /404) лише плутає пошуковик.
+            m.noindex ? `<meta name="robots" content="noindex" />` : `<link rel="canonical" href="${esc(url)}" />`,
             `<meta property="og:type" content="website" />`,
             `<meta property="og:site_name" content="${esc(mod.site.BRAND)}" />`,
             `<meta property="og:locale" content="uk_UA" />`,
@@ -160,7 +169,7 @@ function prerender(): Plugin {
         const urls = mod
           .pages()
           .filter((pg) => !pg.meta.noindex)
-          .map((pg) => `  <url><loc>${esc(SITE_URL + pg.meta.path)}</loc></url>`)
+          .map((pg) => `  <url><loc>${esc(SITE_URL + pg.meta.path)}</loc>${pg.meta.lastmod ? `<lastmod>${esc(pg.meta.lastmod)}</lastmod>` : ''}</url>`)
           .join('\n');
         fs.writeFileSync(path.join(outDir, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
         fs.writeFileSync(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);

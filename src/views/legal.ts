@@ -48,6 +48,7 @@ export function legalView(id: LegalId): View {
       description: doc.description,
       ogImage: '/og/default.png',
       path: href.legal(id),
+      ...(doc.editionIso ? { lastmod: doc.editionIso } : {}),
     },
     markup: html`
       <section class="sec tone-light legal" aria-labelledby="legal-t">

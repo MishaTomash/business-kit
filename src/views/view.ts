@@ -25,8 +25,12 @@ export interface PageMeta {
   readonly ogImage?: string;
   /** Канонічний шлях сторінки, напр. '/games/slovovyr'. */
   readonly path: string;
-  /** Не індексувати (404). */
+  /** Не індексувати (404, заглушки). Такі сторінки не мають canonical і не потрапляють у sitemap.xml. */
   readonly noindex?: boolean;
+  /** Дата останньої змістовної зміни сторінки (РРРР-ММ-ДД) для <lastmod> у sitemap.xml. */
+  readonly lastmod?: string;
+  /** Розмітка Schema.org (JSON-LD). Prerender пише її в <script type="application/ld+json">. */
+  readonly jsonLd?: readonly Readonly<Record<string, unknown>>[];
 }
 
 export interface View {
