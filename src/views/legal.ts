@@ -13,7 +13,7 @@ import { href } from '@/router';
 import { mountCommon } from './common';
 
 /** Підсвічування поточного розділу в змісті (IntersectionObserver, без обробників скролу). */
-function mountToc(root: HTMLElement): () => void {
+export function mountToc(root: HTMLElement): () => void {
   const links = [...root.querySelectorAll<HTMLAnchorElement>('.ltoc a')];
   if (!links.length || typeof IntersectionObserver === 'undefined') return () => undefined;
   const heads = links.map((a) => root.querySelector<HTMLElement>(a.hash)).filter((h): h is HTMLElement => h !== null);

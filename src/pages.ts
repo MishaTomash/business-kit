@@ -3,6 +3,8 @@
 import type { Route } from '@/types';
 import type { View } from '@/views/view';
 import { getGame } from '@/data';
+import { getGuide } from '@/data/guides';
+import { guideView } from '@/views/guide';
 import { homeView } from '@/views/home';
 import { gamesView } from '@/views/games';
 import { gameView } from '@/views/game';
@@ -21,6 +23,10 @@ export function resolveView(route: Route, opts: { morphId?: string; path?: strin
     }
     case 'legal':
       return legalView(route.id);
+    case 'guide': {
+      const gd = getGuide(route.id);
+      return gd ? guideView(gd) : notFoundView(opts.path);
+    }
     case 'notFound':
       return notFoundView(opts.path);
   }

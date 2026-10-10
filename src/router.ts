@@ -6,6 +6,7 @@
  *   /games/<id>    → сторінка гри
  *   /offer         → публічна оферта
  *   /privacy       → політика конфіденційності
+ *   /guides/<id>   → довідкова стаття
  *   усе інше       → 404
  *
  * Сервер віддає готовий HTML для кожної сторінки (prerender під час збірки),
@@ -21,6 +22,7 @@ export const href = {
   games: (): string => '/games',
   game: (id: string): string => `/games/${encodeURIComponent(id)}`,
   legal: (id: 'offer' | 'privacy'): string => `/${id}`,
+  guide: (id: string): string => `/guides/${encodeURIComponent(id)}`,
   /** Секція головної: /#how, /#prices, /#faq. */
   section: (id: string): string => `/#${id}`,
 } as const;
@@ -33,6 +35,8 @@ export function parsePath(pathname: string): Route {
   if (path === '/games') return { name: 'games' };
   if (path === '/offer') return { name: 'legal', id: 'offer' };
   if (path === '/privacy') return { name: 'legal', id: 'privacy' };
+  const gd = /^\/guides\/([a-z0-9-]+)$/.exec(path);
+  if (gd?.[1]) return { name: 'guide', id: gd[1] };
   const m = /^\/games\/([^/]+)$/.exec(path);
   if (m?.[1]) {
     const id = decodeURIComponent(m[1]);
@@ -43,7 +47,7 @@ export function parsePath(pathname: string): Route {
 
 /** Ключ маршруту: prerender пише його в data-route, клієнт порівнює, щоб не рендерити двічі. */
 export function routeKey(route: Route): string {
-  return route.name === 'game' ? `game:${route.id}` : route.name === 'legal' ? `legal:${route.id}` : route.name;
+  return route.name === 'game' || route.name === 'legal' || route.name === 'guide' ? `${route.name}:${route.id}` : route.name;
 }
 
 /**

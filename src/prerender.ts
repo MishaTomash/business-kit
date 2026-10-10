@@ -8,6 +8,7 @@ import { GAMES } from '@/data';
 import { BRAND, SITE_URL } from '@/data/site';
 import { href, parsePath } from '@/router';
 import { LEGAL_IDS } from '@/data/legal';
+import { GUIDE_IDS } from '@/data/guides';
 import { resolveView } from '@/pages';
 import type { PageMeta } from '@/views/view';
 import { jsonLdScript } from '@/lib/schema';
@@ -35,6 +36,7 @@ export function pages(): PrerenderPage[] {
   add(href.games());
   for (const g of GAMES) add(href.game(g.id));
   for (const id of LEGAL_IDS) add(href.legal(id));
+  for (const id of GUIDE_IDS) add(href.guide(id));
   add('/404', '404.html');
   return list;
 }

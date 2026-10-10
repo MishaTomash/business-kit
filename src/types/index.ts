@@ -220,6 +220,8 @@ export interface FaqItem {
   readonly question: string;
   /** `null` — відповідь чекає підтвердження власника, питання не показується. */
   readonly answer: string | null;
+  /** Посилання після відповіді, напр. на довідкову статтю. */
+  readonly link?: { readonly href: string; readonly label: string };
 }
 
 export interface MarketRates {
@@ -255,4 +257,5 @@ export type Route =
   | { readonly name: 'games' }
   | { readonly name: 'game'; readonly id: string }
   | { readonly name: 'legal'; readonly id: 'offer' | 'privacy' }
+  | { readonly name: 'guide'; readonly id: string }
   | { readonly name: 'notFound' };
