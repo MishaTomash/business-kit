@@ -7,6 +7,7 @@
 - `/games` — каталог ігор.
 - `/games/<id>` — сторінка гри.
 - `/offer` — публічна оферта, `/privacy` — політика конфіденційності (тексти в `content/legal/*.md`).
+- `/guides/<id>` — довідкові статті (тексти в `content/guides/*.md`).
 
 Дизайн «ДНК» (перенесення триває, гілка `dna`, план у `docs/DNA-STAGES.md`): темна палітра «Ґрунт / Слонова кістка / Корал», золото лише для зірок, шрифти Rubik 800 і Golos Text 400/600.
 
@@ -37,8 +38,9 @@ npm test           # тести генетичного відбитка (пор�
 (запасне значення в коді: `DEFAULT_SITE_URL` у `src/data/brand.ts`) і використовується для `canonical`,
 `og:url`, абсолютних адрес `og:image`, `sitemap.xml` і `robots.txt`. Після зміни адреси потрібна нова збірка.
 
-nginx віддає ці файли через `try_files $uri $uri/ /index.html` (див. `deploy/nginx.conf.example`),
-змінювати його не потрібно. Невідома адреса отримує `/index.html`, і сайт показує 404.
+nginx віддає ці файли через `try_files $uri $uri/index.html =404` і `error_page 404 /404.html`
+(див. `deploy/nginx.conf.example`): адреса без слеша відповідає 200 одразу, адреса зі слешем веде на неї,
+а невідома адреса отримує справжню сторінку 404 зі статусом 404.
 
 Старі адреси перенаправляються самі: `#/` → `/`, `#/games…` → `/games…`, `#/p/<id>` → `/games/<id>`
 (неіснуюча гра покаже 404), `#/c/<будь-що>` → `/games`.
@@ -73,6 +75,21 @@ sudo certbot --nginx -d klitynka.online
 
 Оновлення: зміни локально → `git push` → на сервері `~/apps/business-kit/deploy/update.sh`.
 Скрипт сам видаляє `node_modules` і кеш після збірки, тож на сервері лишаються лише код і готовий сайт.
+
+## SEO
+
+План, аудит і запити для кожної сторінки: **[docs/SEO-PLAN.md](docs/SEO-PLAN.md)**, рішення й прогрес: `docs/SEO-PROGRESS.md`.
+
+| Що | Де |
+| --- | --- |
+| `<title>` і description сторінок | `src/data/home.ts`, `src/data/pages.ts`, `searchTitle` гри в `src/data/games.ts` |
+| Дати для `<lastmod>` у sitemap | `src/data/seo.ts` (міняйте лише при змістовній зміні сторінки) |
+| Розмітка Schema.org (JSON-LD) | `src/lib/schema.ts`, підключення в `meta.jsonLd` кожної сторінки |
+| Довідкові статті `/guides/<id>` | текст у `content/guides/*.md`, список і мета в `src/data/guides.ts` |
+
+Числа в статтях не пишуться вручну: мітки `{{HOLD_DAYS}}`, `{{MIN_WITHDRAW}}`, `{{STAR_USD}}` та інші
+підставляються з `src/data/site.ts`. Нова стаття: файл у `content/guides`, запис у `SOURCES` (`src/data/guides.ts`),
+вона сама потрапить у prerender і sitemap.
 
 ## Як додати гру
 
@@ -178,7 +195,7 @@ src/
 ├── prerender.ts       список сторінок для статичного HTML
 ├── types/index.ts     типи: Game, StarStep, Reason, FaqItem…
 ├── data/              brand, site, games, business + index.ts з пошуком
-├── views/             home, games, game, legal, notFound, common (спільна поведінка)
+├── views/             home, games, game, legal, guide, notFound, common (спільна поведінка)
 ├── components/        spiral, starPath, fingerprint, faq, calculator, ui
 tests/                 тести відбитка (npm test)
 ├── lib/               значки (icons), відбиток (fingerprint), рух (spiral, star-path, scroll),
@@ -187,5 +204,6 @@ tests/                 тести відбитка (npm test)
                        home/games/game/legal/calculator → motion
 docs/ADD-GAME.md       як додати гру
 content/legal/         оферта й політика конфіденційності (Markdown)
+content/guides/        довідкові статті /guides/<id> (Markdown)
 lab/                   system.html, og.html + og-export.mjs, tg-preview.mjs (макет прев'ю в Telegram) (не входить у збірку)
 ```

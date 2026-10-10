@@ -6,7 +6,7 @@
  *   {{HOLD_DAYS}}, {{MIN_WITHDRAW}}, {{STAR_USD}}, {{UAH_PER_USD}}, {{N1}}…{{N3}}, {{USD1}}…, {{UAH1}}…
  * Змінились правила Telegram чи курс — змініть site.ts, і стаття оновиться разом із калькулятором.
  *
- * Нова стаття: файл у content/guides, запис у GUIDES, дата `updated` при кожній змістовній зміні.
+ * Нова стаття: файл у content/guides, запис у SOURCES, дата `updated` при кожній змістовній зміні.
  */
 
 import starsSrc from '../../content/guides/telegram-stars.md?raw';
