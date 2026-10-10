@@ -6,6 +6,7 @@
 
 import type { Audience, FaqItem, LaunchStep, Offering, Reason, StarStep } from '@/types';
 import { DEPLOY_TIME, PRICING, RATES, STARS_COMMISSION, STARS_RULES } from './site';
+import { href } from '@/router';
 
 const nf = new Intl.NumberFormat('uk-UA');
 /** Число для плиток: групи розрядів через звичайний пробіл (він стає вузькою проставкою). */
@@ -136,6 +137,7 @@ export const FAQ: readonly FaqItem[] = [
   {
     question: 'Як вивести зірки?',
     answer: `Через Fragment, офіційну платформу Telegram для виплат. Там зірки конвертуються в TON, які можна обміняти на гривні й вивести на картку. За правилами Telegram зароблені зірки доступні через ${STARS_RULES.holdDays} день, мінімум ${textNumber(STARS_RULES.minWithdraw)} зірок.`,
+    link: { href: href.guide('telegram-stars'), label: 'Докладна інструкція з виведення' },
   },
   {
     question: 'Скільки це коштує?',
