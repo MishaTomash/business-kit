@@ -195,3 +195,31 @@
     align-items: end;
   }
 }
+
+/* «Як працює гра» (сторінка гри, що працює): механіки й приклади питань */
+.ghow__demo-title {
+  margin-top: var(--space-6);
+}
+
+.ghow__demo {
+  margin-top: var(--space-3);
+  border-top: var(--border) solid var(--line);
+}
+
+.ghow__demo li {
+  padding-block: var(--space-4);
+  border-bottom: var(--border) solid var(--line);
+}
+
+.ghow__demo summary {
+  margin-top: var(--space-2);
+  color: var(--accent);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.ghow__answer {
+  margin-top: var(--space-2);
+  font: var(--fw-display) var(--fs-body) / 1.2 var(--font-display);
+  letter-spacing: 0.08em;
+}

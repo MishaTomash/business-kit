@@ -60,6 +60,35 @@ function hero(g: Game, live: boolean): SafeHtml {
   `;
 }
 
+/** Для гравців і пошуку: як працює гра й кілька справжніх питань (відповідь у <details>, працює без JS). */
+function howTo(g: Game): SafeHtml {
+  const h = GAME_PAGE.howTo;
+  return html`
+    <section class="sec ghow" aria-labelledby="gh-t">
+      <div class="wrap split">
+        <div>
+          <h2 class="h2" id="gh-t">${h.title}</h2>
+          <p class="lead">${h.lead}</p>
+          ${g.botUrl ? html`<div class="actions">${button(g.botUrl, GAME_PAGE.play, { variant: 'ghost', external: true })}</div>` : ''}
+        </div>
+        <div>
+          <ul class="ilist">${g.mechanics.map((m) => html`<li>${dnaMark}<p>${m}</p></li>`)}</ul>
+          ${g.demo?.length
+            ? html`
+                <h3 class="h3 ghow__demo-title">${h.demoTitle}</h3>
+                <ul class="ghow__demo">
+                  ${g.demo.map(
+                    (d) => html`<li><p>${d.clue}</p><details><summary>${h.showAnswer}</summary><p class="ghow__answer">${d.answer}</p></details></li>`,
+                  )}
+                </ul>
+              `
+            : ''}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function prices(g: Game): SafeHtml {
   return html`
     <section class="sec gprices" aria-labelledby="gp-t">
@@ -168,7 +197,7 @@ export function gameView(g: Game): View {
       // Крихти лише для сторінок, які індексуються (заглушки мають noindex).
       ...(g.mock ? {} : { jsonLd: [breadcrumbs([['Головна', href.home()], [CATALOG.title, href.games()], [g.name, href.game(g.id)]])] }),
     },
-    markup: live ? html`${hero(g, true)}${prices(g)}${calc(g)}${includes(g)}${plan(g)}${buy(g)}` : html`${hero(g, false)}${soon(g)}`,
+    markup: live ? html`${hero(g, true)}${howTo(g)}${prices(g)}${calc(g)}${includes(g)}${plan(g)}${buy(g)}` : html`${hero(g, false)}${soon(g)}`,
     mount(root, ctx) {
       const off = mountCommon(root, ctx);
       if (!live) return off;
