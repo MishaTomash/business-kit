@@ -221,324 +221,11 @@
       "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_crossword"
     },
     {
-      "id": "slovo-dnia",
-      "status": "soon",
-      "mock": true,
-      "name": "Слово дня",
-      "genre": "Вгадай слово",
-      "tagline": "Вгадай слово з п’яти літер за шість спроб. Одне нове слово на день для всіх гравців.",
-      "howItEarns": "Одне слово на день безкоштовно для всіх. Хто хоче ще, відкриває архів минулих днів або додаткову спробу за зірки. Однакове слово для всіх дає привід обговорювати результат у вашому чаті.",
-      "mechanics": [
-        "Слово з п’яти літер за шість спроб",
-        "Підсвічування літер: на місці, є в слові, немає",
-        "Однакове слово дня для всіх гравців",
-        "Серія днів і статистика гравця",
-        "Результат кольоровими клітинками без самого слова"
-      ],
-      "theme": {
-        "bg": "#1f7a47",
-        "ink": "#ffffff",
-        "tile": "#ffffff",
-        "tileInk": "#0d2a1c"
-      },
-      "coverWord": "ДЕНЬ",
-      "customerPrices": [
-        {
-          "label": "Слово дня",
-          "price": "безкоштовно"
-        },
-        {
-          "label": "Додаткова спроба",
-          "price": "1 ★"
-        },
-        {
-          "label": "Архів за тиждень",
-          "price": "10 ★"
-        }
-      ],
-      "firstClientDays": [
-        5,
-        14
-      ],
-      "dailyMinutes": [
-        20,
-        40
-      ],
-      "trafficSource": "Telegram",
-      "economics": {
-        "kind": "stars",
-        "payerRate": 0.03,
-        "arppuStars": 15,
-        "apiCostPerPayerUsd": 0
-      },
-      "includes": [
-        "Гра під вашою назвою й кольорами",
-        "Словник і щоденне слово",
-        "Кабінет власника: статистика, гравці й налаштування гри",
-        "Сервер, домен, оновлення й підтримка"
-      ],
-      "channels": [
-        {
-          "title": "Обговорення в каналі",
-          "description": "Щодня пост «Як ви вгадали сьогоднішнє слово?» з посиланням на гру.",
-          "cost": "free"
-        }
-      ],
-      "plan": [
-        {
-          "period": "Тиждень 1",
-          "title": "Запуск",
-          "tasks": [
-            "Закріпити гру в каналі",
-            "Щоденний пост із результатами"
-          ]
-        }
-      ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
-    },
-    {
-      "id": "anahramy",
-      "status": "soon",
-      "mock": true,
-      "name": "Анаграми",
-      "genre": "Слова з літер",
-      "tagline": "Склади якомога більше слів з одного набору літер, поки не скінчився час.",
-      "howItEarns": "Раунди безкоштовні. За зірки гравець отримує додатковий час, перемішування літер або підказку з першою літерою слова.",
-      "mechanics": [
-        "Набір із 6–8 літер на раунд",
-        "Таймер раунду",
-        "Очки за довжину слова",
-        "Таблиця рекордів серед гравців"
-      ],
-      "theme": {
-        "bg": "#ffffff",
-        "ink": "#0d2a1c",
-        "tile": "#d5eedc",
-        "tileInk": "#0d2a1c"
-      },
-      "coverWord": "ЛІТЕРИ",
-      "customerPrices": [
-        {
-          "label": "Раунд",
-          "price": "безкоштовно"
-        },
-        {
-          "label": "+30 секунд",
-          "price": "1 ★"
-        },
-        {
-          "label": "Перша літера слова",
-          "price": "2 ★"
-        }
-      ],
-      "firstClientDays": [
-        5,
-        14
-      ],
-      "dailyMinutes": [
-        20,
-        40
-      ],
-      "trafficSource": "Telegram",
-      "economics": {
-        "kind": "stars",
-        "payerRate": 0.03,
-        "arppuStars": 15,
-        "apiCostPerPayerUsd": 0
-      },
-      "includes": [
-        "Гра під вашою назвою й кольорами",
-        "Словник для перевірки слів",
-        "Таблиця рекордів",
-        "Сервер, домен, оновлення й підтримка"
-      ],
-      "channels": [
-        {
-          "title": "Рекорд тижня",
-          "description": "Пост із найкращим результатом тижня й викликом підписникам.",
-          "cost": "free"
-        }
-      ],
-      "plan": [
-        {
-          "period": "Тиждень 1",
-          "title": "Запуск",
-          "tasks": [
-            "Закріпити гру в каналі",
-            "Оголосити перший рекорд"
-          ]
-        }
-      ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
-    },
-    {
-      "id": "filvord",
-      "status": "soon",
-      "mock": true,
-      "name": "Філворд",
-      "genre": "Пошук слів",
-      "tagline": "Знайди слова в полі з літер, проводячи пальцем по сусідніх клітинках.",
-      "howItEarns": "Поля на тему безкоштовні. Коли слово ніяк не знаходиться, гравець підсвічує його першу літеру за зірку.",
-      "mechanics": [
-        "Поле з літер на тему рівня",
-        "Слова складаються з сусідніх клітинок",
-        "Тематичні набори рівнів",
-        "Підказка першої літери за зірки"
-      ],
-      "theme": {
-        "bg": "#ffb81c",
-        "ink": "#0d2a1c",
-        "tile": "#0d2a1c",
-        "tileInk": "#ffffff"
-      },
-      "coverWord": "ПОЛЕ",
-      "customerPrices": [
-        {
-          "label": "Рівень",
-          "price": "безкоштовно"
-        },
-        {
-          "label": "Перша літера слова",
-          "price": "1 ★"
-        },
-        {
-          "label": "Набір рівнів",
-          "price": "25 ★"
-        }
-      ],
-      "firstClientDays": [
-        5,
-        14
-      ],
-      "dailyMinutes": [
-        20,
-        40
-      ],
-      "trafficSource": "Telegram",
-      "economics": {
-        "kind": "stars",
-        "payerRate": 0.03,
-        "arppuStars": 15,
-        "apiCostPerPayerUsd": 0
-      },
-      "includes": [
-        "Гра під вашою назвою й кольорами",
-        "Генератор полів зі списку слів",
-        "Кабінет власника: статистика, гравці й налаштування гри",
-        "Сервер, домен, оновлення й підтримка"
-      ],
-      "channels": [
-        {
-          "title": "Тематичні поля",
-          "description": "Поле на тему вашого каналу раз на тиждень.",
-          "cost": "free"
-        }
-      ],
-      "plan": [
-        {
-          "period": "Тиждень 1",
-          "title": "Запуск",
-          "tasks": [
-            "Закріпити гру в каналі",
-            "Перше тематичне поле"
-          ]
-        }
-      ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
-    },
-    {
-      "id": "viktoryna",
-      "status": "soon",
-      "mock": true,
-      "name": "Вікторина з друзями",
-      "genre": "Вікторина",
-      "tagline": "Питання на вашу тему: гравці змагаються з друзями й іншими гравцями.",
-      "howItEarns": "Звичайні раунди безкоштовні. За зірки гравець бере «друге життя» після помилки або відкриває тематичний пакет питань.",
-      "mechanics": [
-        "Раунди по 10 питань",
-        "Чотири варіанти відповіді й таймер",
-        "Виклик другові посиланням",
-        "Тематичні пакети питань від автора гри"
-      ],
-      "theme": {
-        "bg": "#d5eedc",
-        "ink": "#0d2a1c",
-        "tile": "#0d2a1c",
-        "tileInk": "#ffffff"
-      },
-      "coverWord": "ПИТАЙ",
-      "customerPrices": [
-        {
-          "label": "Раунд",
-          "price": "безкоштовно"
-        },
-        {
-          "label": "Друге життя",
-          "price": "1 ★"
-        },
-        {
-          "label": "Тематичний пакет",
-          "price": "20 ★"
-        }
-      ],
-      "firstClientDays": [
-        5,
-        14
-      ],
-      "dailyMinutes": [
-        20,
-        40
-      ],
-      "trafficSource": "Telegram",
-      "economics": {
-        "kind": "stars",
-        "payerRate": 0.03,
-        "arppuStars": 15,
-        "apiCostPerPayerUsd": 0
-      },
-      "includes": [
-        "Гра під вашою назвою й кольорами",
-        "Редактор питань",
-        "Виклики друзям",
-        "Сервер, домен, оновлення й підтримка"
-      ],
-      "channels": [
-        {
-          "title": "Вікторина тижня",
-          "description": "Пост із темою тижня й посиланням на гру.",
-          "cost": "free"
-        }
-      ],
-      "plan": [
-        {
-          "period": "Тиждень 1",
-          "title": "Запуск",
-          "tasks": [
-            "Закріпити гру в каналі",
-            "Перша тематична вікторина"
-          ]
-        }
-      ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
-    },
-    {
       "id": "skladayka",
-      "status": "soon",
-      "mock": true,
+      "status": "available",
       "name": "Складайка",
       "genre": "Головоломка",
+      "platformId": "skladayka",
       "tagline": "Ставиш кольорові фігури на поле 8 на 8, збираєш повні рядки й стовпці та б’єш свій рекорд.",
       "howItEarns": "Гра безкоштовна. Гравці купують підказки за Telegram Stars, щоб скасувати хід, замінити фігури або продовжити гру. У завданні дня покупок немає, тож змагання чесне.",
       "mechanics": [
@@ -619,8 +306,250 @@
       ],
       "priceUah": 1500,
       "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
+      "earns": [
+        "hints"
+      ],
+      "themeExamples": [
+        {
+          "id": "mint",
+          "name": "М’ята",
+          "colors": {
+            "accent": "#17815f",
+            "accentText": "#ffffff",
+            "active": "#2dbd93",
+            "activeBg": "#d6f5ea",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "spruce",
+          "name": "Хвоя",
+          "colors": {
+            "accent": "#1f5d45",
+            "accentText": "#ffffff",
+            "active": "#3c8a6a",
+            "activeBg": "#d8eadf",
+            "ok": "#2f8f4e",
+            "okBg": "#dcf1e2"
+          }
+        },
+        {
+          "id": "star",
+          "name": "Зірка",
+          "colors": {
+            "accent": "#f0b232",
+            "accentText": "#2b1d00",
+            "active": "#f2b632",
+            "activeBg": "#fff1cf",
+            "ok": "#2e9e55",
+            "okBg": "#dcf3e3"
+          }
+        },
+        {
+          "id": "berry",
+          "name": "Ягода",
+          "colors": {
+            "accent": "#b8336f",
+            "accentText": "#ffffff",
+            "active": "#d9628f",
+            "activeBg": "#fbe0ec",
+            "ok": "#2f9e5b",
+            "okBg": "#dcf3e4"
+          }
+        },
+        {
+          "id": "sea",
+          "name": "Море",
+          "colors": {
+            "accent": "#1d6fbd",
+            "accentText": "#ffffff",
+            "active": "#3b8fe0",
+            "activeBg": "#dbe9fb",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "sunset",
+          "name": "Захід",
+          "colors": {
+            "accent": "#c9501c",
+            "accentText": "#ffffff",
+            "active": "#f07f4d",
+            "activeBg": "#fde4d8",
+            "ok": "#2c9a52",
+            "okBg": "#daf2e2"
+          }
+        }
+      ],
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_skladayka"
+    },
+    {
+      "id": "kulkopad",
+      "status": "available",
+      "name": "Кулькопад",
+      "genre": "Аркада",
+      "platformId": "kulkopad",
+      "tagline": "Кулька стрибає вниз вежею: крутиш вежу пальцем, щоб кулька падала в щілини й оминала червоне, і проходиш рівень за рівнем.",
+      "howItEarns": "Гра безкоштовна. Гравці купують підказки за Telegram Stars, щоб продовжити рівень з того самого місця після падіння, взяти щит перед складним рівнем або нову кульку. Почати рівень заново можна завжди безкоштовно.",
+      "mechanics": [
+        "Вежа з кільцевих платформ: крутиш пальцем, кулька падає в щілини",
+        "Червоні сектори закінчують спробу, а прорив розбиває платформу разом із червоним",
+        "Нескінченні рівні: складність росте поступово, кожен 10-й рівень особливий",
+        "Серія днів, щоденна підказка й безкоштовне «Продовжити» раз на день",
+        "Підказки за Telegram Stars: продовжити, щит, нові кульки"
+      ],
+      "theme": {
+        "bg": "#0d2a1c",
+        "ink": "#e6f5ea",
+        "tile": "#ffb81c",
+        "tileInk": "#0d2a1c"
+      },
+      "coverWord": "КУЛЬКОПАД",
+      "customerPrices": [
+        {
+          "label": "Безкоштовно",
+          "price": "3 підказки на старті"
+        },
+        {
+          "label": "12 підказок",
+          "price": "10 ★"
+        },
+        {
+          "label": "40 підказок",
+          "price": "30 ★"
+        },
+        {
+          "label": "100 підказок",
+          "price": "70 ★"
+        }
+      ],
+      "firstClientDays": [
+        5,
+        14
+      ],
+      "dailyMinutes": [
+        20,
+        40
+      ],
+      "trafficSource": "Telegram",
+      "economics": {
+        "kind": "stars",
+        "payerRate": 0.03,
+        "arppuStars": 15,
+        "apiCostPerPayerUsd": 0
+      },
+      "includes": [
+        "Гра під вашою назвою й кольорами",
+        "Кабінет власника: статистика, гравці й налаштування гри",
+        "Сервер, домен, оновлення й підтримка"
+      ],
+      "channels": [
+        {
+          "title": "Розважальні канали й чати",
+          "description": "Гравці діляться пройденим рівнем і рекордом з кнопкою «Грати», і друзі приходять спробувати.",
+          "cost": "free"
+        }
+      ],
+      "plan": [
+        {
+          "period": "Тиждень 1",
+          "title": "Запуск",
+          "tasks": [
+            "Пост у своєму каналі з посиланням на гру",
+            "Попросити перших гравців поділитися рівнем і рекордом"
+          ]
+        },
+        {
+          "period": "Тиждень 2–4",
+          "title": "Звичка",
+          "tasks": [
+            "Нагадування в боті для тих, хто їх увімкнув",
+            "Публікувати в каналі найдальший рівень тижня"
+          ]
+        }
+      ],
+      "priceUah": 1500,
+      "monthlyUah": 99,
+      "earns": [
+        "hints"
+      ],
+      "themeExamples": [
+        {
+          "id": "mint",
+          "name": "М’ята",
+          "colors": {
+            "accent": "#17815f",
+            "accentText": "#ffffff",
+            "active": "#2dbd93",
+            "activeBg": "#d6f5ea",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "spruce",
+          "name": "Хвоя",
+          "colors": {
+            "accent": "#1f5d45",
+            "accentText": "#ffffff",
+            "active": "#3c8a6a",
+            "activeBg": "#d8eadf",
+            "ok": "#2f8f4e",
+            "okBg": "#dcf1e2"
+          }
+        },
+        {
+          "id": "star",
+          "name": "Зірка",
+          "colors": {
+            "accent": "#f0b232",
+            "accentText": "#2b1d00",
+            "active": "#f2b632",
+            "activeBg": "#fff1cf",
+            "ok": "#2e9e55",
+            "okBg": "#dcf3e3"
+          }
+        },
+        {
+          "id": "berry",
+          "name": "Ягода",
+          "colors": {
+            "accent": "#b8336f",
+            "accentText": "#ffffff",
+            "active": "#d9628f",
+            "activeBg": "#fbe0ec",
+            "ok": "#2f9e5b",
+            "okBg": "#dcf3e4"
+          }
+        },
+        {
+          "id": "sea",
+          "name": "Море",
+          "colors": {
+            "accent": "#1d6fbd",
+            "accentText": "#ffffff",
+            "active": "#3b8fe0",
+            "activeBg": "#dbe9fb",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "sunset",
+          "name": "Захід",
+          "colors": {
+            "accent": "#c9501c",
+            "accentText": "#ffffff",
+            "active": "#f07f4d",
+            "activeBg": "#fde4d8",
+            "ok": "#2c9a52",
+            "okBg": "#daf2e2"
+          }
+        }
+      ],
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_kulkopad"
     }
   ]
 }
