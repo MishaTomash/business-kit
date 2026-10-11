@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "cabinetBot": "klitynka_bot",
+  "cabinetBot": "klitynka_ua_bot",
   "games": [
     {
       "id": "slovovyr",
@@ -218,7 +218,7 @@
           }
         }
       ],
-      "orderUrl": "https://t.me/klitynka_bot?startapp=order_crossword"
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_crossword"
     },
     {
       "id": "slovo-dnia",
