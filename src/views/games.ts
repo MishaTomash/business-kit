@@ -33,6 +33,7 @@ function row(g: Game, morphId?: string): SafeHtml {
       <p class="crow__line">${g.tagline}</p>
       <div class="crow__act">
         ${badge(live)}
+        ${live && g.orderUrl ? button(g.orderUrl, CATALOG.order, { small: true, external: true }) : ''}
         ${live && g.botUrl ? button(g.botUrl, CATALOG.play, { variant: 'ghost', small: true, external: true }) : ''}
         ${live ? '' : tlink(TELEGRAM_URL, CATALOG.notify, true)}
       </div>

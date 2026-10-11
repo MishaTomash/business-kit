@@ -14,6 +14,8 @@ export const CATALOG = {
   allLabel: 'Усі',
   filterLabel: 'Жанр',
   play: 'Пограти',
+  /** Кнопка гри, що працює: бот Кабінету одразу на цій грі (orderUrl з платформи). */
+  order: 'Замовити',
   notify: 'Повідомити про запуск',
   /** Картка наприкінці каталогу. Рішення власника: так, побажання справді збираються. */
   wish: {
@@ -33,7 +35,9 @@ export const CATALOG = {
 export const GAME_PAGE = {
   crumbs: 'Каталог',
   play: 'Пограти',
-  want: 'Хочу таку гру',
+  /** Відкриває Кабінет у боті одразу на цій грі (orderUrl з платформи). */
+  want: 'Замовити в Кабінеті',
+  ask: 'Написати нам',
   /** «Запуск 1 500 ₴ · підтримка 99 ₴/міс · до 2 днів після оплати» */
   terms: `Запуск ${textNumber(PRICING.launchUah)} ₴ · підтримка ${textNumber(PRICING.monthlyUah)} ₴/міс · ${DEPLOY_TIME} після оплати`,
   /** Блок для гравців (рішення власника 10.10.2026, docs/SEO-PROGRESS.md): механіки й приклади питань з games.ts. */
@@ -50,6 +54,7 @@ export const GAME_PAGE = {
     title: 'План просування',
     lead: (days: readonly [number, number], minutes: readonly [number, number]): string =>
       `Орієнтир за планом: перший платник через ${formatDaysRange(days)}, ${formatMinutesRange(minutes)} на день на просування.`,
+    guide: 'Як знайти перших гравців',
   },
   buy: {
     title: (name: string): string => `Запуск гри «${name}»`,
@@ -58,7 +63,7 @@ export const GAME_PAGE = {
       { value: `${textNumber(PRICING.monthlyUah)} ₴`, text: 'щомісяця: сервер, домен, оновлення й підтримка' },
       { value: `${STARS_COMMISSION}%`, text: 'наша частка зі зірок: усі зірки йдуть на баланс вашого бота' },
     ],
-    note: `Гра запрацює ${DEPLOY_TIME} після оплати.`,
+    note: `Замовлення, оплата й підключення вашого бота — у Кабінеті в Telegram. Гра запрацює ${DEPLOY_TIME} після оплати.`,
   },
   soon: {
     badge: 'у розробці',

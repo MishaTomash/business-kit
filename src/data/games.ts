@@ -1,237 +1,156 @@
 /**
- * Ігри сайту. Нова гра = новий об'єкт у масиві GAMES: вона сама з'явиться в каталозі,
- * у фільтрі жанрів, у лічильнику на головній, на власній сторінці /games/<id>
- * і отримає власне прев'ю посилання. Покроково: docs/ADD-GAME.md.
+ * Ігри сайту. Каталог береться з платформи: файл src/data/games.generated.json створює команда
+ * `npm run export:games` у репозиторії klitynka-platform (тексти, ціни, статуси й посилання «Замовити»
+ * живуть там, у content/site/games.json). Тут лише те, що стосується вигляду сайту: колір і жанр
+ * генетичного відбитка (dna) і заголовок для пошуку. Покроково: docs/ADD-GAME.md.
  *
- * Зараз одна справжня гра (Слововир) і чотири заглушки (`mock: true`).
- * Заглушка завжди показується як «У розробці»: без «Пограти», покупки й калькулятора.
- * Ціни заглушок позначені `// MOCK: замінити`.
+ * Під час збірки файл перевіряється: якщо поля немає або воно неправильне, збірка падає з назвою гри
+ * й поля. Заглушка (`mock: true`) завжди показується як «У розробці»: без «Пограти», покупки й калькулятора.
  */
 
-import type { Game } from '@/types';
-import { PRICING } from './site';
+import type { CustomerPrice, DemoWord, Game, GameDna, HexColor, PlanPhase, PromoChannel, ThemeExample } from '@/types';
+import generated from './games.generated.json';
 
-export const GAMES: readonly Game[] = [
-  /* ===================================================== СЛОВОВИР (справжня гра) */
-  {
-    id: 'slovovyr',
-    status: 'available',
-    name: 'Слововир',
-    searchTitle: 'Слововир — кросворди українською в Telegram під ключ',
-    genre: 'Кросворд',
+/** Вигляд гри на сайті: те, чого немає в платформі. Нова гра з платформи без запису тут зупинить збірку. */
+const SITE: Readonly<Record<string, { readonly dna: GameDna; readonly searchTitle?: string }>> = {
+  slovovyr: {
     dna: { genre: 'slova', color: '#ee8466' },
-    tagline: 'Кросворди українською з рівнями, кросвордом дня й підказками за зірки.',
-    howItEarns:
-      'Гравці проходять кросворди безкоштовно. Коли застрягають, купують підказку за 1 зірку або пакет підказок. Кросворд дня з серією повертає людей щодня, а кнопка «Поділитися результатом» приводить їхніх друзів.',
-    mechanics: [
-      'Рівні й тематичні розділи',
-      'Кросворд дня із серією днів',
-      'Підказки за Telegram Stars і безкоштовні бонуси за рівні',
-      'Кнопка «Поділитися результатом» без відповідей',
-      'Генератор рівнів зі списку ваших слів і питань',
-    ],
-    theme: { bg: '#0d2a1c', ink: '#e6f5ea', tile: '#ffb81c', tileInk: '#0d2a1c' },
-    coverWord: 'СЛОВО',
-    priceUah: PRICING.launchUah,
-    monthlyUah: PRICING.monthlyUah,
-    customerPrices: [
-      { label: 'Безкоштовно', price: '3 підказки й бонуси за рівні' },
-      { label: '1 підказка', price: '1 ★' },
-      { label: '10 підказок', price: '10 ★' },
-      { label: '35 підказок', price: '30 ★' },
-      { label: '90 підказок', price: '70 ★' },
-    ],
-    firstClientDays: [5, 14],
-    dailyMinutes: [30, 60],
-    trafficSource: 'TikTok',
-    economics: { kind: 'stars', payerRate: 0.04, arppuStars: 30, apiCostPerPayerUsd: 0 },
-    includes: [
-      'Гра в Telegram Mini App під вашою назвою й кольорами: рівні, розділи, кросворд дня',
-      'Підказки за Telegram Stars і безкоштовні бонуси',
-      'Адмін-панель: гравці, оплати, де гравці застрягають',
-      'Генератор рівнів зі списку слів і питань',
-      'План просування на перший місяць',
-      'Сервер, домен, оновлення й підтримка',
-    ],
-    channels: [
-      {
-        title: 'Відео «Чи відгадаєш?»',
-        description: 'Питання з кросворду на екрані, відповідь через 3 секунди. Глядачі пишуть відповіді в коментарях, і відео піднімається в рекомендаціях.',
-        cost: 'free',
-      },
-      {
-        title: 'Результати кросворду дня',
-        description: 'Гравці діляться результатом у чатах без відповідей, і друзі хочуть спробувати сам кросворд.',
-        cost: 'free',
-      },
-      {
-        title: 'Вчителі й батьки',
-        description: 'Кросворди українською зручні для уроків і для розвитку словникового запасу.',
-        cost: 'free',
-      },
-      {
-        title: 'Реклама в Telegram-каналах',
-        description: 'Канали про українську мову, дозвілля й головоломки, коли вже знаєте, скільки приносить гравець.',
-        cost: 'paid',
-      },
-    ],
-    plan: [
-      {
-        period: 'Тиждень 1',
-        title: 'Перші гравці',
-        tasks: ['Пройти перші 10 рівнів самому й виправити незрозумілі питання', 'Зняти 5 відео «Чи відгадаєш?»', 'Поділитися кросвордом дня в 3 чатах'],
-      },
-      {
-        period: 'Тижні 2–4',
-        title: 'Щоденна звичка',
-        tasks: ['1 відео щодня з питанням дня', 'Дивитися в адмін-панелі, де гравці застрягають, і спрощувати питання', 'Нагадувати про серію кросворду дня'],
-      },
-      {
-        period: 'Місяць 2+',
-        title: 'Ріст',
-        tasks: ['Нові розділи за запитами гравців', 'Тематичні кросворди до свят', 'Реклама з прибутку'],
-      },
-    ],
-    botUrl: 'https://t.me/slovovyr_bot/play',
-    demo: [
-      { clue: 'Світить уночі на небі, а в Telegram нею платять', answer: 'ЗІРКА' },
-      { clue: 'Грошова одиниця України', answer: 'ГРИВНЯ' },
-      { clue: 'Знак абетки, який вписують у клітинку', answer: 'ЛІТЕРА' },
-      { clue: 'Гра, де слова перетинаються в клітинках', answer: 'КРОСВОРД' },
-    ],
-    // screenshots: [
-    //   { src: '/images/games/slovovyr/1.webp', alt: 'Рівень кросворду' },
-    //   { src: '/images/games/slovovyr/2.webp', alt: 'Кросворд дня і серія' },
-    // ],
+    searchTitle: 'Слововир — кросворди українською в Telegram під ключ',
   },
+  'slovo-dnia': { dna: { genre: 'slova', color: '#7fc8a9' } },
+  anahramy: { dna: { genre: 'slova', color: '#c9b6e4' } },
+  filvord: { dna: { genre: 'slova', color: '#e7a87c' } },
+  viktoryna: { dna: { genre: 'viktoryny', color: '#a9c79a' } },
+  skladayka: { dna: { genre: 'holovolomky', color: '#8fb8de' } },
+};
 
-  /* ===================================================== ЗАГЛУШКА: Слово дня */
-  {
-    id: 'slovo-dnia',
-    status: 'soon',
-    mock: true,
-    name: 'Слово дня',
-    genre: 'Вгадай слово',
-    dna: { genre: 'slova', color: '#7fc8a9' },
-    tagline: 'Вгадай слово з п’яти літер за шість спроб. Одне нове слово на день для всіх гравців.',
-    howItEarns:
-      'Одне слово на день безкоштовно для всіх. Хто хоче ще, відкриває архів минулих днів або додаткову спробу за зірки. Однакове слово для всіх дає привід обговорювати результат у вашому чаті.',
-    mechanics: [
-      'Слово з п’яти літер за шість спроб',
-      'Підсвічування літер: на місці, є в слові, немає',
-      'Однакове слово дня для всіх гравців',
-      'Серія днів і статистика гравця',
-      'Результат кольоровими клітинками без самого слова',
-    ],
-    theme: { bg: '#1f7a47', ink: '#ffffff', tile: '#ffffff', tileInk: '#0d2a1c' },
-    coverWord: 'ДЕНЬ',
-    priceUah: PRICING.launchUah,
-    monthlyUah: PRICING.monthlyUah,
-    customerPrices: [
-      // MOCK: замінити
-      { label: 'Слово дня', price: 'безкоштовно' },
-      { label: 'Додаткова спроба', price: '1 ★' },
-      { label: 'Архів за тиждень', price: '10 ★' },
-    ],
-    firstClientDays: [5, 14], // MOCK: замінити
-    dailyMinutes: [20, 40], // MOCK: замінити
-    trafficSource: 'Telegram', // MOCK: замінити
-    economics: { kind: 'stars', payerRate: 0.03, arppuStars: 15, apiCostPerPayerUsd: 0 }, // MOCK: замінити
-    includes: ['Гра під вашою назвою й кольорами', 'Словник і щоденне слово', 'Адмін-панель', 'Сервер, домен, оновлення й підтримка'],
-    channels: [{ title: 'Обговорення в каналі', description: 'Щодня пост «Як ви вгадали сьогоднішнє слово?» з посиланням на гру.', cost: 'free' }],
-    plan: [{ period: 'Тиждень 1', title: 'Запуск', tasks: ['Закріпити гру в каналі', 'Щоденний пост із результатами'] }],
-  },
+type Raw = Record<string, unknown>;
 
-  /* ===================================================== ЗАГЛУШКА: Анаграми */
-  {
-    id: 'anahramy',
-    status: 'soon',
-    mock: true,
-    name: 'Анаграми',
-    genre: 'Слова з літер',
-    dna: { genre: 'slova', color: '#c9b6e4' },
-    tagline: 'Склади якомога більше слів з одного набору літер, поки не скінчився час.',
-    howItEarns:
-      'Раунди безкоштовні. За зірки гравець отримує додатковий час, перемішування літер або підказку з першою літерою слова.',
-    mechanics: ['Набір із 6–8 літер на раунд', 'Таймер раунду', 'Очки за довжину слова', 'Таблиця рекордів серед гравців'],
-    theme: { bg: '#ffffff', ink: '#0d2a1c', tile: '#d5eedc', tileInk: '#0d2a1c' },
-    coverWord: 'ЛІТЕРИ',
-    priceUah: PRICING.launchUah,
-    monthlyUah: PRICING.monthlyUah,
-    customerPrices: [
-      // MOCK: замінити
-      { label: 'Раунд', price: 'безкоштовно' },
-      { label: '+30 секунд', price: '1 ★' },
-      { label: 'Перша літера слова', price: '2 ★' },
-    ],
-    firstClientDays: [5, 14], // MOCK: замінити
-    dailyMinutes: [20, 40], // MOCK: замінити
-    trafficSource: 'Telegram', // MOCK: замінити
-    economics: { kind: 'stars', payerRate: 0.03, arppuStars: 15, apiCostPerPayerUsd: 0 }, // MOCK: замінити
-    includes: ['Гра під вашою назвою й кольорами', 'Словник для перевірки слів', 'Таблиця рекордів', 'Сервер, домен, оновлення й підтримка'],
-    channels: [{ title: 'Рекорд тижня', description: 'Пост із найкращим результатом тижня й викликом підписникам.', cost: 'free' }],
-    plan: [{ period: 'Тиждень 1', title: 'Запуск', tasks: ['Закріпити гру в каналі', 'Оголосити перший рекорд'] }],
-  },
+function fail(game: string, field: string, why: string): never {
+  throw new Error(`games.generated.json: гра «${game}», поле ${field}: ${why}`);
+}
 
-  /* ===================================================== ЗАГЛУШКА: Філворд */
-  {
-    id: 'filvord',
-    status: 'soon',
-    mock: true,
-    name: 'Філворд',
-    genre: 'Пошук слів',
-    dna: { genre: 'slova', color: '#e7a87c' },
-    tagline: 'Знайди слова в полі з літер, проводячи пальцем по сусідніх клітинках.',
-    howItEarns:
-      'Поля на тему безкоштовні. Коли слово ніяк не знаходиться, гравець підсвічує його першу літеру за зірку.',
-    mechanics: ['Поле з літер на тему рівня', 'Слова складаються з сусідніх клітинок', 'Тематичні набори рівнів', 'Підказка першої літери за зірки'],
-    theme: { bg: '#ffb81c', ink: '#0d2a1c', tile: '#0d2a1c', tileInk: '#ffffff' },
-    coverWord: 'ПОЛЕ',
-    priceUah: PRICING.launchUah,
-    monthlyUah: PRICING.monthlyUah,
-    customerPrices: [
-      // MOCK: замінити
-      { label: 'Рівень', price: 'безкоштовно' },
-      { label: 'Перша літера слова', price: '1 ★' },
-      { label: 'Набір рівнів', price: '25 ★' },
-    ],
-    firstClientDays: [5, 14], // MOCK: замінити
-    dailyMinutes: [20, 40], // MOCK: замінити
-    trafficSource: 'Telegram', // MOCK: замінити
-    economics: { kind: 'stars', payerRate: 0.03, arppuStars: 15, apiCostPerPayerUsd: 0 }, // MOCK: замінити
-    includes: ['Гра під вашою назвою й кольорами', 'Генератор полів зі списку слів', 'Адмін-панель', 'Сервер, домен, оновлення й підтримка'],
-    channels: [{ title: 'Тематичні поля', description: 'Поле на тему вашого каналу раз на тиждень.', cost: 'free' }],
-    plan: [{ period: 'Тиждень 1', title: 'Запуск', tasks: ['Закріпити гру в каналі', 'Перше тематичне поле'] }],
-  },
+const isObj = (v: unknown): v is Raw => typeof v === 'object' && v !== null && !Array.isArray(v);
+const HEX = /^#[0-9a-f]{6}$/i;
 
-  /* ===================================================== ЗАГЛУШКА: Вікторина з друзями */
-  {
-    id: 'viktoryna',
-    status: 'soon',
-    mock: true,
-    name: 'Вікторина з друзями',
-    genre: 'Вікторина',
-    dna: { genre: 'viktoryny', color: '#a9c79a' },
-    tagline: 'Питання на вашу тему: гравці змагаються з друзями й іншими гравцями.',
-    howItEarns:
-      'Звичайні раунди безкоштовні. За зірки гравець бере «друге життя» після помилки або відкриває тематичний пакет питань.',
-    mechanics: ['Раунди по 10 питань', 'Чотири варіанти відповіді й таймер', 'Виклик другові посиланням', 'Тематичні пакети питань від автора гри'],
-    theme: { bg: '#d5eedc', ink: '#0d2a1c', tile: '#0d2a1c', tileInk: '#ffffff' },
-    coverWord: 'ПИТАЙ',
-    priceUah: PRICING.launchUah,
-    monthlyUah: PRICING.monthlyUah,
-    customerPrices: [
-      // MOCK: замінити
-      { label: 'Раунд', price: 'безкоштовно' },
-      { label: 'Друге життя', price: '1 ★' },
-      { label: 'Тематичний пакет', price: '20 ★' },
-    ],
-    firstClientDays: [5, 14], // MOCK: замінити
-    dailyMinutes: [20, 40], // MOCK: замінити
-    trafficSource: 'Telegram', // MOCK: замінити
-    economics: { kind: 'stars', payerRate: 0.03, arppuStars: 15, apiCostPerPayerUsd: 0 }, // MOCK: замінити
-    includes: ['Гра під вашою назвою й кольорами', 'Редактор питань', 'Виклики друзям', 'Сервер, домен, оновлення й підтримка'],
-    channels: [{ title: 'Вікторина тижня', description: 'Пост із темою тижня й посиланням на гру.', cost: 'free' }],
-    plan: [{ period: 'Тиждень 1', title: 'Запуск', tasks: ['Закріпити гру в каналі', 'Перша тематична вікторина'] }],
-  },
-];
+function str(g: Raw, id: string, key: string): string {
+  const v = g[key];
+  if (typeof v !== 'string' || v.trim() === '') fail(id, key, 'потрібен непорожній рядок');
+  return v;
+}
+
+function num(g: Raw, id: string, key: string): number {
+  const v = g[key];
+  if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) fail(id, key, 'потрібне невідʼємне число');
+  return v;
+}
+
+function strings(g: Raw, id: string, key: string): string[] {
+  const v = g[key];
+  if (!Array.isArray(v) || !v.every((x) => typeof x === 'string')) fail(id, key, 'потрібен список рядків');
+  return v as string[];
+}
+
+function range(g: Raw, id: string, key: string): readonly [number, number] {
+  const v = g[key];
+  if (!Array.isArray(v) || v.length !== 2 || !v.every((x) => typeof x === 'number')) fail(id, key, 'потрібно два числа');
+  return [v[0] as number, v[1] as number];
+}
+
+function objects<T>(g: Raw, id: string, key: string, keys: readonly string[], optional = false): T[] {
+  const v = g[key];
+  if (v === undefined && optional) return [];
+  if (!Array.isArray(v) || !v.every((x) => isObj(x) && keys.every((k) => k in x))) {
+    fail(id, key, `потрібен список обʼєктів з полями ${keys.join(', ')}`);
+  }
+  return v as T[];
+}
+
+function parseGame(raw: unknown, index: number): Game {
+  if (!isObj(raw)) fail(String(index), '(гра)', 'потрібен обʼєкт');
+  const id = typeof raw['id'] === 'string' ? raw['id'] : fail(String(index), 'id', 'потрібен рядок');
+  if (!/^[a-z0-9-]+$/.test(id)) fail(id, 'id', 'лише латиниця, цифри й дефіс');
+  const status = raw['status'];
+  if (status !== 'available' && status !== 'soon') fail(id, 'status', 'available або soon');
+  const mock = raw['mock'] === true;
+  const site = SITE[id] ?? fail(id, 'dna', 'додайте колір і жанр відбитка в SITE у src/data/games.ts');
+
+  const theme = raw['theme'];
+  if (!isObj(theme) || !['bg', 'ink', 'tile', 'tileInk'].every((k) => typeof theme[k] === 'string' && HEX.test(theme[k] as string))) {
+    fail(id, 'theme', 'потрібні кольори bg, ink, tile, tileInk у форматі #rrggbb');
+  }
+  const economics = raw['economics'];
+  if (!isObj(economics) || economics['kind'] !== 'stars') fail(id, 'economics', 'потрібна модель зірок (kind: stars)');
+  const customerPrices = objects<CustomerPrice>(raw, id, 'customerPrices', ['label', 'price']);
+  if (customerPrices.length === 0) fail(id, 'customerPrices', 'список порожній');
+
+  const orderUrl = raw['orderUrl'];
+  if (orderUrl !== undefined && (typeof orderUrl !== 'string' || !orderUrl.startsWith('https://t.me/'))) {
+    fail(id, 'orderUrl', 'посилання має починатися з https://t.me/');
+  }
+  if (status === 'available' && !mock && orderUrl === undefined) fail(id, 'orderUrl', 'у гри, що працює, має бути посилання «Замовити»');
+  const botUrl = raw['botUrl'];
+  if (botUrl !== undefined && (typeof botUrl !== 'string' || !botUrl.startsWith('https://t.me/'))) {
+    fail(id, 'botUrl', 'посилання має починатися з https://t.me/');
+  }
+
+  return {
+    id,
+    status,
+    ...(mock ? { mock: true as const } : {}),
+    name: str(raw, id, 'name'),
+    ...(site.searchTitle ? { searchTitle: site.searchTitle } : {}),
+    genre: str(raw, id, 'genre'),
+    dna: site.dna,
+    tagline: str(raw, id, 'tagline'),
+    howItEarns: str(raw, id, 'howItEarns'),
+    mechanics: strings(raw, id, 'mechanics'),
+    theme: {
+      bg: theme['bg'] as HexColor,
+      ink: theme['ink'] as HexColor,
+      tile: theme['tile'] as HexColor,
+      tileInk: theme['tileInk'] as HexColor,
+    },
+    coverWord: str(raw, id, 'coverWord'),
+    priceUah: num(raw, id, 'priceUah'),
+    monthlyUah: num(raw, id, 'monthlyUah'),
+    customerPrices,
+    firstClientDays: range(raw, id, 'firstClientDays'),
+    dailyMinutes: range(raw, id, 'dailyMinutes'),
+    trafficSource: str(raw, id, 'trafficSource'),
+    economics: {
+      kind: 'stars',
+      payerRate: num(economics, id, 'payerRate'),
+      arppuStars: num(economics, id, 'arppuStars'),
+      apiCostPerPayerUsd: num(economics, id, 'apiCostPerPayerUsd'),
+    },
+    includes: strings(raw, id, 'includes'),
+    channels: objects<PromoChannel>(raw, id, 'channels', ['title', 'description', 'cost']),
+    plan: objects<PlanPhase>(raw, id, 'plan', ['period', 'title', 'tasks']),
+    ...(typeof botUrl === 'string' ? { botUrl } : {}),
+    ...(Array.isArray(raw['demo']) ? { demo: objects<DemoWord>(raw, id, 'demo', ['clue', 'answer']) } : {}),
+    ...(typeof raw['platformId'] === 'string' ? { platformId: raw['platformId'] } : {}),
+    ...(typeof orderUrl === 'string' ? { orderUrl } : {}),
+    earns: Array.isArray(raw['earns']) ? strings(raw, id, 'earns') : [],
+    themeExamples: objects<ThemeExample>(raw, id, 'themeExamples', ['id', 'name', 'colors'], true),
+  };
+}
+
+function parseCatalog(file: unknown): { cabinetBot: string; games: Game[] } {
+  if (!isObj(file) || file['schemaVersion'] !== 1) throw new Error('games.generated.json: потрібна schemaVersion 1');
+  const bot = file['cabinetBot'];
+  if (typeof bot !== 'string' || !/^[A-Za-z0-9_]{5,32}$/.test(bot)) throw new Error('games.generated.json: cabinetBot — імʼя бота Кабінету');
+  const list = file['games'];
+  if (!Array.isArray(list) || list.length === 0) throw new Error('games.generated.json: games — непорожній список');
+  const games = list.map(parseGame);
+  const ids = new Set(games.map((g) => g.id));
+  if (ids.size !== games.length) throw new Error('games.generated.json: id ігор повторюються');
+  return { cabinetBot: bot, games };
+}
+
+const catalog = parseCatalog(generated);
+
+export const GAMES: readonly Game[] = catalog.games;
+
+/** Імʼя бота Кабінету в Telegram (без @): там клієнт замовляє гру й керує нею. */
+export const CABINET_BOT: string = catalog.cabinetBot;

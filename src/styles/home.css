@@ -261,6 +261,64 @@
   }
 }
 
+/* Кнопка під кроками запуску */
+.launch .actions {
+  margin-top: var(--space-6);
+}
+
+/* ---------------------------------------------------------------- «Ваш Кабінет» */
+.cab .lead {
+  margin-top: var(--space-3);
+  max-width: 46rem;
+}
+
+.cab__list {
+  display: grid;
+  margin-top: var(--space-6);
+  border-top: var(--border) solid var(--line);
+}
+
+.cab__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: var(--border) solid var(--line);
+}
+
+.cab__item .dna-mark {
+  transform: translateY(-2px);
+}
+
+.cab__title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-strong);
+  line-height: 1.35;
+}
+
+.cab__text {
+  margin-top: var(--space-1);
+  font-size: var(--fs-small);
+  color: var(--fg-muted);
+}
+
+.cab .actions {
+  margin-top: var(--space-6);
+}
+
+@media (min-width: 760px) {
+  .cab__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+}
+
+@media (min-width: 1100px) {
+  .cab__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 /* ---------------------------------------------------------------- стислий каталог */
 .catalog-teaser__head {
   display: flex;

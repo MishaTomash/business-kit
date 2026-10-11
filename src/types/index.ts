@@ -158,6 +158,26 @@ export interface Game {
   readonly screenshots?: readonly Screenshot[];
   /** Маленька робоча демо-гра на сторінці гри: 3–4 слова з питаннями. */
   readonly demo?: readonly DemoWord[];
+
+  /* Поля з платформи (src/data/games.generated.json, npm run export:games у klitynka-platform). */
+  /** id гри в платформі (`crossword` для Слововира). У заглушок немає. */
+  readonly platformId?: string;
+  /**
+   * Кнопка «Замовити»: бот Кабінету одразу на сторінці гри, напр. https://t.me/klitynka_bot?startapp=order_crossword.
+   * Є лише в справжніх ігор зі статусом available. Посилання не збирається вручну, лише з файлу платформи.
+   */
+  readonly orderUrl?: string;
+  /** Чим гра заробляє за модулем платформи (`hints`). */
+  readonly earns?: readonly string[];
+  /** Готові теми, які клієнт обирає в Кабінеті. */
+  readonly themeExamples?: readonly ThemeExample[];
+}
+
+/** Готова тема гри з Кабінету. */
+export interface ThemeExample {
+  readonly id: string;
+  readonly name: string;
+  readonly colors: Readonly<Record<string, string>>;
 }
 
 /** Слово демо-кросворду. */

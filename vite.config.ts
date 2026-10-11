@@ -2,18 +2,29 @@ import { defineConfig, createServer, loadEnv, type Plugin, type ResolvedConfig }
 import { fileURLToPath, URL } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { BRAND, BRAND_EN, BRAND_LINE, DEFAULT_SITE_URL } from './src/data/brand.ts';
+import { BRAND, BRAND_EN, BRAND_LINE, DEFAULT_SITE_URL, contactUrl } from './src/data/brand.ts';
 
 const SRC = fileURLToPath(new URL('./src', import.meta.url));
 
-/** Назва бренду, рядок суті й адреса сайту в index.html (шапка, футер, canonical). */
+/** Імʼя бота Кабінету з файлу платформи (src/data/games.generated.json). */
+function cabinetBot(): string {
+  const file = JSON.parse(fs.readFileSync(path.join(SRC, 'data', 'games.generated.json'), 'utf8')) as { cabinetBot?: unknown };
+  if (typeof file.cabinetBot !== 'string' || !/^[A-Za-z0-9_]{5,32}$/.test(file.cabinetBot)) {
+    throw new Error('games.generated.json: немає cabinetBot');
+  }
+  return file.cabinetBot;
+}
+
+/** Назва бренду, рядок суті, адреса сайту, контакт і бот Кабінету в index.html (шапка, футер, canonical). */
 function brandHtml(): Plugin {
   let siteUrl = DEFAULT_SITE_URL;
+  let contact = contactUrl(undefined);
   return {
     name: 'brand-html',
     configResolved(c) {
       const env = loadEnv(c.mode, c.envDir ?? c.root, 'VITE_');
       siteUrl = (env['VITE_SITE_URL'] || DEFAULT_SITE_URL).replace(/\/+$/, '');
+      contact = contactUrl(env['VITE_TELEGRAM_URL']);
     },
     transformIndexHtml: {
       order: 'pre',
@@ -23,7 +34,10 @@ function brandHtml(): Plugin {
           .replaceAll('%BRAND_EN%', BRAND_EN)
           .replaceAll('%BRAND%', BRAND)
           .replaceAll('%SITE_HOST%', new URL(siteUrl).host)
-          .replaceAll('%VITE_SITE_URL%', siteUrl),
+          .replaceAll('%VITE_SITE_URL%', siteUrl)
+          .replaceAll('%CONTACT_URL%', contact)
+          .replaceAll('%CABINET_URL%', `https://t.me/${cabinetBot()}`)
+          .replaceAll('%CABINET_HANDLE%', `@${cabinetBot()}`),
     },
   };
 }

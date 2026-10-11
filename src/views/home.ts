@@ -1,6 +1,6 @@
 /**
  * Головна за макетом «ДНК» (design/pages/page-06…24): hero зі спіраллю, «Шлях зірки», чому це вигідно,
- * що ми надаємо й ціни, для кого, як проходить запуск, стислий каталог (жанри й кількість), FAQ, заклик.
+ * що ми надаємо й ціни, для кого, як проходить запуск, «Ваш Кабінет», стислий каталог (жанри й кількість), FAQ, заклик.
  * Усі тексти й числа — з src/data (home.ts, business.ts, site.ts, games.ts); у розмітці їх немає.
  * Конкретна гра (Слововир) на головній не описується: у стислому каталозі лише посилання на назву гри, що працює
  * (внутрішнє посилання для пошуковика, docs/SEO-PLAN.md); слово «кросворд» на головній заборонене (DNA-STAGES S5).
@@ -8,8 +8,8 @@
 
 import type { View } from './view';
 import type { GenreId } from '@/types';
-import { BRAND, PRICING, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
-import { AUDIENCES, LAUNCH, OFFERINGS, OUR_PRICES, REASONS, textNumber } from '@/data/business';
+import { BRAND, CABINET_URL, PRICING, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
+import { AUDIENCES, CABINET_FEATURES, LAUNCH, OFFERINGS, OUR_PRICES, REASONS, textNumber } from '@/data/business';
 import { HOME } from '@/data/home';
 import { GENRE_LABELS } from '@/data/genres';
 import { GAMES, isPlayable, liveCount, soonCount } from '@/data';
@@ -112,7 +112,7 @@ function audience(): SafeHtml {
 
 function launch(): SafeHtml {
   return html`
-    <section class="sec launch" aria-labelledby="launch-t">
+    <section class="sec launch" id="launch" aria-labelledby="launch-t">
       <div class="wrap">
         <h2 class="h2" id="launch-t">${HOME.launch.title}</h2>
         <p class="lead">${HOME.launch.lead}</p>
@@ -121,6 +121,27 @@ function launch(): SafeHtml {
             (s) => html`<li class="lstep"><span class="lstep__dot" aria-hidden="true"></span><p class="eyebrow lstep__when">${s.when}</p><h3 class="lstep__title">${s.title}</h3><p class="lstep__text">${s.text}</p></li>`,
           )}
         </ol>
+        <div class="actions">${button(CABINET_URL, HOME.launch.cta, { external: true })}</div>
+      </div>
+    </section>
+  `;
+}
+
+/** «Ваш Кабінет»: що власник гри бачить і змінює сам (лише те, що є в платформі). */
+function cabinet(): SafeHtml {
+  const c = HOME.cabinet;
+  return html`
+    <section class="sec tone-layer cab" id="cabinet" aria-labelledby="cab-t">
+      <div class="wrap">
+        <p class="eyebrow">${c.eyebrow}</p>
+        <h2 class="h2" id="cab-t">${c.title}</h2>
+        <p class="lead">${c.lead}</p>
+        <ul class="cab__list">
+          ${CABINET_FEATURES.map(
+            (f) => html`<li class="cab__item"><span class="dna-mark" aria-hidden="true"><span></span></span><div><h3 class="cab__title">${f.title}</h3><p class="cab__text">${f.text}</p></div></li>`,
+          )}
+        </ul>
+        <div class="actions">${button(CABINET_URL, c.cta, { external: true })}${button(href.guide('first-players'), c.guide, { variant: 'ghost', arrow: true })}</div>
       </div>
     </section>
   `;
@@ -170,7 +191,7 @@ function final(): SafeHtml {
           <h2 class="h2 final__title" id="final-t">${f.title}</h2>
           <p class="final__text">${f.text}</p>
         </div>
-        <div class="actions">${button(TELEGRAM_URL, f.cta, { external: true })}</div>
+        <div class="actions">${button(CABINET_URL, f.cta, { external: true })}${button(TELEGRAM_URL, f.write, { variant: 'ghost', external: true })}</div>
       </div>
     </section>
   `;
@@ -190,7 +211,7 @@ export function homeView(): View {
       ...(LASTMOD['/'] ? { lastmod: LASTMOD['/'] } : {}),
       jsonLd: [organization(), website()],
     },
-    markup: html`${hero()}${starPathMarkup()}${reasons()}${offer()}${audience()}${launch()}${catalog()}${faq()}${final()}`,
+    markup: html`${hero()}${starPathMarkup()}${reasons()}${offer()}${audience()}${launch()}${cabinet()}${catalog()}${faq()}${final()}`,
     mount(root, ctx) {
       const offs = [
         mountCommon(root, ctx),

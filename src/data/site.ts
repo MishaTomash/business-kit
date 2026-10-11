@@ -5,12 +5,17 @@
 
 import type { MarketRates } from '@/types';
 
-import { DEFAULT_SITE_URL } from './brand';
+import { DEFAULT_SITE_URL, contactUrl } from './brand';
+import { CABINET_BOT } from './games';
 
 export { BRAND, BRAND_EN, BRAND_OF, BRAND_LINE, DEFAULT_SITE_URL } from './brand';
 
-/** Контакт для продажів. Налаштовується в `.env` → VITE_TELEGRAM_URL. */
-export const TELEGRAM_URL: string = import.meta.env.VITE_TELEGRAM_URL || 'https://t.me/your_username';
+/** Контакт власника для питань («Написати нам»). `.env` → VITE_TELEGRAM_URL, запасний — DEFAULT_CONTACT_URL. */
+export const TELEGRAM_URL: string = contactUrl(import.meta.env.VITE_TELEGRAM_URL);
+
+/** Бот Кабінету: там клієнт замовляє гру, оплачує, підключає бота й керує грою. Імʼя — з файлу платформи. */
+export const CABINET_HANDLE = `@${CABINET_BOT}`;
+export const CABINET_URL = `https://t.me/${CABINET_BOT}`;
 
 /** Адреса сайту без «/» у кінці (для og:image і canonical). `.env` → VITE_SITE_URL. */
 export const SITE_URL: string = (import.meta.env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, '');

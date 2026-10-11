@@ -1,7 +1,8 @@
 /**
  * Сторінка гри /games/<id> за макетами «ДНК».
  * - Працює (макет page-33…44): крихти, бейдж «працює», «Хочу таку гру» й «Пограти», великий відбиток,
- *   ціни для гравців, калькулятор, що входить, план просування, коралова картка запуску.
+ *   ціни для гравців, калькулятор, що входить, план просування з посиланням на загальну інструкцію,
+ *   коралова картка запуску. «Замовити в Кабінеті» веде в бот Кабінету одразу на цій грі (orderUrl з платформи).
  * - У розробці або заглушка (page-45…48): бейдж «у розробці», «Повідомити про запуск» з чесною фразою
  *   власника, відбиток, як гра працюватиме, тема під вас, за що гравці платитимуть. Без цін, калькулятора
  *   й «Пограти». Заглушки (mock) не індексуються й не потрапляють у sitemap.xml.
@@ -34,6 +35,11 @@ function playerPrice(price: string): SafeHtml {
   return html`<span class="star-sum num">${n}&nbsp;<span class="gp-star">${STAR_ICON}</span><span class="sr-only"> зірок</span></span>`;
 }
 
+/** «Замовити в Кабінеті»: посилання з платформи; без нього гра не вважається готовою до продажу. */
+function orderButton(g: Game): SafeHtml {
+  return g.orderUrl ? button(g.orderUrl, GAME_PAGE.want, { external: true }) : button(TELEGRAM_URL, GAME_PAGE.ask, { external: true });
+}
+
 function hero(g: Game, live: boolean): SafeHtml {
   const genre = GENRE_LABELS[g.dna.genre];
   return html`
@@ -46,7 +52,7 @@ function hero(g: Game, live: boolean): SafeHtml {
           <p class="lead">${g.tagline}</p>
           ${live
             ? html`
-                <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.want, { external: true })}${g.botUrl ? button(g.botUrl, GAME_PAGE.play, { variant: 'ghost', external: true }) : ''}</div>
+                <div class="actions">${orderButton(g)}${g.botUrl ? button(g.botUrl, GAME_PAGE.play, { variant: 'ghost', external: true }) : ''}</div>
                 <p class="ghero__terms small muted">${GAME_PAGE.terms}</p>
               `
             : html`
@@ -138,6 +144,7 @@ function plan(g: Game): SafeHtml {
             (p) => html`<li class="phase"><p class="eyebrow">${p.period}</p><h3 class="phase__title">${p.title}</h3><ul class="phase__tasks">${p.tasks.map((t) => html`<li>${t}</li>`)}</ul></li>`,
           )}
         </ol>
+        <div class="actions">${button(href.guide('first-players'), GAME_PAGE.plan.guide, { variant: 'ghost', arrow: true })}</div>
       </div>
     </section>
   `;
@@ -153,7 +160,7 @@ function buy(g: Game): SafeHtml {
           <dl class="gbuy__rows">${b.rows.map((r) => html`<div><dt class="num">${r.value}</dt><dd>${r.text}</dd></div>`)}</dl>
           <p class="gbuy__note">${b.note}</p>
         </div>
-        <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.want, { external: true })}</div>
+        <div class="actions">${orderButton(g)}${button(TELEGRAM_URL, GAME_PAGE.ask, { variant: 'ghost', external: true })}</div>
       </div>
     </section>
   `;

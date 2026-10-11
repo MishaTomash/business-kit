@@ -155,11 +155,22 @@ test('кольори жанрів збігаються з src/styles/tokens.css'
 });
 
 /* ---------------------------------------------------------------- 5. ігри каталогу й SVG */
-/** Ігри каталогу читаємо з games.ts текстом: модуль даних тягне аліаси Vite, яких Node не знає. */
+/**
+ * Ігри каталогу: назви з файлу платформи (src/data/games.generated.json), колір і жанр відбитка — з SITE
+ * у games.ts. games.ts читаємо текстом: модуль даних тягне аліаси Vite, яких Node не знає.
+ */
 function catalogGames(): { id: string; name: string; genre: GenreId; color: string }[] {
   const src = readFileSync(new URL('../src/data/games.ts', import.meta.url), 'utf8');
-  const re = /id: '([a-z0-9-]+)',[\s\S]*?name: '([^']+)',[\s\S]*?dna: \{ genre: '([a-z]+)', color: '(#[0-9a-fA-F]{6})' \}/g;
-  return [...src.matchAll(re)].map((m) => ({ id: m[1] ?? '', name: m[2] ?? '', genre: m[3] as GenreId, color: m[4] ?? '' }));
+  const file = JSON.parse(readFileSync(new URL('../src/data/games.generated.json', import.meta.url), 'utf8')) as {
+    games: { id: string; name: string }[];
+  };
+  const re = /'?([a-z0-9-]+)'?: \{\s*dna: \{ genre: '([a-z]+)', color: '(#[0-9a-fA-F]{6})' \}/g;
+  const dna = new Map([...src.matchAll(re)].map((m) => [m[1] ?? '', { genre: m[2] as GenreId, color: m[3] ?? '' }]));
+  return file.games.map((g) => {
+    const d = dna.get(g.id);
+    assert.ok(d, `немає dna для гри ${g.id} у SITE (src/data/games.ts)`);
+    return { id: g.id, name: g.name, ...d };
+  });
 }
 
 test('ігри каталогу: відбитки різні й далеко від межі округлення x,5', () => {

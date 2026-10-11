@@ -15,7 +15,7 @@ const SITE_ID = `${SITE_URL}/#website`;
 const abs = (path: string): string => `${SITE_URL}${path}`;
 
 /** Контакт показуємо лише тоді, коли в .env справжнє посилання, а не заглушка з .env.example. */
-const hasRealContact = !TELEGRAM_URL.includes('your_username');
+const hasRealContact = TELEGRAM_URL.startsWith('https://t.me/');
 
 export function organization(): JsonLd {
   return {

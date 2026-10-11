@@ -5,7 +5,7 @@
  * Оферта й політика беруть дату з рядка «Редакція від …» у content/legal, статті — з src/data/guides.ts.
  */
 export const LASTMOD: Readonly<Record<string, string>> = {
-  '/': '2026-10-10',
-  '/games': '2026-10-10',
-  '/games/slovovyr': '2026-10-10',
+  '/': '2026-10-11',
+  '/games': '2026-10-11',
+  '/games/slovovyr': '2026-10-11',
 };

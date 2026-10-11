@@ -10,6 +10,7 @@
  */
 
 import starsSrc from '../../content/guides/telegram-stars.md?raw';
+import playersSrc from '../../content/guides/first-players.md?raw';
 import { RATES, SITE_URL, STARS_RULES } from './site';
 import { markdownToHtml, type MarkdownResult } from '@/lib/markdown';
 
@@ -66,6 +67,16 @@ const SOURCES: readonly (GuideMeta & { readonly src: string })[] = [
     linkLabel: 'Як вивести Telegram Stars',
     published: '2026-10-10',
     updated: '2026-10-10',
+  },
+  {
+    id: 'first-players',
+    src: playersSrc,
+    title: 'Як знайти перших гравців для гри в Telegram',
+    description:
+      'Інструкція для власника гри в Telegram: що робити в перший тиждень і місяць, як працюють «Поділитися» й нагадування, що дивитися в статистиці, якщо гравців мало.',
+    linkLabel: 'Як знайти перших гравців',
+    published: '2026-10-11',
+    updated: '2026-10-11',
   },
 ];
 

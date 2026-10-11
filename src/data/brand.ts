@@ -15,3 +15,15 @@ export const DEFAULT_SITE_URL = 'https://klitynka.online';
 
 /** Один рядок суті бренду для головної й прев'ю посилань. */
 export const BRAND_LINE = 'Ігри в Telegram під ключ';
+
+/**
+ * Контакт власника в Telegram для питань і підтримки, якщо VITE_TELEGRAM_URL не задано або там
+ * лишилась заглушка your_username. Замовлення ж іде через бот Кабінету (CABINET_BOT у src/data/games.ts).
+ */
+export const DEFAULT_CONTACT_URL = 'https://t.me/misha_tom';
+
+/** Значення VITE_TELEGRAM_URL або запасний контакт, якщо змінна порожня чи досі заглушка. */
+export function contactUrl(fromEnv: string | undefined): string {
+  const v = (fromEnv ?? '').trim();
+  return v.startsWith('https://t.me/') && !v.includes('your_username') ? v : DEFAULT_CONTACT_URL;
+}
