@@ -17,11 +17,8 @@ const SITE: Readonly<Record<string, { readonly dna: GameDna; readonly searchTitl
     dna: { genre: 'slova', color: '#ee8466' },
     searchTitle: 'Слововир — кросворди українською в Telegram під ключ',
   },
-  'slovo-dnia': { dna: { genre: 'slova', color: '#7fc8a9' } },
-  anahramy: { dna: { genre: 'slova', color: '#c9b6e4' } },
-  filvord: { dna: { genre: 'slova', color: '#e7a87c' } },
-  viktoryna: { dna: { genre: 'viktoryny', color: '#a9c79a' } },
   skladayka: { dna: { genre: 'holovolomky', color: '#8fb8de' } },
+  kulkopad: { dna: { genre: 'pamiat', color: '#f2c14e' } },
 };
 
 type Raw = Record<string, unknown>;

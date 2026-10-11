@@ -160,7 +160,7 @@ function catalog(): SafeHtml {
           <p class="muted">${HOME.catalog.status(liveCount(), soonCount())}</p>
         </div>
         ${live.length
-          ? html`<p class="catalog-teaser__live">${HOME.catalog.liveLabel} ${live.map((g, i) => html`${i ? ', ' : ''}<a class="link" href="${href.game(g.id)}">${g.name}</a>`)}.</p>`
+          ? html`<p class="catalog-teaser__live">${HOME.catalog.liveLabel(live.length)} ${live.map((g, i) => html`${i ? ', ' : ''}<a class="link" href="${href.game(g.id)}">${g.name}</a>`)}.</p>`
           : ''}
         <ul class="chips catalog-teaser__genres">
           ${present.map((id) => html`<li><a class="chip" href="${href.games()}?genre=${id}">${GENRE_LABELS[id]}<span class="chip__count">${counts.get(id) ?? 0}</span></a></li>`)}
