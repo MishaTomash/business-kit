@@ -10,7 +10,7 @@
 
 import type { View } from './view';
 import type { Game } from '@/types';
-import { BRAND, TELEGRAM_URL } from '@/data/site';
+import { BRAND_EN, TELEGRAM_URL } from '@/data/site';
 import { CATALOG, GAME_PAGE } from '@/data/pages';
 import { OFFERINGS } from '@/data/business';
 import { GENRE_LABELS } from '@/data/genres';
@@ -187,7 +187,7 @@ export function gameView(g: Game): View {
     key: `game:${g.id}`,
     navTone: 'dark',
     meta: {
-      title: live && g.searchTitle ? g.searchTitle : `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND}`,
+      title: live && g.searchTitle ? g.searchTitle : `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND_EN}`,
       ogTitle: live ? m.liveOg(g.name) : m.soonOg(g.name),
       description: live ? m.liveDescription(g.tagline) : m.soonDescription(g.tagline),
       ogImage: g.ogImage ?? `/og/${g.id}.png`,

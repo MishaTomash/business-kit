@@ -5,7 +5,7 @@
  */
 
 import type { View } from './view';
-import { BRAND } from '@/data/site';
+import { BRAND_EN } from '@/data/site';
 import { getLegal, type LegalId } from '@/data/legal';
 import { LEGAL_PAGE } from '@/data/pages';
 import { html, raw } from '@/lib/dom';
@@ -43,7 +43,7 @@ export function legalView(id: LegalId): View {
     key: `legal:${id}`,
     navTone: 'dark',
     meta: {
-      title: `${doc.title} — ${BRAND}`,
+      title: `${doc.title} — ${BRAND_EN}`,
       ogTitle: doc.title,
       description: doc.description,
       ogImage: '/og/default.png',

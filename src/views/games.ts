@@ -7,7 +7,7 @@
 
 import type { View } from './view';
 import type { Game, GenreId } from '@/types';
-import { BRAND, TELEGRAM_URL } from '@/data/site';
+import { BRAND_EN, TELEGRAM_URL } from '@/data/site';
 import { CATALOG } from '@/data/pages';
 import { HOME } from '@/data/home';
 import { GENRE_LABELS } from '@/data/genres';
@@ -80,7 +80,7 @@ export function gamesView(morphId?: string): View {
     key: 'games',
     navTone: 'dark',
     meta: {
-      title: `${CATALOG.meta.title} — ${BRAND}`,
+      title: `${CATALOG.meta.title} — ${BRAND_EN}`,
       ogTitle: CATALOG.meta.ogTitle,
       description: CATALOG.meta.description(liveCount(), soonCount()),
       ogImage: '/og/default.png',

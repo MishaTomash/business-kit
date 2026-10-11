@@ -7,7 +7,7 @@ import type { MarketRates } from '@/types';
 
 import { DEFAULT_SITE_URL } from './brand';
 
-export { BRAND, BRAND_OF, BRAND_LINE, DEFAULT_SITE_URL } from './brand';
+export { BRAND, BRAND_EN, BRAND_OF, BRAND_LINE, DEFAULT_SITE_URL } from './brand';
 
 /** Контакт для продажів. Налаштовується в `.env` → VITE_TELEGRAM_URL. */
 export const TELEGRAM_URL: string = import.meta.env.VITE_TELEGRAM_URL || 'https://t.me/your_username';

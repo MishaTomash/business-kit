@@ -1,7 +1,7 @@
 /** 404 за макетом «ДНК» (page-49…52): «зламана» спіраль, заголовок, дві дії. Тексти — src/data/pages.ts. */
 
 import type { View } from './view';
-import { BRAND } from '@/data/site';
+import { BRAND_EN } from '@/data/site';
 import { NOT_FOUND } from '@/data/pages';
 import { html } from '@/lib/dom';
 import { href } from '@/router';
@@ -14,7 +14,7 @@ export function notFoundView(path = '/404'): View {
     key: 'notFound',
     navTone: 'dark',
     meta: {
-      title: `${NOT_FOUND.title} — ${BRAND}`,
+      title: `${NOT_FOUND.title} — ${BRAND_EN}`,
       description: NOT_FOUND.meta.description,
       ogImage: '/og/default.png',
       path,

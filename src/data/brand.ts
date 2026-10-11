@@ -7,6 +7,9 @@ export const BRAND = 'Клітинка';
 /** Родовий відмінок назви для юридичних текстів («у боті Клітинки»). Змінюєте BRAND — змініть і це. */
 export const BRAND_OF = 'Клітинки';
 
+/** Назва латиницею: лише для <title> (вкладка браузера, результати пошуку). У шапці, футері й текстах лишається BRAND. */
+export const BRAND_EN = 'Klitynka';
+
 /** Адреса сайту, якщо VITE_SITE_URL не задано. Для canonical, og:url, og:image, sitemap і robots. */
 export const DEFAULT_SITE_URL = 'https://klitynka.online';
 

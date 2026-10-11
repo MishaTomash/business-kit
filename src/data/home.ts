@@ -6,7 +6,7 @@
  * власника). Тексти з позначкою ВИГАДАНО не використано. Правило формулювань: без «для каналу» як умови.
  */
 
-import { DEPLOY_TIME, PRICING, STARS_COMMISSION } from './site';
+import { BRAND_EN, DEPLOY_TIME, PRICING, STARS_COMMISSION } from './site';
 import { textNumber } from './business';
 import { pluralGames } from '@/lib/format';
 
@@ -68,7 +68,7 @@ export const HOME = {
   },
   meta: {
     /** <title> до 60 символів: основний запит «гра в Telegram під ключ» і Telegram Stars (docs/SEO-PLAN.md). */
-    title: 'Клітинка — ігри в Telegram під ключ, оплата Telegram Stars',
+    title: `${BRAND_EN} — ігри в Telegram під ключ, оплата Telegram Stars`,
     ogTitle: 'Гра у вашому Telegram, зірки на вашому рахунку',
     /** До 160 символів. */
     description: `Готова гра Telegram Mini App під вашою назвою: гравці платять Telegram Stars, зірки йдуть на баланс вашого бота. Запуск ${textNumber(PRICING.launchUah)}\u00A0₴, ${textNumber(PRICING.monthlyUah)}\u00A0₴/міс, ${STARS_COMMISSION}% зі зірок.`,

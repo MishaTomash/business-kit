@@ -2,7 +2,7 @@ import { defineConfig, createServer, loadEnv, type Plugin, type ResolvedConfig }
 import { fileURLToPath, URL } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { BRAND, BRAND_LINE, DEFAULT_SITE_URL } from './src/data/brand.ts';
+import { BRAND, BRAND_EN, BRAND_LINE, DEFAULT_SITE_URL } from './src/data/brand.ts';
 
 const SRC = fileURLToPath(new URL('./src', import.meta.url));
 
@@ -20,6 +20,7 @@ function brandHtml(): Plugin {
       handler: (html) =>
         html
           .replaceAll('%BRAND_LINE%', BRAND_LINE)
+          .replaceAll('%BRAND_EN%', BRAND_EN)
           .replaceAll('%BRAND%', BRAND)
           .replaceAll('%SITE_HOST%', new URL(siteUrl).host)
           .replaceAll('%VITE_SITE_URL%', siteUrl),
