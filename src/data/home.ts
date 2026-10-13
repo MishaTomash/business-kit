@@ -6,8 +6,9 @@
  * власника). Тексти з позначкою ВИГАДАНО не використано. Правило формулювань: без «для каналу» як умови.
  */
 
-import { BRAND_EN, DEPLOY_TIME, PRICING, STARS_COMMISSION } from './site';
-import { textNumber } from './business';
+import { BRAND_EN, DEPLOY_TIME, STARS_COMMISSION } from './site';
+import { sitePriceText } from './pricing';
+import type { PriceKind } from '@/lib/price-summary';
 import { pluralGames } from '@/lib/format';
 
 const works = (n: number): string => (pluralGames(n) === 'гра' ? 'працює' : 'працюють');
@@ -18,6 +19,8 @@ export interface HeroFact {
   readonly label: string;
   /** Підсвітити коралом (наша частка 0 %). */
   readonly accent?: boolean;
+  /** Ціна платформи: у браузері число оновлюється з платформи (src/lib/live-prices.ts). */
+  readonly price?: PriceKind;
 }
 
 export const HOME = {
@@ -27,8 +30,8 @@ export const HOME = {
     primary: 'Обрати гру',
     secondary: 'Написати в Telegram',
     facts: [
-      { value: `${textNumber(PRICING.launchUah)} ₴`, label: 'запуск, разово' },
-      { value: `${textNumber(PRICING.monthlyUah)} ₴`, label: 'підтримка на місяць' },
+      { value: `${sitePriceText('launch')} ₴`, label: 'запуск, разово', price: 'launch' },
+      { value: `${sitePriceText('monthly')} ₴`, label: 'підтримка на місяць', price: 'monthly' },
       { value: `${STARS_COMMISSION}%`, label: 'наша частка зірок', accent: true },
       { value: DEPLOY_TIME, label: 'до запуску' },
     ] satisfies readonly HeroFact[],
@@ -83,6 +86,6 @@ export const HOME = {
     title: `${BRAND_EN} — ігри в Telegram під ключ, оплата Telegram Stars`,
     ogTitle: 'Гра у вашому Telegram, зірки на вашому рахунку',
     /** До 160 символів. */
-    description: `Готова гра Telegram Mini App під вашою назвою: гравці платять Telegram Stars, зірки йдуть на баланс вашого бота. Запуск ${textNumber(PRICING.launchUah)}\u00A0₴, ${textNumber(PRICING.monthlyUah)}\u00A0₴/міс, ${STARS_COMMISSION}% зі зірок.`,
+    description: `Готова гра Telegram Mini App під вашою назвою: гравці платять Telegram Stars, зірки йдуть на баланс вашого бота. Запуск ${sitePriceText('launch')}\u00A0₴, ${sitePriceText('monthly')}\u00A0₴/міс, ${STARS_COMMISSION}% зі зірок.`,
   },
 } as const;

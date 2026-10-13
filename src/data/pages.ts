@@ -4,8 +4,10 @@
  * з docs/DNA-PROGRESS.md. Тексти з позначкою ВИГАДАНО не використано. Без «для вашого каналу».
  */
 
-import { DEPLOY_TIME, PRICING, STARS_COMMISSION } from './site';
-import { textNumber } from './business';
+import { DEPLOY_TIME, STARS_COMMISSION } from './site';
+import { priceNumber } from './pricing';
+import { html, type HtmlValue, type SafeHtml } from '@/lib/dom';
+import type { PriceKind } from '@/lib/price-summary';
 import { formatDaysRange, formatMinutesRange } from '@/lib/format';
 
 export const CATALOG = {
@@ -38,8 +40,9 @@ export const GAME_PAGE = {
   /** Відкриває Кабінет у боті одразу на цій грі (orderUrl з платформи). */
   want: 'Замовити в Кабінеті',
   ask: 'Написати нам',
-  /** «Запуск 1 500 ₴ · підтримка 99 ₴/міс · до 2 днів після оплати» */
-  terms: `Запуск ${textNumber(PRICING.launchUah)} ₴ · підтримка ${textNumber(PRICING.monthlyUah)} ₴/міс · ${DEPLOY_TIME} після оплати`,
+  /** «Запуск 1 500 ₴ · підтримка 99 ₴/міс · до 2 днів після оплати»: ціни цієї гри, позначені для оновлення. */
+  terms: (launch: HtmlValue, monthly: HtmlValue): SafeHtml =>
+    html`Запуск ${launch}&nbsp;₴ · підтримка ${monthly}&nbsp;₴/міс · ${DEPLOY_TIME} після оплати`,
   /** Блок для гравців (рішення власника 10.10.2026, docs/SEO-PROGRESS.md): механіки й приклади питань з games.ts. */
   howTo: {
     title: 'Як працює гра',
@@ -59,10 +62,10 @@ export const GAME_PAGE = {
   buy: {
     title: (name: string): string => `Запуск гри «${name}»`,
     rows: [
-      { value: `${textNumber(PRICING.launchUah)} ₴`, text: 'один раз за запуск' },
-      { value: `${textNumber(PRICING.monthlyUah)} ₴`, text: 'щомісяця: сервер, домен, оновлення й підтримка' },
+      { price: 'launch', text: 'один раз за запуск' },
+      { price: 'monthly', text: 'щомісяця: сервер, домен, оновлення й підтримка' },
       { value: `${STARS_COMMISSION}%`, text: 'наша частка зі зірок: усі зірки йдуть на баланс вашого бота' },
-    ],
+    ] as readonly ({ price: PriceKind; text: string } | { value: string; text: string })[],
     note: `Замовлення, оплата й підключення вашого бота — у Кабінеті в Telegram. Гра запрацює ${DEPLOY_TIME} після оплати.`,
   },
   soon: {
@@ -77,8 +80,8 @@ export const GAME_PAGE = {
   meta: {
     liveTitle: (name: string, genre: string): string => `${name}: ${genre.toLowerCase()} у Telegram під ключ`,
     liveOg: (name: string): string => `${name} — гра в Telegram під вашою назвою`,
-    liveDescription: (tagline: string): string =>
-      `${tagline} Запуск під вашою назвою за ${textNumber(PRICING.launchUah)} ₴, підтримка ${textNumber(PRICING.monthlyUah)} ₴ на місяць, зірки повністю ваші.`,
+    liveDescription: (tagline: string, launchUah: number, monthlyUah: number): string =>
+      `${tagline} Запуск під вашою назвою за ${priceNumber(launchUah)} ₴, підтримка ${priceNumber(monthlyUah)} ₴ на місяць, зірки повністю ваші.`,
     soonTitle: (name: string): string => `${name} (у розробці)`,
     soonOg: (name: string): string => `${name} — скоро в каталозі`,
     soonDescription: (tagline: string): string => `${tagline} Гра в розробці: напишіть нам, і ми повідомимо, коли вона буде готова.`,

@@ -8,8 +8,8 @@
 
 import type { View } from './view';
 import type { GenreId } from '@/types';
-import { BRAND, CABINET_URL, PRICING, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
-import { AUDIENCES, CABINET_FEATURES, LAUNCH, OFFERINGS, OUR_PRICES, REASONS, textNumber } from '@/data/business';
+import { BRAND, CABINET_URL, STARS_COMMISSION, TELEGRAM_URL } from '@/data/site';
+import { AUDIENCES, CABINET_FEATURES, LAUNCH, OFFERINGS, OUR_PRICES, REASONS } from '@/data/business';
 import { HOME } from '@/data/home';
 import { GENRE_LABELS } from '@/data/genres';
 import { GAMES, isPlayable, liveCount, soonCount } from '@/data';
@@ -17,6 +17,8 @@ import { LASTMOD } from '@/data/seo';
 import { organization, website } from '@/lib/schema';
 import { GENRE_IDS } from '@/lib/fingerprint';
 import { html, type SafeHtml } from '@/lib/dom';
+import { priceMark } from '@/lib/live-prices';
+import { sitePriceText } from '@/data/pricing';
 import { href } from '@/router';
 import { button } from '@/components/ui';
 import { starPathMarkup } from '@/components/starPath';
@@ -39,7 +41,7 @@ function hero(): SafeHtml {
           <p class="lead">${h.lead}</p>
           <div class="actions">${button(href.games(), h.primary)}${button(TELEGRAM_URL, h.secondary, { variant: 'ghost', external: true })}</div>
           <dl class="facts">
-            ${h.facts.map((f) => html`<div class="facts__item"><dt class="facts__label">${f.label}</dt><dd class="facts__value num${'accent' in f && f.accent ? ' is-accent' : ''}">${f.value}</dd></div>`)}
+            ${h.facts.map((f) => html`<div class="facts__item"><dt class="facts__label">${f.label}</dt><dd class="facts__value num${'accent' in f && f.accent ? ' is-accent' : ''}">${f.price ? html`${priceMark(f.price, sitePriceText(f.price))}&nbsp;₴` : f.value}</dd></div>`)}
           </dl>
         </div>
       </div>
@@ -76,11 +78,11 @@ function offer(): SafeHtml {
         </div>
         <div class="prices">
           <article class="price price--main">
-            <div class="price__head"><h3 class="price__title">${o.launchTitle}</h3><p class="price__value num">${textNumber(PRICING.launchUah)}&nbsp;₴</p></div>
+            <div class="price__head"><h3 class="price__title">${o.launchTitle}</h3><p class="price__value num">${priceMark('launch', sitePriceText('launch'))}&nbsp;₴</p></div>
             <p class="price__text">${launch?.title}. ${launch?.text} ${o.launchNote}</p>
           </article>
           <article class="price">
-            <div class="price__head"><h3 class="price__title">${o.monthlyTitle}</h3><p class="price__value num">${textNumber(PRICING.monthlyUah)}&nbsp;₴<span class="price__unit">${o.perMonth}</span></p></div>
+            <div class="price__head"><h3 class="price__title">${o.monthlyTitle}</h3><p class="price__value num">${priceMark('monthly', sitePriceText('monthly'))}&nbsp;₴<span class="price__unit">${o.perMonth}</span></p></div>
             <p class="price__text">${monthly?.text}</p>
           </article>
           <div class="price-share">

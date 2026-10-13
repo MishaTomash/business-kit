@@ -5,7 +5,8 @@
  */
 
 import type { Audience, FaqItem, LaunchStep, Offering, Reason, StarStep } from '@/types';
-import { CABINET_HANDLE, DEPLOY_TIME, PRICING, RATES, STARS_COMMISSION, STARS_RULES } from './site';
+import { CABINET_HANDLE, DEPLOY_TIME, RATES, STARS_COMMISSION, STARS_RULES } from './site';
+import { SITE_PRICES, sitePriceText } from './pricing';
 import { href } from '@/router';
 
 const nf = new Intl.NumberFormat('uk-UA');
@@ -14,6 +15,9 @@ export const tileNumber = (n: number): string => nf.format(n).replace(/\s/g, ' '
 /** Число для тексту: групи через нерозривний пробіл. */
 export const textNumber = (n: number): string => nf.format(n).replace(/\s/g, ' ');
 const decimal = (n: number): string => String(n).replace('.', ',');
+/** Ціна для плитки: найменша серед ігор, з «від», якщо ціни ігор різні. */
+const tilePrice = (kind: 'launch' | 'monthly'): string =>
+  `${SITE_PRICES[kind].same ? '' : 'від '}${tileNumber(SITE_PRICES[kind].min)}`;
 
 /** Скільки гривень приблизно дасть мінімальне виведення (округлено до 10 ₴). */
 export const MIN_WITHDRAW_UAH = Math.round((STARS_RULES.minWithdraw * RATES.starPayoutUsd * RATES.uahPerUsd) / 10) * 10;
@@ -45,12 +49,12 @@ export const STAR_PATH: readonly StarStep[] = [
 /* ---------------------------------------------------------------- «Як заробляємо ми» */
 export const OUR_PRICES = [
   {
-    figure: `${tileNumber(PRICING.launchUah)}₴`,
+    figure: `${tilePrice('launch')}₴`,
     title: 'Один раз за запуск',
     text: 'Гра під вашою назвою й кольорами, бот на вашому акаунті, Кабінет для керування грою й інструкція з просування.',
   },
   {
-    figure: `${tileNumber(PRICING.monthlyUah)}₴`,
+    figure: `${tilePrice('monthly')}₴`,
     title: 'Щомісяця',
     text: 'Сервер, домен, оновлення й підтримка. Сума не залежить від кількості гравців і доходу гри.',
   },
@@ -79,7 +83,7 @@ export const REASONS: readonly Reason[] = [
     text: 'Рівні, щоденні завдання й серії днів дають гравцям привід відкривати гру щодня, а не раз на тиждень.',
   },
   {
-    figure: `${tileNumber(PRICING.monthlyUah)}₴`,
+    figure: `${tilePrice('monthly')}₴`,
     title: 'Плата не росте разом із доходом',
     text: 'За сервер, домен, оновлення й підтримку ви платите однакову суму щомісяця.',
   },
@@ -123,7 +127,7 @@ export const LAUNCH: readonly LaunchStep[] = [
   },
   {
     when: 'Крок 2',
-    title: `Оплата ${textNumber(PRICING.launchUah)} ₴`,
+    title: `Оплата ${sitePriceText('launch')} ₴`,
     text: 'Переказ на картку за реквізитами з Кабінету, скріншот оплати надсилаєте боту. Перевіряємо оплату, зазвичай за кілька годин.',
   },
   {
@@ -179,7 +183,7 @@ export const FAQ: readonly FaqItem[] = [
   },
   {
     question: 'Скільки це коштує?',
-    answer: `${textNumber(PRICING.launchUah)} ₴ один раз за запуск і ${textNumber(PRICING.monthlyUah)} ₴ на місяць за сервер, домен, оновлення й підтримку. Відсоток зі зірок ми не беремо.`,
+    answer: `${sitePriceText('launch')} ₴ один раз за запуск і ${sitePriceText('monthly')} ₴ на місяць за сервер, домен, оновлення й підтримку. Відсоток зі зірок ми не беремо.`,
   },
   {
     question: 'Чи можна свої слова й питання?',

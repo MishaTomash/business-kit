@@ -18,6 +18,18 @@ server {
         include /etc/nginx/snippets/business-kit-security.conf;
     }
 
+    # Актуальні ціни ігор з платформи (src/lib/live-prices.ts). api платформи працює на цьому ж
+    # сервері (порт 3100). Точний збіг адреси: решта /api/* сюди не потрапляє. Той самий домен,
+    # тож CSP connect-src 'self' не змінюється. Без цього блоку сайт показує ціни зі збірки.
+    location = /api/public/games {
+        limit_except GET { deny all; }
+        proxy_pass http://127.0.0.1:3100;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
     # HTML і решта: браузер щоразу перевіряє свіжість, оновлення видно одразу.
     # Одна адреса на сторінку (docs/SEO-PLAN.md): /games віддається з games/index.html зі статусом 200 без редиректу,
     # /games/ веде на /games (301), невідома адреса отримує 404.html зі статусом 404, а не головну.
