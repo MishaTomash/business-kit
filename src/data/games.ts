@@ -24,6 +24,7 @@ const SITE: Readonly<Record<string, { readonly dna: GameDna; readonly searchTitl
     searchTitle: 'Дурень — карткова гра в Telegram під ключ',
   },
   tikai: { dna: { genre: 'pamiat', color: '#c79bf2' } },
+  bulbashky: { dna: { genre: 'holovolomky', color: '#6cb4ee' } },
 };
 
 type Raw = Record<string, unknown>;
