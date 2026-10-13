@@ -21,8 +21,9 @@ export const CABINET_URL = `https://t.me/${CABINET_BOT}`;
 export const SITE_URL: string = (import.meta.env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, '');
 
 /**
- * Ціни, однакові для всіх ігор. Гра може мати власні priceUah / monthlyUah у games.ts.
- * Підтверджено власником (етап 3): 1 500 ₴ разово за запуск, 99 ₴ на місяць за підтримку.
+ * Ціни за замовчуванням (ті самі, що PRICE_LAUNCH_UAH і PRICE_MONTHLY_UAH платформи).
+ * Кожна гра має свої priceUah / monthlyUah у games.generated.json (ціни з адмінки платформи);
+ * ці числа діють, лише коли ігор, що працюють, немає. Підтверджено власником (етап 3).
  */
 export const PRICING = {
   launchUah: 1500,

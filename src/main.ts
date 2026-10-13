@@ -13,6 +13,7 @@ import { hasFinePointer, motionLevel, prefersReducedMotion } from '@/lib/env';
 import { legacyRedirect, parsePath } from '@/router';
 import { resolveView } from '@/pages';
 import { SITE_URL } from '@/data/site';
+import { applyLivePrices, loadLivePrices } from '@/lib/live-prices';
 import type { Cleanup, MountContext, View } from '@/views/view';
 
 const app = qs('#app');
@@ -46,6 +47,7 @@ function mount(view: View): void {
   current = view;
   setNav(view);
   cleanup = view.mount?.(app, ctx) ?? null;
+  applyLivePrices(app);
 }
 
 /** Висота липкої шапки: щоб заголовок секції не ховався під нею. */
@@ -152,3 +154,6 @@ if (!legacy && app.dataset['route'] === first.key) {
 } else {
   swap(first, location.hash && !legacy ? { hash: location.hash } : {});
 }
+
+// Актуальні ціни ігор з платформи: один запит, ціни зі збірки лишаються, якщо відповіді немає.
+loadLivePrices(app);

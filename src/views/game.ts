@@ -17,6 +17,8 @@ import { OFFERINGS } from '@/data/business';
 import { GENRE_LABELS } from '@/data/genres';
 import { isPlayable } from '@/data';
 import { html, type SafeHtml } from '@/lib/dom';
+import { priceMark } from '@/lib/live-prices';
+import { priceNumber } from '@/data/pricing';
 import { STAR_ICON } from '@/lib/icons';
 import { href } from '@/router';
 import { badge, button, cover } from '@/components/ui';
@@ -53,7 +55,7 @@ function hero(g: Game, live: boolean): SafeHtml {
           ${live
             ? html`
                 <div class="actions">${orderButton(g)}${g.botUrl ? button(g.botUrl, GAME_PAGE.play, { variant: 'ghost', external: true }) : ''}</div>
-                <p class="ghero__terms small muted">${GAME_PAGE.terms}</p>
+                <p class="ghero__terms small muted">${GAME_PAGE.terms(priceMark('launch', priceNumber(g.priceUah), g.platformId), priceMark('monthly', priceNumber(g.monthlyUah), g.platformId))}</p>
               `
             : html`
                 <div class="actions">${button(TELEGRAM_URL, GAME_PAGE.soon.notify, { external: true })}</div>
@@ -157,7 +159,7 @@ function buy(g: Game): SafeHtml {
       <div class="wrap gbuy__in">
         <div>
           <h2 class="h2" id="gb-t">${b.title(g.name)}</h2>
-          <dl class="gbuy__rows">${b.rows.map((r) => html`<div><dt class="num">${r.value}</dt><dd>${r.text}</dd></div>`)}</dl>
+          <dl class="gbuy__rows">${b.rows.map((r) => html`<div><dt class="num">${'price' in r ? html`${priceMark(r.price, priceNumber(r.price === 'launch' ? g.priceUah : g.monthlyUah), g.platformId)}&nbsp;₴` : r.value}</dt><dd>${r.text}</dd></div>`)}</dl>
           <p class="gbuy__note">${b.note}</p>
         </div>
         <div class="actions">${orderButton(g)}${button(TELEGRAM_URL, GAME_PAGE.ask, { variant: 'ghost', external: true })}</div>
@@ -196,7 +198,7 @@ export function gameView(g: Game): View {
     meta: {
       title: live && g.searchTitle ? g.searchTitle : `${live ? m.liveTitle(g.name, GENRE_LABELS[g.dna.genre]) : m.soonTitle(g.name)} — ${BRAND_EN}`,
       ogTitle: live ? m.liveOg(g.name) : m.soonOg(g.name),
-      description: live ? m.liveDescription(g.tagline) : m.soonDescription(g.tagline),
+      description: live ? m.liveDescription(g.tagline, g.priceUah, g.monthlyUah) : m.soonDescription(g.tagline),
       ogImage: g.ogImage ?? `/og/${g.id}.png`,
       path: href.game(g.id),
       ...(g.mock ? { noindex: true } : {}),

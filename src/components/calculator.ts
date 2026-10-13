@@ -15,6 +15,7 @@ import { formatInt, formatPercent, formatUah } from '@/lib/format';
 import { html, qs, render, type SafeHtml } from '@/lib/dom';
 import { STAR_ICON } from '@/lib/icons';
 import type { Cleanup } from '@/views/view';
+import { PRICES_EVENT, livePricesOf } from '@/lib/live-prices';
 
 const decimal = (n: number, digits = 1): string => n.toFixed(digits).replace('.', ',');
 const DAYS_PER_MONTH = 30;
@@ -65,9 +66,15 @@ export function calculatorMarkup(project: Project): SafeHtml {
   `;
 }
 
-export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
+export function mountCalculator(root: HTMLElement, base: Project & { platformId?: string }): Cleanup {
   const el = root.querySelector<HTMLElement>('[data-calc]');
   if (!el) return () => undefined;
+  // Ціни гри з платформи (src/lib/live-prices.ts): окупність і підписка рахуються з актуальних.
+  const withLive = (): Project => {
+    const live = livePricesOf(base.platformId);
+    return live ? { ...base, priceUah: live.launchUah, monthlyUah: live.monthlyUah } : base;
+  };
+  let project = withLive();
   const out = (key: string): HTMLElement | null => el.querySelector<HTMLElement>(`[data-out="${key}"]`);
   const input = qs<HTMLInputElement>('[data-input="traffic"]', el);
   const rate = project.economics.payerRate;
@@ -98,7 +105,16 @@ export function mountCalculator(root: HTMLElement, project: Project): Cleanup {
     setFill();
   };
 
+  const onPrices = (): void => {
+    project = withLive();
+    update();
+  };
   input.addEventListener('input', update);
+  window.addEventListener(PRICES_EVENT, onPrices);
   setFill();
-  return () => input.removeEventListener('input', update);
+  if (project !== base) update();
+  return () => {
+    input.removeEventListener('input', update);
+    window.removeEventListener(PRICES_EVENT, onPrices);
+  };
 }
