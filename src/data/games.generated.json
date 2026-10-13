@@ -120,7 +120,6 @@
           ]
         }
       ],
-      "botUrl": "https://t.me/slovovyr_bot/play",
       "demo": [
         {
           "clue": "Світить уночі на небі, а в Telegram нею платять",
@@ -139,8 +138,6 @@
           "answer": "КРОСВОРД"
         }
       ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
       "earns": [
         "hints"
       ],
@@ -218,7 +215,10 @@
           }
         }
       ],
-      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_crossword"
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_crossword",
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_crossword",
+      "priceUah": 1500,
+      "monthlyUah": 99
     },
     {
       "id": "skladayka",
@@ -308,8 +308,6 @@
           ]
         }
       ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
       "earns": [
         "hints"
       ],
@@ -387,6 +385,9 @@
           }
         }
       ],
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_skladayka",
+      "priceUah": 1500,
+      "monthlyUah": 99,
       "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_skladayka"
     },
     {
@@ -478,8 +479,6 @@
           ]
         }
       ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
       "earns": [
         "hints"
       ],
@@ -557,14 +556,17 @@
           }
         }
       ],
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_kulkopad",
+      "priceUah": 1500,
+      "monthlyUah": 99,
       "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_kulkopad"
     },
     {
       "id": "tikai",
-      "status": "soon",
-      "mock": true,
+      "status": "available",
       "name": "Тікай",
       "genre": "Аркада",
+      "platformId": "tikai",
       "tagline": "Нескінченний біг трьома доріжками: ухиляйся від перешкод, збирай монети й бий свій рекорд.",
       "howItEarns": "Гра безкоштовна. Монети гравці збирають на трасі, за місії й за вхід, а за Telegram Stars купують пакети монет. Монети йдуть на «Продовжити» після спотикання, щит на старт і нове вбрання героя. Забіг дня без покупок, тож результат у всіх чесний.",
       "mechanics": [
@@ -644,10 +646,87 @@
           ]
         }
       ],
+      "earns": [
+        "hints"
+      ],
+      "themeExamples": [
+        {
+          "id": "mint",
+          "name": "М’ята",
+          "colors": {
+            "accent": "#17815f",
+            "accentText": "#ffffff",
+            "active": "#2dbd93",
+            "activeBg": "#d6f5ea",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "spruce",
+          "name": "Хвоя",
+          "colors": {
+            "accent": "#1f5d45",
+            "accentText": "#ffffff",
+            "active": "#3c8a6a",
+            "activeBg": "#d8eadf",
+            "ok": "#2f8f4e",
+            "okBg": "#dcf1e2"
+          }
+        },
+        {
+          "id": "star",
+          "name": "Зірка",
+          "colors": {
+            "accent": "#f0b232",
+            "accentText": "#2b1d00",
+            "active": "#f2b632",
+            "activeBg": "#fff1cf",
+            "ok": "#2e9e55",
+            "okBg": "#dcf3e3"
+          }
+        },
+        {
+          "id": "berry",
+          "name": "Ягода",
+          "colors": {
+            "accent": "#b8336f",
+            "accentText": "#ffffff",
+            "active": "#d9628f",
+            "activeBg": "#fbe0ec",
+            "ok": "#2f9e5b",
+            "okBg": "#dcf3e4"
+          }
+        },
+        {
+          "id": "sea",
+          "name": "Море",
+          "colors": {
+            "accent": "#1d6fbd",
+            "accentText": "#ffffff",
+            "active": "#3b8fe0",
+            "activeBg": "#dbe9fb",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "sunset",
+          "name": "Захід",
+          "colors": {
+            "accent": "#c9501c",
+            "accentText": "#ffffff",
+            "active": "#f07f4d",
+            "activeBg": "#fde4d8",
+            "ok": "#2c9a52",
+            "okBg": "#daf2e2"
+          }
+        }
+      ],
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_tikai",
       "priceUah": 1500,
       "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_tikai"
     },
     {
       "id": "duren",
@@ -741,8 +820,6 @@
           ]
         }
       ],
-      "priceUah": 1500,
-      "monthlyUah": 99,
       "earns": [
         "hints"
       ],
@@ -820,14 +897,17 @@
           }
         }
       ],
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_duren",
+      "priceUah": 1500,
+      "monthlyUah": 99,
       "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_duren"
     },
     {
       "id": "bulbashky",
-      "status": "soon",
-      "mock": true,
+      "status": "available",
       "name": "Бульбашки",
       "genre": "Головоломка",
+      "platformId": "bulbashky",
       "tagline": "Стріляєш кольоровими кульками вгору, збираєш по три й більше однакових, чистиш поле й проходиш рівень за рівнем.",
       "howItEarns": "Гра безкоштовна, і кожен рівень можна пройти без покупок. Гравці купують підказки за Telegram Stars, щоб докупити ще 5 пострілів після програшу або взяти бустер: бомбу, райдужну кульку чи помічник прицілу. Щоденна скриня, завдання дня й серія днів дають підказки безкоштовно.",
       "mechanics": [
@@ -911,10 +991,87 @@
           ]
         }
       ],
+      "earns": [
+        "hints"
+      ],
+      "themeExamples": [
+        {
+          "id": "mint",
+          "name": "М’ята",
+          "colors": {
+            "accent": "#17815f",
+            "accentText": "#ffffff",
+            "active": "#2dbd93",
+            "activeBg": "#d6f5ea",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "spruce",
+          "name": "Хвоя",
+          "colors": {
+            "accent": "#1f5d45",
+            "accentText": "#ffffff",
+            "active": "#3c8a6a",
+            "activeBg": "#d8eadf",
+            "ok": "#2f8f4e",
+            "okBg": "#dcf1e2"
+          }
+        },
+        {
+          "id": "star",
+          "name": "Зірка",
+          "colors": {
+            "accent": "#f0b232",
+            "accentText": "#2b1d00",
+            "active": "#f2b632",
+            "activeBg": "#fff1cf",
+            "ok": "#2e9e55",
+            "okBg": "#dcf3e3"
+          }
+        },
+        {
+          "id": "berry",
+          "name": "Ягода",
+          "colors": {
+            "accent": "#b8336f",
+            "accentText": "#ffffff",
+            "active": "#d9628f",
+            "activeBg": "#fbe0ec",
+            "ok": "#2f9e5b",
+            "okBg": "#dcf3e4"
+          }
+        },
+        {
+          "id": "sea",
+          "name": "Море",
+          "colors": {
+            "accent": "#1d6fbd",
+            "accentText": "#ffffff",
+            "active": "#3b8fe0",
+            "activeBg": "#dbe9fb",
+            "ok": "#1f9d4c",
+            "okBg": "#d9f5e3"
+          }
+        },
+        {
+          "id": "sunset",
+          "name": "Захід",
+          "colors": {
+            "accent": "#c9501c",
+            "accentText": "#ffffff",
+            "active": "#f07f4d",
+            "activeBg": "#fde4d8",
+            "ok": "#2c9a52",
+            "okBg": "#daf2e2"
+          }
+        }
+      ],
+      "botUrl": "https://t.me/klitynka_ua_bot?startapp=play_bulbashky",
       "priceUah": 1500,
       "monthlyUah": 99,
-      "earns": [],
-      "themeExamples": []
+      "orderUrl": "https://t.me/klitynka_ua_bot?startapp=order_bulbashky"
     }
   ]
 }
