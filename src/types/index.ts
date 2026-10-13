@@ -137,6 +137,9 @@ export interface Game {
   readonly priceUah: number;
   /** Щомісячна плата за сервер, домен, оновлення й підтримку, ₴. */
   readonly monthlyUah: number;
+  /** Стара ціна запуску й підписки, ₴: показується закресленою (знижка з адмінки платформи). */
+  readonly priceWasUah?: number;
+  readonly monthlyWasUah?: number;
 
   /** Ціни для гравців. */
   readonly customerPrices: readonly CustomerPrice[];

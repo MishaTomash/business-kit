@@ -22,14 +22,14 @@ test('відповідь api: лише коректні записи, некор
   const parsed = parsePublicGames({
     defaults: DEFAULTS,
     games: [
-      { id: 'crossword', name: 'Слововир', status: 'available', launchUah: 2000, monthlyUah: 149 },
+      { id: 'crossword', name: 'Слововир', status: 'available', launchUah: 2000, monthlyUah: 149, launchWasUah: 2500 },
       { id: 'BAD id', launchUah: 1, monthlyUah: 1 },
       { id: 'kulkopad', launchUah: 0, monthlyUah: 99 },
       { id: 'tikai', launchUah: 1500.5, monthlyUah: 99 },
       null,
     ],
   });
-  assert.deepEqual([...(parsed ?? new Map()).entries()], [['crossword', { launchUah: 2000, monthlyUah: 149 }]]);
+  assert.deepEqual([...(parsed ?? new Map()).entries()], [['crossword', { launchUah: 2000, monthlyUah: 149, launchWasUah: 2500 }]]);
   assert.equal(parsePublicGames(null), null);
   assert.equal(parsePublicGames({ games: 'x' }), null);
 });

@@ -116,6 +116,8 @@ function parseGame(raw: unknown, index: number): Game {
     coverWord: str(raw, id, 'coverWord'),
     priceUah: num(raw, id, 'priceUah'),
     monthlyUah: num(raw, id, 'monthlyUah'),
+    ...(typeof raw['priceWasUah'] === 'number' ? { priceWasUah: num(raw, id, 'priceWasUah') } : {}),
+    ...(typeof raw['monthlyWasUah'] === 'number' ? { monthlyWasUah: num(raw, id, 'monthlyWasUah') } : {}),
     customerPrices,
     firstClientDays: range(raw, id, 'firstClientDays'),
     dailyMinutes: range(raw, id, 'dailyMinutes'),

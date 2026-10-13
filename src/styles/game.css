@@ -223,3 +223,13 @@
   font: var(--fw-display) var(--fs-body) / 1.2 var(--font-display);
   letter-spacing: 0.08em;
 }
+
+/* Стара ціна, закреслена (знижка з адмінки платформи). */
+.price-was {
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.price-was[hidden] {
+  display: none;
+}

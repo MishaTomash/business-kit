@@ -9,6 +9,9 @@ export type PriceKind = 'launch' | 'monthly';
 export interface GamePrices {
   readonly launchUah: number;
   readonly monthlyUah: number;
+  /** Стара (закреслена) ціна, якщо адмін дав знижку. */
+  readonly launchWasUah?: number;
+  readonly monthlyWasUah?: number;
 }
 
 export interface PriceSummary {
@@ -18,7 +21,7 @@ export interface PriceSummary {
   readonly same: boolean;
 }
 
-const KEY: Readonly<Record<PriceKind, keyof GamePrices>> = { launch: 'launchUah', monthly: 'monthlyUah' };
+const KEY: Readonly<Record<PriceKind, 'launchUah' | 'monthlyUah'>> = { launch: 'launchUah', monthly: 'monthlyUah' };
 
 /** Підсумок цін; порожній список — ціна за замовчуванням. */
 export function summarize(list: readonly GamePrices[], kind: PriceKind, fallback: GamePrices): PriceSummary {
@@ -30,6 +33,12 @@ export function summarize(list: readonly GamePrices[], kind: PriceKind, fallback
 
 /** Ціна гри за видом. */
 export const priceOf = (prices: GamePrices, kind: PriceKind): number => prices[KEY[kind]];
+
+/** Стара ціна за видом; лише якщо більша за чинну. */
+export function wasOf(prices: GamePrices, kind: PriceKind): number | undefined {
+  const was = kind === 'launch' ? prices.launchWasUah : prices.monthlyWasUah;
+  return was !== undefined && was > priceOf(prices, kind) ? was : undefined;
+}
 
 /** Чи схожа відповідь api на ціни: цілі гривні від 1 до 1 000 000. */
 export function isPrice(value: unknown): value is number {
@@ -47,10 +56,15 @@ export function parsePublicGames(body: unknown): Map<string, GamePrices> | null 
   const out = new Map<string, GamePrices>();
   for (const item of games) {
     if (typeof item !== 'object' || item === null) continue;
-    const { id, launchUah, monthlyUah } = item as Record<string, unknown>;
+    const { id, launchUah, monthlyUah, launchWasUah, monthlyWasUah } = item as Record<string, unknown>;
     if (typeof id !== 'string' || !/^[a-z][a-z0-9-]{1,31}$/.test(id)) continue;
     if (!isPrice(launchUah) || !isPrice(monthlyUah)) continue;
-    out.set(id, { launchUah, monthlyUah });
+    out.set(id, {
+      launchUah,
+      monthlyUah,
+      ...(isPrice(launchWasUah) ? { launchWasUah } : {}),
+      ...(isPrice(monthlyWasUah) ? { monthlyWasUah } : {}),
+    });
   }
   return out;
 }

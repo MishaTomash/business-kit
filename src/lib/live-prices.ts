@@ -8,7 +8,7 @@
  */
 
 import { html, type SafeHtml } from './dom';
-import { parsePublicGames, priceOf, summarize, type GamePrices, type PriceKind } from './price-summary';
+import { parsePublicGames, priceOf, summarize, wasOf, type GamePrices, type PriceKind } from './price-summary';
 import { PRICING } from '@/data/site';
 import { WORKING_PLATFORM_IDS, priceNumber, summaryText } from '@/data/pricing';
 
@@ -24,6 +24,17 @@ export function priceMark(kind: PriceKind, text: string, platformId?: string): S
   return platformId
     ? html`<span data-price="${kind}" data-game="${platformId}">${text}</span>`
     : html`<span data-price="${kind}">${text}</span>`;
+}
+
+/**
+ * Стара (закреслена) ціна гри: <s data-price-was="launch" data-game="crossword">2 000 ₴</s>.
+ * Без знижки елемент є, але прихований: живе оновлення може його показати.
+ */
+export function wasMark(kind: PriceKind, platformId: string | undefined, was: number | undefined): SafeHtml {
+  const text = was !== undefined ? `${priceNumber(was)} ₴` : '';
+  return platformId
+    ? html`<s class="price-was" data-price-was="${kind}" data-game="${platformId}" ${was === undefined ? 'hidden' : ''}>${text}</s>`
+    : html``;
 }
 
 /** Актуальні ціни гри платформи або undefined, поки відповіді немає. */
@@ -51,6 +62,14 @@ export function applyLivePrices(root: ParentNode): void {
     if (kind !== 'launch' && kind !== 'monthly') return;
     const text = textFor(kind, el.dataset['game']);
     if (text !== null && el.textContent !== text) el.textContent = text;
+  });
+  root.querySelectorAll<HTMLElement>('[data-price-was]').forEach((el) => {
+    const kind = el.dataset['priceWas'];
+    const prices = livePricesOf(el.dataset['game']);
+    if ((kind !== 'launch' && kind !== 'monthly') || !prices) return;
+    const was = wasOf(prices, kind);
+    el.hidden = was === undefined;
+    el.textContent = was !== undefined ? `${priceNumber(was)} ₴` : '';
   });
 }
 
