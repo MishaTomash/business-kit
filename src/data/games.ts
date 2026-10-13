@@ -19,6 +19,11 @@ const SITE: Readonly<Record<string, { readonly dna: GameDna; readonly searchTitl
   },
   skladayka: { dna: { genre: 'holovolomky', color: '#8fb8de' } },
   kulkopad: { dna: { genre: 'pamiat', color: '#f2c14e' } },
+  duren: {
+    dna: { genre: 'druzi', color: '#6fbf8f' },
+    searchTitle: 'Дурень — карткова гра в Telegram під ключ',
+  },
+  tikai: { dna: { genre: 'pamiat', color: '#c79bf2' } },
 };
 
 type Raw = Record<string, unknown>;
