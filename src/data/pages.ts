@@ -30,7 +30,7 @@ export const CATALOG = {
     title: 'Готові ігри для Telegram під ключ',
     ogTitle: 'Каталог ігор у Telegram під ключ',
     description: (live: number, soon: number): string =>
-      `Готові ігри Telegram Mini App під ключ: працює ${live}, у розробці ${soon}. Кожна гра запускається під вашою назвою й кольорами, зірки йдуть на ваш бот.`,
+      `Готові ігри Telegram Mini App під ключ: працює ${live}${soon > 0 ? `, у розробці ${soon}` : ''}. Кожна гра запускається під вашою назвою й кольорами, зірки йдуть на ваш бот.`,
   },
 } as const;
 
